@@ -75,7 +75,7 @@ public class FilterDataChecker {
 	}
 	
 	public void startProcessing() {
-		
+		this.getClass();
 	}
 
 
