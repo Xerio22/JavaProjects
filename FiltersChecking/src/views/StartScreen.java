@@ -34,10 +34,7 @@ public class StartScreen extends JPanel {
 		startProcessingButton.addActionListener(buttonClicked -> {
 			setButtonsEnabled(false);
 			
-			//TODO get data from text fields
-			//TODO create filter here and pass it to controller or only pass raw data and create filter inside controller 
-			
-			FilterDataChecker filterDataChecker = new FilterDataChecker(filtersListModel);// pass data to constructor
+			FilterDataChecker filterDataChecker = new FilterDataChecker(filtersListModel);
 			filterDataChecker.startProcessing();
 			
 			setButtonsEnabled(true);
