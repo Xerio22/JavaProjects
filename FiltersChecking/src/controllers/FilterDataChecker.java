@@ -70,12 +70,12 @@ public class FilterDataChecker {
 	private List<Filter> filtersToSave = new ArrayList<>();
 	private MainView view;
 	
-	public FilterDataChecker(FiltersListModel filtersList) {
-		
+	public FilterDataChecker(FiltersListModel filtersListModel) {
+		List<Filter> filters = filtersListModel.getFiltersAsList();
 	}
 	
 	public void startProcessing() {
-		this.getClass();
+		
 	}
 
 
