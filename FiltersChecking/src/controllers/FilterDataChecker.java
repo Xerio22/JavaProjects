@@ -23,13 +23,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
+import javax.swing.ListModel;
 import javax.swing.SwingWorker;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -58,6 +61,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 import main.FileLoader;
 import main.FiltersReader;
+import main.FiltersReaderFromListModel;
 import main.Utils;
 import main.FiltersReaderFromXml;
 import models.Filter;
@@ -69,24 +73,18 @@ public class FilterDataChecker {
 	private boolean isServerBlocked = false;
 	private List<Filter> filtersToSave = new ArrayList<>();
 	private MainView view;
+	private ListModel<Filter> filtersListModel;
+	private List<Filter> filters;
 	
-	public FilterDataChecker(FiltersListModel filtersListModel) {
-		List<Filter> filters = filtersListModel.getFiltersAsList();
+	public FilterDataChecker(ListModel<Filter> filtersListModel) {
+		this.filtersListModel = filtersListModel;
 	}
 	
 	public void startProcessing() {
-		
-	}
-
-
-	public void loadDataFromFileAndStartProcessing() {
-		FileLoader fileLoader = new FileLoader(Utils.default_input_path);
-		File xmlFile = fileLoader.loadFile();
-		
-		FiltersReader xfr = new FiltersReaderFromXml(xmlFile);
+		FiltersReader filtersReader = new FiltersReaderFromListModel(filtersListModel);	
 		
 		try {
-			List<Filter> filtersFromInput = xfr.getFiltersAsList();
+			List<Filter> filtersFromInput = filtersReader.getFiltersAsList();
 			
 			SwingWorker<Void, Void> myWorker= new SwingWorker<Void, Void>() {
 			    @Override
@@ -97,31 +95,14 @@ public class FilterDataChecker {
 			    }
 			};
 			myWorker.execute();
-			
-			
-		} catch (ParserConfigurationException e) {
-			printResult("Blad w tworzeniu dokumentu!");
-			e.printStackTrace();
-		} catch (SAXException e) {
-			printResult("Blad w przetwarzaniu pliku XML!");
-			printResult(e.toString() + "\n");
-			StringWriter stackTraceWriter = new StringWriter();
-			e.printStackTrace(new PrintWriter(stackTraceWriter));
-			printResult(e.toString() + "\n" + stackTraceWriter.toString());
-			e.printStackTrace();
-		} catch (IOException e) {
-			printResult("Blad w dostepie do pliku XML!");
-			e.printStackTrace();
+		
 		} catch (Exception e) {
-			printResult("Wystapil blad podczal ladowania pliku!");
 			e.printStackTrace();
 		}
+		
 	}
 
-	
-	
-	
-	
+
 	private void runFiltersChecking(List<Filter> filtersFromInput) {
 
 		for(; Utils.numberOfCheckedFilters < filtersFromInput.size(); Utils.numberOfCheckedFilters++) {	
@@ -580,3 +561,55 @@ public class FilterDataChecker {
 
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+public void loadDataFromFileAndStartProcessing() {
+		FileLoader fileLoader = new FileLoader(Utils.default_input_path);
+		File xmlFile = fileLoader.loadFile();
+		
+		FiltersReader xfr = new FiltersReaderFromXml(xmlFile);
+		
+		try {
+			List<Filter> filtersFromInput = xfr.getFiltersAsList();
+			
+			SwingWorker<Void, Void> myWorker= new SwingWorker<Void, Void>() {
+			    @Override
+			    protected Void doInBackground() {
+					runFiltersChecking(filtersFromInput);
+					
+					return null;
+			    }
+			};
+			myWorker.execute();
+			
+			
+		} catch (ParserConfigurationException e) {
+			printResult("Blad w tworzeniu dokumentu!");
+			e.printStackTrace();
+		} catch (SAXException e) {
+			printResult("Blad w przetwarzaniu pliku XML!");
+			printResult(e.toString() + "\n");
+			StringWriter stackTraceWriter = new StringWriter();
+			e.printStackTrace(new PrintWriter(stackTraceWriter));
+			printResult(e.toString() + "\n" + stackTraceWriter.toString());
+			e.printStackTrace();
+		} catch (IOException e) {
+			printResult("Blad w dostepie do pliku XML!");
+			e.printStackTrace();
+		} catch (Exception e) {
+			printResult("Wystapil blad podczal ladowania pliku!");
+			e.printStackTrace();
+		}
+	}
+*/
