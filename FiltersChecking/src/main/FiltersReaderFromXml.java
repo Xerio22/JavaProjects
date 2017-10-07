@@ -24,10 +24,21 @@ public class FiltersReaderFromXml implements FiltersReader{
 		this.file = file;
 	}
 	
-	public List<Filter> getFiltersAsList() throws Exception {
+	public List<Filter> getFiltersAsList() {
 		List<Filter> filters = new ArrayList<>();
 		
-        Document doc = prepareDocument(file);
+        Document doc = null;
+		try {
+			doc = prepareDocument(file);
+			
+			// TODO think how to pass exception info to view
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
         NodeList zamienniki = doc.getElementsByTagName("zamiennik");
        
