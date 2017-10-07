@@ -1,11 +1,7 @@
 package main;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTextPane;
 
 public class SplitCreator {
 	private Splittable[] splittables;

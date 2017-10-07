@@ -69,13 +69,13 @@ import models.FilterProperty;
 import models.FiltersListModel;
 import views.MainView;
 
-public class FilterDataChecker {
+public class FiltersCheckingManager {
 	private boolean isServerBlocked = false;
 	private List<Filter> filtersToSave = new ArrayList<>();
 	private MainView view;
 	private ListModel<Filter> filtersListModel;
 	
-	public FilterDataChecker(ListModel<Filter> filtersListModel) {
+	public FiltersCheckingManager(ListModel<Filter> filtersListModel) {
 		this.filtersListModel = filtersListModel;
 	}
 	
@@ -106,6 +106,8 @@ public class FilterDataChecker {
 
 	private void runFiltersChecking(List<Filter> filtersFromInput) {
 
+		
+		
 		for(; Utils.numberOfCheckedFilters < filtersFromInput.size(); Utils.numberOfCheckedFilters++) {	
 			saveProgressIfNeeded();
 			Filter filter = filtersFromInput.get(Utils.numberOfCheckedFilters);

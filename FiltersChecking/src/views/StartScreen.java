@@ -8,7 +8,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import controllers.FilterDataChecker;
+import controllers.FiltersCheckingManager;
 import models.FiltersListModel;
 
 public class StartScreen extends JPanel {
@@ -34,7 +34,7 @@ public class StartScreen extends JPanel {
 		startProcessingButton.addActionListener(buttonClicked -> {
 			setButtonsEnabled(false);
 			
-			FilterDataChecker filterDataChecker = new FilterDataChecker(filtersListModel);
+			FiltersCheckingManager filterDataChecker = new FiltersCheckingManager(filtersListModel);
 			filterDataChecker.startProcessing();
 			
 			setButtonsEnabled(true);
