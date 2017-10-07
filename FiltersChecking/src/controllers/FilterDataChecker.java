@@ -74,29 +74,35 @@ public class FilterDataChecker {
 	private List<Filter> filtersToSave = new ArrayList<>();
 	private MainView view;
 	private ListModel<Filter> filtersListModel;
-	private List<Filter> filters;
 	
 	public FilterDataChecker(ListModel<Filter> filtersListModel) {
 		this.filtersListModel = filtersListModel;
 	}
 	
 	public void startProcessing() {
-		FiltersReader filtersReader = new FiltersReaderFromListModel(filtersListModel);	
+		List<Filter> filtersFromInput = getFiltersFromInput();
 		
-			List<Filter> filtersFromInput = filtersReader.getFiltersAsList();
-			
-			SwingWorker<Void, Void> myWorker= new SwingWorker<Void, Void>() {
-			    @Override
-			    protected Void doInBackground() {
-					runFiltersChecking(filtersFromInput);
-					
-					return null;
-			    }
-			};
-			
-			myWorker.execute();
+		runBackgroundChecking(filtersFromInput);
 	}
 
+	private List<Filter> getFiltersFromInput() {
+		FiltersReader filtersReader = new FiltersReaderFromListModel(filtersListModel);	
+		
+		return filtersReader.getFiltersAsList();
+	}
+	
+	private void runBackgroundChecking(List<Filter> filtersFromInput) {
+		SwingWorker<Void, Void> myWorker = new SwingWorker<Void, Void>() {
+		    @Override
+		    protected Void doInBackground() {
+				runFiltersChecking(filtersFromInput);
+				
+				return null;
+		    }
+		};
+		
+		myWorker.execute();
+	}
 
 	private void runFiltersChecking(List<Filter> filtersFromInput) {
 
