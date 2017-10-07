@@ -83,7 +83,6 @@ public class FilterDataChecker {
 	public void startProcessing() {
 		FiltersReader filtersReader = new FiltersReaderFromListModel(filtersListModel);	
 		
-		try {
 			List<Filter> filtersFromInput = filtersReader.getFiltersAsList();
 			
 			SwingWorker<Void, Void> myWorker= new SwingWorker<Void, Void>() {
@@ -94,12 +93,8 @@ public class FilterDataChecker {
 					return null;
 			    }
 			};
+			
 			myWorker.execute();
-		
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
 	}
 
 
