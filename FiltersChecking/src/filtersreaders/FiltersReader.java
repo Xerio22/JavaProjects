@@ -1,4 +1,4 @@
-package main;
+package filtersreaders;
 
 import java.util.List;
 

@@ -2,7 +2,7 @@ package models;
 
 import org.w3c.dom.Element;
 
-import main.Utils;
+import utils.Utils;
 
 public class FilterProperty {
 	private String propertyName;

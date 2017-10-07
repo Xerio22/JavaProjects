@@ -1,4 +1,4 @@
-package main;
+package viewscomponents;
 
 import java.awt.BorderLayout;
 

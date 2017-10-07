@@ -1,4 +1,4 @@
-package main;
+package viewscomponents;
 
 public interface Splittable {
 	

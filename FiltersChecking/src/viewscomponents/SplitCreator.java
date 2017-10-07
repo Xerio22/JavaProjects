@@ -1,4 +1,4 @@
-package main;
+package viewscomponents;
 
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;

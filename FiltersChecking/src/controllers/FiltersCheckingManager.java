@@ -59,14 +59,14 @@ import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
-import main.FileLoader;
-import main.FiltersReader;
-import main.FiltersReaderFromListModel;
-import main.Utils;
-import main.FiltersReaderFromXml;
+import filtersreaders.FiltersReader;
+import filtersreaders.FiltersReaderFromListModel;
+import filtersreaders.FiltersReaderFromXml;
 import models.Filter;
 import models.FilterProperty;
 import models.FiltersListModel;
+import utils.FileLoader;
+import utils.Utils;
 import views.MainView;
 
 public class FiltersCheckingManager {

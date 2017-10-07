@@ -9,7 +9,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import main.Utils;
+import utils.Utils;
 
 public class Filter {
 	private List<FilterProperty> filterProperties = new ArrayList<>();

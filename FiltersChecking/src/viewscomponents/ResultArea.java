@@ -1,4 +1,4 @@
-package main;
+package viewscomponents;
 
 import javax.swing.JTextPane;
 import javax.swing.text.Style;
