@@ -1,15 +1,21 @@
 package filterscheckers;
 
-import java.util.List;
-
 import models.Filter;
 
-public class CumminsChecker implements FiltersChecker {
+public class CumminsChecker extends FiltersChecker {
 
 	@Override
-	public List<Filter> runFiltersChecking() {
+	public boolean isFilterInDatabase(Filter filterToCheck) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Filter getReplacementFor(Filter filter) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
 
 }

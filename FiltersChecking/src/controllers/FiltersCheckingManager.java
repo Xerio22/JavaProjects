@@ -70,7 +70,7 @@ import utils.Utils;
 import views.MainView;
 
 public class FiltersCheckingManager {
-	private boolean isServerBlocked = false;
+	
 	private List<Filter> filtersToSave = new ArrayList<>();
 	private MainView view;
 	private ListModel<Filter> filtersListModel;
@@ -108,116 +108,10 @@ public class FiltersCheckingManager {
 
 		
 		
-		for(; Utils.numberOfCheckedFilters < filtersFromInput.size(); Utils.numberOfCheckedFilters++) {	
-			saveProgressIfNeeded();
-			Filter filter = filtersFromInput.get(Utils.numberOfCheckedFilters);
-			
-			String name = filter.getValueOfTag(Utils.filtr_wf);
-			boolean isWfPresent = isFilterInDatabase(filter, name);
-			
-			while(isServerBlocked){
-				try {
-					restartRouter();
-					
-					Thread.sleep(Utils.reconnect_time);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				isWfPresent = isFilterInDatabase(filter, name);
-			} 
-			
-			if(isWfPresent){
-				printInfo(name, Color.GREEN.darker());
-			}
-			else{
-				printInfo(name, Color.RED);
-				
-				printResult("Brak danych dla filtra " + name + " w bazie... Wyszukiwanie po oryginale...");
-				
-				name = filter.getValueOfTag(Utils.obcy_skrot);
-				printResult("Numer oryginalu -> " + name);
-				
-				List<FilterProperty> oemReplacementsProperties = findReplacementsPropertiesByOEMNumber(filter, name);
-				
-				if(name.startsWith("0")){
-					Filter filterWithoutLeadingZeros = new Filter(filter);
-					filterWithoutLeadingZeros.getRidOfLeadingZeros();
-					String nameWithoutLeadingZeros = filterWithoutLeadingZeros.getValueOfTag(Utils.obcy_skrot);
-					
-					printResult("Numer ma na poczatku zera.. Sprawdzanie dla numeru bez zer..");
-					printResult("Numer oryginalu bez zer -> " + nameWithoutLeadingZeros + "\n");
-					
-					List<FilterProperty> oemWithoutLeadingZerosReplacementsProperties = findReplacementsPropertiesByOEMNumber(filterWithoutLeadingZeros, nameWithoutLeadingZeros);
-					
-					addPropertiesToFilterAndPrintResults(filterWithoutLeadingZeros, nameWithoutLeadingZeros, oemWithoutLeadingZerosReplacementsProperties);
-					
-					filtersToSave.add(filterWithoutLeadingZeros);
-				}
-				
-				// w tym miejscu zeby w razie zer nie bylo zdublowane
-				addPropertiesToFilterAndPrintResults(filter, name, oemReplacementsProperties);
-				
-				filtersToSave.add(filter);
-			}
-		}
+		
 	}
 
-	
-	private void restartRouter() {
-		try (final WebClient webClient = new WebClient(BrowserVersion.FIREFOX_52)) {
-			webClient.getOptions().setJavaScriptEnabled(true);
-			webClient.getOptions().setUseInsecureSSL(true);
-			webClient.getOptions().setRedirectEnabled(true);
-	        webClient.getOptions().setThrowExceptionOnScriptError(true);
-	        webClient.getOptions().setCssEnabled(true);
-	        webClient.getOptions().setUseInsecureSSL(true);
-	        webClient.getOptions().setThrowExceptionOnFailingStatusCode(true);
-	        webClient.getCookieManager().setCookiesEnabled(true);
-	        webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-			
-	        HtmlPage loggedPage = loginToRouter(webClient);
-			restartInternetConnection(webClient, loggedPage);
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
 
-	}
-
-	private HtmlPage loginToRouter(WebClient webClient) throws IOException {
-		final HtmlPage loggingPage = webClient.getPage("http://10.0.0.1/");
-        final HtmlForm form = loggingPage.getFormByName("Login");
-        
-        final HtmlTextInput usernameInputField = (HtmlTextInput) loggingPage.getElementById("PopupUsername");//.getInputByName("username");
-        final HtmlPasswordInput passInputField = (HtmlPasswordInput) loggingPage.getElementById("PopupPassword");
-        final HtmlSubmitInput loginButton = form.getInputByValue("zaloguj");//.getElementById("bt_authenticate");
-        usernameInputField.setValueAttribute("admin");
-        passInputField.setValueAttribute("rs1970as1965ms1");
-        
-        loginButton.click();
-        
-        final HtmlPage loggedPage = webClient.getPage("http://10.0.0.1/advConfigAccessType.html");
-        
-	    return loggedPage;
-	}
-	
-	private void restartInternetConnection(WebClient webClient, HtmlPage loggedPage) throws IOException {
-		HtmlButtonInput restartButton =  (HtmlButtonInput) loggedPage.getElementById("bt_refresh");
-        restartButton.click();
-	}
-
-	private void saveProgressIfNeeded() {
-		if(Utils.numberOfCheckedFilters % Utils.numberOfIterationsBefereSaving == 0 && Utils.numberOfCheckedFilters != 0){
-			try {
-				saveProgress();
-				filtersToSave.clear();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-			printInfo("Progress saved", Color.BLUE);
-		}
-	}
 	
 
 	private void addPropertiesToFilterAndPrintResults(Filter filter, String name, List<FilterProperty> oemReplacementsProperties) {
@@ -240,96 +134,9 @@ public class FiltersCheckingManager {
 
 
 	
-	private boolean isFilterInDatabase(Filter filter, String name) {
-		printInfo(Utils.numberOfCheckedFilters + ". Waiting for connection...");
-		String serverResponse = getServerResponseFor(name);
-		printInfo("connected");
-		
-		boolean isFilterInDatabase = checkIsAnyReplacementPresent(serverResponse, name);
-		
-		return isFilterInDatabase;
-	}
 	
 
-
-	private String getServerResponseFor(String name) {
-		
-		// Prepare URL string
-		String urlString = "https://hifi-filter.com/en/catalog/" + name + "-recherche-equivalence.html";
-		
-		// Create URL and open connection
-		URLConnection uc = createURLConnectionFromString(urlString);
-			
-		// Get server response and put it into String Buffer
-		StringBuffer sb = new StringBuffer();
-		BufferedReader br = null;
-		
-		try{
-			br = new BufferedReader(new InputStreamReader(uc.getInputStream(), "UTF-8"));
-			
-			br.lines().forEach(line -> sb.append(line));
-			br.close();
-		}
-		catch(Exception e){
-			while(br == null){
-				try {
-					printInfo("Przekroczono limit czasu polaczenia z serwerem!", Color.ORANGE);
-					printInfo("Proba ponownego nawiazania polaczenia nastapi za 10 sekund...", Color.ORANGE);
-					
-					Thread.sleep(10000);
-					
-					uc = createURLConnectionFromString(urlString);
-					br = new BufferedReader(new InputStreamReader(uc.getInputStream(), "UTF-8"));
-					
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-				
-			}
-		}
-		
-		return sb.toString();
-	}
 	
-	
-
-	private URLConnection createURLConnectionFromString(String urlString) {
-		URL hifiUrl = null;
-		URLConnection uc = null;
-		try {
-			hifiUrl = new URL(urlString);
-			uc = hifiUrl.openConnection();
-		} catch (IOException e2) {
-			e2.printStackTrace();
-		}
-		
-		// Setup connection
-		uc.setUseCaches(false);
-		uc.setDefaultUseCaches(false);
-		uc.setReadTimeout(10000);
-		uc.setConnectTimeout(10000);
-		
-		return uc;
-	}
-
-	private boolean checkIsAnyReplacementPresent(String serverResponse, String name) {
-		if(serverResponse.contains(Utils.SUCCESS_RESPONSE)) {
-			setServerBlocked(false);
-			return true;
-		}
-		else if(serverResponse.contains(Utils.BLOCKED_BY_SERVER_RESPONSE)) {
-			printInfo("Serwer zablokowal polaczenie. Nie mozna pobrac danych.", Color.RED);
-			printInfo("Ponowna proba polaczenia nastapi za " + millisToMinutes(Utils.reconnect_time) + " minut", Color.RED);
-			setServerBlocked(true);
-		}
-		else{
-			setServerBlocked(false);
-		}
-		
-		return false;
-	}
 
 	
 	
@@ -416,9 +223,7 @@ public class FiltersCheckingManager {
 		view.printResult(str);
 	}
 	
-	private void setServerBlocked(boolean isAppBlockedByServer) {
-		isServerBlocked = isAppBlockedByServer;
-	}
+	
 
 	
 	
@@ -557,12 +362,6 @@ public class FiltersCheckingManager {
 	private int minutesToMillis(int minutes) {
 		return minutes * 60 * 1000;
 	}
-	
-	private int millisToMinutes(int millis){
-		return millis / 60000;
-	}
-
-	
 }
 
 
