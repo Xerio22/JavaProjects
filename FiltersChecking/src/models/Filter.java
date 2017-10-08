@@ -15,8 +15,8 @@ public class Filter {
 	private List<FilterProperty> filterProperties = new ArrayList<>();
 
 	private Filter(String brandName, String OEMnumber){
-		this.addProperty("Brand", brandName);
-		this.addProperty("OEM", OEMnumber);
+		this.addProperty("OEM", brandName);
+		this.addProperty("OEM_Number", OEMnumber);
 	}
 	
 	public static Filter createFilterUsingBrandNameAndOEMnumber(String brandName, String OEMnumber) {
@@ -64,7 +64,7 @@ public class Filter {
 	}
 
 	
-	public String getValueOfTag(String tagName) {
+	public String getPropertyValueByName(String tagName) {
 		for(FilterProperty fp : filterProperties){
 			if(fp.getPropertyName().equals(tagName)){
 				return fp.getPropertyValue();
@@ -132,7 +132,7 @@ public class Filter {
 
 
 	public void getRidOfLeadingZeros() {
-		String name = this.getValueOfTag(Utils.obcy_skrot);
+		String name = this.getPropertyValueByName(Utils.obcy_skrot);
 		
 		String nameWithoutZeros = null;
 		Pattern p = Pattern.compile("(0*)(.*)");
@@ -148,6 +148,10 @@ public class Filter {
 				filterProperties.get(i).setPropertyValue(nameWithoutZeros);
 			}
 		}
+	}
+
+	public String getOemNumber() {
+		return this.getPropertyValueByName(Utils.OEM_NUMBER_TAG_NAME);
 	}
 }
 
