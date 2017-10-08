@@ -3,7 +3,7 @@ package models;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FiltersReplacements {
+public class FiltersEquivalents {
 	private Map<Filter, Filter> replacements = new HashMap<>();
 	
 	public void addReplacementFor(Filter base, Filter replacement) {
