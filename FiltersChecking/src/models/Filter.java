@@ -13,7 +13,7 @@ import utils.Utils;
 
 public class Filter {
 	private List<FilterProperty> filterProperties = new ArrayList<>();
-	private List<Filter> equivalents = new ArrayList<>();
+	private FilterEquivalents equivalents = new FilterEquivalents();
 
 	public Filter(Filter filter){
 		for (FilterProperty prop : filter.filterProperties) {
@@ -55,10 +55,10 @@ public class Filter {
 	
 	
 	public void addEquivalent(Filter newEquivalent) {
-		this.equivalents.add(newEquivalent);
+		this.equivalents.addEquivalent(newEquivalent);
 	}
 	
-	public void setEquivalents(List<Filter> equivalents) {
+	public void setEquivalents(FilterEquivalents equivalents) {
 		this.equivalents = equivalents;
 	}
 	
