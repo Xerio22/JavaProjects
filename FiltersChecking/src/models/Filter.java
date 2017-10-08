@@ -15,7 +15,7 @@ public class Filter {
 	private List<FilterProperty> filterProperties = new ArrayList<>();
 
 	private Filter(String brandName, String OEMnumber){
-		this.addProperty("OEM", brandName);
+		this.addProperty("Brand", brandName);
 		this.addProperty("OEM_Number", OEMnumber);
 	}
 	
@@ -114,15 +114,13 @@ public class Filter {
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
+		StringBuffer sb = new StringBuffer();
 		
 		for(FilterProperty fp : filterProperties){
-			if(fp.isValuable()){
-				sb.append(fp).append(Utils.newLine);
-			}
+			sb.append(fp).append("     ");
 		}
 		
-		return sb.toString();
+		return sb.toString().trim();
 	}
 
 
