@@ -1,71 +1,17 @@
 package controllers;
 
-import java.awt.Color;
-import java.awt.Desktop;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import javax.swing.DefaultListModel;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.SwingWorker;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlButtonInput;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
-
+import filterscheckers.FilterChecker;
 import filtersreaders.FiltersReader;
 import filtersreaders.FiltersReaderFromListModel;
-import filtersreaders.FiltersReaderFromXml;
 import models.Filter;
+import models.FilterEquivalents;
 import models.FilterProperty;
-import models.FiltersListModel;
-import utils.FileLoader;
 import utils.Utils;
 import views.MainView;
 
@@ -79,17 +25,20 @@ public class FiltersCheckingManager {
 		this.filtersListModel = filtersListModel;
 	}
 	
+	
 	public void startProcessing() {
 		List<Filter> filtersFromInput = getFiltersFromInput();
 		
 		runBackgroundChecking(filtersFromInput);
 	}
 
+	
 	private List<Filter> getFiltersFromInput() {
 		FiltersReader filtersReader = new FiltersReaderFromListModel(filtersListModel);	
 		
 		return filtersReader.getFiltersAsList();
 	}
+	
 	
 	private void runBackgroundChecking(List<Filter> filtersFromInput) {
 		SwingWorker<Void, Void> myWorker = new SwingWorker<Void, Void>() {
@@ -103,32 +52,38 @@ public class FiltersCheckingManager {
 		
 		myWorker.execute();
 	}
+	
 
 	private void runFiltersChecking(List<Filter> filtersFromInput) {
-
-		
-		
-		
+		for(Filter filter : filtersFromInput) {
+			findFilterEquivalentsFromEveryServer(filter);
+		}
 	}
 
 
-	
+	private void findFilterEquivalentsFromEveryServer(Filter filter) {
+		for(FilterChecker checker : Utils.getFiltersCheckers()) {
+			FilterEquivalents newEquivalents = checker.getEquivalentsFor(filter); 
+			filter.setEquivalents(newEquivalents);
+		}		
+	}
+
 
 	private void addPropertiesToFilterAndPrintResults(Filter filter, String name, List<FilterProperty> oemReplacementsProperties) {
 		if(oemReplacementsProperties != null && !oemReplacementsProperties.isEmpty()){
-			printResult("Zamienniki znalezione!\n");
-			printResult("------ Dane wyszukiwanego filtra ---------------");
+//			printResult("Zamienniki znalezione!\n");
+//			printResult("------ Dane wyszukiwanego filtra ---------------");
 			
 			filter.addProperties(oemReplacementsProperties);
 			
-			printResult(filter);
-			printResult("\n");
+//			printResult(filter);
+//			printResult("\n");
 		}
 		else{
-			printResult("Calkowity brak danych o filtrze " + name + "!");
-			printResult("------ Dane wyszukiwanego filtra ---------------");
-			printResult(filter);
-			printResult("\n");
+//			printResult("Calkowity brak danych o filtrze " + name + "!");
+//			printResult("------ Dane wyszukiwanego filtra ---------------");
+//			printResult(filter);
+//			printResult("\n");
 		}
 	}
 
@@ -136,228 +91,157 @@ public class FiltersCheckingManager {
 	
 	
 
-	
-
-	
-	
-	private List<FilterProperty> findReplacementsPropertiesByOEMNumber(Filter filter, String name) {
-		// Manually get br to use it in further calculations without double connecting
-		String serverResponse = getServerResponseFor(name);
-		boolean isAnyOEMReplacementPresent = checkIsAnyReplacementPresent(serverResponse, name);
-		
-		if(!isAnyOEMReplacementPresent){
-			return null;
-		}
-		else{
-			serverResponse = serverResponse.replaceAll("\\t+", "");
-		
-			Pattern p = Pattern.compile("<table class=\"table table-hover\">"
-					+ "<thead><tr>"
-					+ "<th>Cross references</th>"
-					+ "<th>Brand</th>"
-					+ "<th>N° HIFI\\s*</th>"
-					+ "<th></th></tr></thead>"
-					+ "<tbody>"
-					+ "(<tr class=\"product-line img\">"
-					+ "<td>([a-zA-Z_0-9 -\\./\\\\]+)</td>"
-					+ "<td>([a-zA-Z_0-9 -\\./\\(\\)=]+)</td>"
-					+ "<td>([a-zA-Z_0-9 -]+)</td>"
-					+ "<td>.*</td>"
-					+ "</tr>)+</tbody></table>");
-
-			Matcher m = p.matcher(serverResponse);
-			
-			String replacementName = null;
-			String brand = null;
-			String hifiNumber = null;
-			
-			List<FilterProperty> hifiReplacementsForThisOem = new ArrayList<>();
-			
-			int propIdx = 1;
-			if(m.find()){
-				Pattern pp = Pattern.compile(
-						"<tr class=\"product-line img\">"
-						+ "<td>([[a-z][A-Z][_][0-9][ ][-][\\.][/][\\\\]]+)</td>"
-						+ "<td>([[a-z][A-Z][_][0-9][ ][-][\\.][/][\\(][\\)][=]]+)</td>"
-						+ "<td>([[a-z][A-Z][_][0-9][ ][-]]+)</td>"
-						+ "<td><a href=.*?></a></td>"
-						+ "</tr>");
-				
-				Matcher mm = pp.matcher(m.group(1));
-				
-				while(mm.find()){
-					replacementName = mm.group(1);
-					brand = mm.group(2);
-					hifiNumber = mm.group(3);
-	
-					// Create new properties with brand and number values and add them to list of replacement's properties
-					FilterProperty replacementNameProperty = new FilterProperty("OEM_" + propIdx, replacementName);
-					FilterProperty brandProperty = new FilterProperty("brand_" + propIdx, brand);
-					FilterProperty hifiNumberProperty = new FilterProperty("hifiNumber_" + propIdx, hifiNumber);
-					hifiReplacementsForThisOem.add(replacementNameProperty);
-					hifiReplacementsForThisOem.add(brandProperty);
-					hifiReplacementsForThisOem.add(hifiNumberProperty);
-					
-					propIdx++;
-				}
-			}
-			
-			return hifiReplacementsForThisOem;
-		}
-	}
-	
-
-	private void printInfo(String info) {
-		view.printInfo(info);
-	}
-	
-	private void printInfo(String info, Color color) {
-        view.printInfo(info, color);
-	}
-	
-	private void printResult(Filter filter) {
-		view.printResult(filter.toString());
-	}
-	
-	private void printResult(String str) {
-		view.printResult(str);
-	}
+//	private void printInfo(String info) {
+//		view.printInfo(info);
+//	}
+//	
+//	private void printInfo(String info, Color color) {
+//        view.printInfo(info, color);
+//	}
+//	
+//	private void printResult(Filter filter) {
+//		view.printResult(filter.toString());
+//	}
+//	
+//	private void printResult(String str) {
+//		view.printResult(str);
+//	}
 	
 	
 
 	
 	
-	public void saveProgress() throws IOException {
-		createConfigDirectoryWithProperFiles();
-		
-		saveNumberOfCheckedFilters();
-		saveResultsToFiles(filtersToSave);
-	}
+//	public void saveProgress() throws IOException {
+//		createConfigDirectoryWithProperFiles();
+//		
+//		saveNumberOfCheckedFilters();
+//		saveResultsToFiles(filtersToSave);
+//	}
 	
 	
-	private void createConfigDirectoryWithProperFiles() {
-		try {
-			Files.createDirectories(Paths.get(Utils.configFolderPath));
-//			Files.createFile(Paths.get(Utils.xmlFilePath));
-			Files.createFile(Paths.get(Utils.txtFilePath));
-			Files.createFile(Paths.get(Utils.configFilePath));
-		} catch (IOException e) {
-			//System.out.println(e);
-		}
-	}
+//	private void createConfigDirectoryWithProperFiles() {
+//		try {
+//			Files.createDirectories(Paths.get(Utils.configFolderPath));
+////			Files.createFile(Paths.get(Utils.xmlFilePath));
+//			Files.createFile(Paths.get(Utils.txtFilePath));
+//			Files.createFile(Paths.get(Utils.configFilePath));
+//		} catch (IOException e) {
+//			//System.out.println(e);
+//		}
+//	}
 
-	private void saveNumberOfCheckedFilters() throws IOException {
-		Files.write(Paths.get(Utils.configFilePath), String.valueOf(Utils.numberOfCheckedFilters).getBytes(), StandardOpenOption.WRITE);
-	}
-
-	
-	private void saveResultsToFiles(List<Filter> filtersToSave) throws IOException {
-		saveToXml(filtersToSave);
-		saveToTxt(filtersToSave);
-	}
+//	private void saveNumberOfCheckedFilters() throws IOException {
+//		Files.write(Paths.get(Utils.configFilePath), String.valueOf(Utils.numberOfCheckedFilters).getBytes(), StandardOpenOption.WRITE);
+//	}
 
 	
-	private void saveToXml(List<Filter> filtersToSave) {
-		try {
-			// prepare document
-			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-		
-			// root element
-			Document doc = null;
-			Element rootElement = null;
-			
-			if(Files.exists(Paths.get(Utils.xmlFilePath))) {
-				doc = docBuilder.parse(new File(Utils.xmlFilePath));
-				rootElement = doc.getDocumentElement();
-			}
-			else {
-				Files.createFile(Paths.get(Utils.xmlFilePath));
-				doc = docBuilder.newDocument();
-				rootElement = doc.createElement("katalog");
-				doc.appendChild(rootElement);
-			}
-			
-			
-			for(Filter filterToSave : filtersToSave) {
-				// main elements
-				Element zamiennik = doc.createElement("zamiennik");
-				rootElement.appendChild(zamiennik);
-				
-				for(FilterProperty filterProperty : filterToSave.getProperties()) {
-					if(filterProperty.isValuable()){
-						// new element with property name
-						Element zamiennikProperty = doc.createElement(filterProperty.getPropertyName());
-						// and property value
-						zamiennikProperty.appendChild(doc.createTextNode(filterProperty.getPropertyValue()));
-						// add new element to zamienniki
-						zamiennik.appendChild(zamiennikProperty);
-					}
-				}
-			}
-			
-			writeDocumentToFile(doc, Utils.xmlFilePath);
-
-		} catch (ParserConfigurationException pce) {
-			pce.printStackTrace();
-		} catch (TransformerException tfe) {
-			tfe.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+//	private void saveResultsToFiles(List<Filter> filtersToSave) throws IOException {
+//		saveToXml(filtersToSave);
+//		saveToTxt(filtersToSave);
+//	}
 
 	
-	public void writeDocumentToFile(Document document, String path) throws TransformerException {
-		File file = new File(path);
-		
-        // Make a transformer factory to create the Transformer
-        TransformerFactory tFactory = TransformerFactory.newInstance();
+//	private void saveToXml(List<Filter> filtersToSave) {
+//		try {
+//			// prepare document
+//			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+//			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+//		
+//			// root element
+//			Document doc = null;
+//			Element rootElement = null;
+//			
+//			if(Files.exists(Paths.get(Utils.xmlFilePath))) {
+//				doc = docBuilder.parse(new File(Utils.xmlFilePath));
+//				rootElement = doc.getDocumentElement();
+//			}
+//			else {
+//				Files.createFile(Paths.get(Utils.xmlFilePath));
+//				doc = docBuilder.newDocument();
+//				rootElement = doc.createElement("katalog");
+//				doc.appendChild(rootElement);
+//			}
+//			
+//			
+//			for(Filter filterToSave : filtersToSave) {
+//				// main elements
+//				Element zamiennik = doc.createElement("zamiennik");
+//				rootElement.appendChild(zamiennik);
+//				
+//				for(FilterProperty filterProperty : filterToSave.getProperties()) {
+//					if(filterProperty.isValuable()){
+//						// new element with property name
+//						Element zamiennikProperty = doc.createElement(filterProperty.getPropertyName());
+//						// and property value
+//						zamiennikProperty.appendChild(doc.createTextNode(filterProperty.getPropertyValue()));
+//						// add new element to zamienniki
+//						zamiennik.appendChild(zamiennikProperty);
+//					}
+//				}
+//			}
+//			
+//			writeDocumentToFile(doc, Utils.xmlFilePath);
+//
+//		} catch (ParserConfigurationException pce) {
+//			pce.printStackTrace();
+//		} catch (TransformerException tfe) {
+//			tfe.printStackTrace();
+//		} catch (SAXException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
 
-        // Make the Transformer
-        Transformer transformer = tFactory.newTransformer();
-
-        // Mark the document as a DOM (XML) source
-        DOMSource source = new DOMSource(document);
-
-        // Say where we want the XML to go
-        StreamResult result = new StreamResult(file);
-
-        // Write the XML to file
-        transformer.transform(source, result);
-    }
 	
-	
-	private void saveToTxt(List<Filter> filtersToSave) {
-		filtersToSave.forEach(
-				filter -> appendToFile(filter.toString(), Utils.txtFilePath)
-		);
-	}
-	
-	
-	private void appendToFile(String data, String filePath) {
-		try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(filePath, true)));){
-		    writer.println(data);
-		    writer.println();
-		} 
-		catch(Exception e){
-			e.printStackTrace();
-		}
-	}
-	
-	
-	public void loadDataFromConfigFile() {
-		try (BufferedReader br = new BufferedReader(new FileReader(new File(Utils.configFilePath)));){
-			Utils.numberOfCheckedFilters = Integer.parseInt(br.readLine());
-			Utils.reconnect_time = minutesToMillis(Integer.parseInt(br.readLine()));
-			Utils.numberOfIterationsBefereSaving = Integer.parseInt(br.readLine());
-		} 
-		catch(Exception e){
-			e.printStackTrace();
-		}
-	}
+//	public void writeDocumentToFile(Document document, String path) throws TransformerException {
+//		File file = new File(path);
+//		
+//        // Make a transformer factory to create the Transformer
+//        TransformerFactory tFactory = TransformerFactory.newInstance();
+//
+//        // Make the Transformer
+//        Transformer transformer = tFactory.newTransformer();
+//
+//        // Mark the document as a DOM (XML) source
+//        DOMSource source = new DOMSource(document);
+//
+//        // Say where we want the XML to go
+//        StreamResult result = new StreamResult(file);
+//
+//        // Write the XML to file
+//        transformer.transform(source, result);
+//    }
+//	
+//	
+//	private void saveToTxt(List<Filter> filtersToSave) {
+//		filtersToSave.forEach(
+//				filter -> appendToFile(filter.toString(), Utils.txtFilePath)
+//		);
+//	}
+//	
+//	
+//	private void appendToFile(String data, String filePath) {
+//		try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(filePath, true)));){
+//		    writer.println(data);
+//		    writer.println();
+//		} 
+//		catch(Exception e){
+//			e.printStackTrace();
+//		}
+//	}
+//	
+//	
+//	public void loadDataFromConfigFile() {
+//		try (BufferedReader br = new BufferedReader(new FileReader(new File(Utils.configFilePath)));){
+//			Utils.numberOfCheckedFilters = Integer.parseInt(br.readLine());
+//			Utils.reconnect_time = minutesToMillis(Integer.parseInt(br.readLine()));
+//			Utils.numberOfIterationsBefereSaving = Integer.parseInt(br.readLine());
+//		} 
+//		catch(Exception e){
+//			e.printStackTrace();
+//		}
+//	}
 
 	private int minutesToMillis(int minutes) {
 		return minutes * 60 * 1000;
