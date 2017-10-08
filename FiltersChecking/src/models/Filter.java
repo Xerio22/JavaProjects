@@ -55,9 +55,12 @@ public class Filter {
 	}
 	
 	
-	
-	public Filter(List<FilterProperty> filterProperties) {
+	private Filter(List<FilterProperty> filterProperties) {
 		this.filterProperties = filterProperties;
+	}
+	
+	public static Filter createFilterFromProperties(List<FilterProperty> filterProperties) {
+		return new Filter(filterProperties);
 	}
 
 	
