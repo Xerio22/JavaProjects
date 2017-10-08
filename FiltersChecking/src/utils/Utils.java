@@ -1,6 +1,11 @@
 package utils;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import filterscheckers.*;
 
 public class Utils {
 
@@ -40,6 +45,14 @@ public class Utils {
 	public static int numberOfCheckedFilters = 0;
 	public static int numberOfIterationsBefereSaving = 50;
 
+	// FILTERS CHECKERS ARRAY
+	public static final FilterChecker[] checkers = {
+			new HifiChecker(), 
+			new DonaldsonChecker(), 
+			new BaldwinChecker()
+	};
+	
+	
     /*
      * Get the extension of a file.
      */  
@@ -53,4 +66,8 @@ public class Utils {
         }
         return extension;
     }
+    
+    public static final List<FilterChecker> getFiltersCheckers(){ 
+		return new ArrayList<>(Arrays.asList(checkers));
+	}
 }
