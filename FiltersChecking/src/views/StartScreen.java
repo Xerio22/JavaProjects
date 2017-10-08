@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import controllers.FiltersCheckingManager;
+import models.Filter;
 import models.FiltersListModel;
 
 public class StartScreen extends JPanel {
@@ -22,9 +23,10 @@ public class StartScreen extends JPanel {
 		JPanel mainPanel = new JPanel(new GridLayout(1, 3));
 		
 		FiltersListModel filtersListModel = new FiltersListModel();
-		JScrollPane filtersListScroll = new JScrollPane(new JList<>(filtersListModel));
+		JList<Filter> filtersList = new JList<>(filtersListModel);
+		JScrollPane filtersListScroll = new JScrollPane(filtersList);
 		
-		filtersAddingPanel = new FiltersListManagementView();
+		filtersAddingPanel = new FiltersListManagementView(filtersList);
 		
 		ConnectionInformationView infoTextPane = new ConnectionInformationView();
 		JScrollPane infoScroll = new JScrollPane(infoTextPane);
