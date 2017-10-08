@@ -48,7 +48,7 @@ public class FiltersReaderFromXml implements FiltersReader{
            if (zamiennikNode.getNodeType() == Node.ELEMENT_NODE) {
               Element zamiennik = (Element) zamiennikNode;
               
-              Filter filterToCheck = new Filter(zamiennik);
+              Filter filterToCheck = Filter.createFilterFromXmlElement(zamiennik);
               filters.add(filterToCheck);
            }
         }
