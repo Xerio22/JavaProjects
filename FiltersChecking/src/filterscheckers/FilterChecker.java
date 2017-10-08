@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import models.FilterProperty;
+import models.Brand;
 import models.Filter;
 import models.FilterEquivalents;
 import utils.Utils;
@@ -18,14 +19,20 @@ import utils.Utils;
 public abstract class FilterChecker {
 	private boolean isServerBlocked = false;
 	private String serverUrlString;
+	private Brand brand;
 	
-	protected void setServerUrlString(String serverUrlString){
+	public FilterChecker(String serverUrlString, Brand brand){
 		this.serverUrlString = serverUrlString;
+		this.brand = brand;
 	}
 
 	public FilterEquivalents getEquivalentsFor(Filter filter) {
 
 		FilterEquivalents fe = new FilterEquivalents();
+		
+		String searchedFilterOEMnumber = filter.getPropertyValueByName(Utils.OEM_NUMBER_TAG_NAME);
+		
+		Filter equivalent = Filter.createFilterUsingBrandNameAndOEMnumber(brand.name(), searchedFilterOEMnumber);
 		
 //			String filterName = filter.getValueOfTag(Utils.filtr_wf);
 		
@@ -265,7 +272,23 @@ public abstract class FilterChecker {
 //			return hifiReplacementsForThisOem;
 //		}
 //	}
-	
+	private void addPropertiesToFilterAndPrintResults(Filter filter, String name, List<FilterProperty> oemReplacementsProperties) {
+		if(oemReplacementsProperties != null && !oemReplacementsProperties.isEmpty()){
+//			printResult("Zamienniki znalezione!\n");
+//			printResult("------ Dane wyszukiwanego filtra ---------------");
+			
+			filter.addProperties(oemReplacementsProperties);
+			
+//			printResult(filter);
+//			printResult("\n");
+		}
+		else{
+//			printResult("Calkowity brak danych o filtrze " + name + "!");
+//			printResult("------ Dane wyszukiwanego filtra ---------------");
+//			printResult(filter);
+//			printResult("\n");
+		}
+	}
 	
 	
 	private void setServerBlocked(boolean isAppBlockedByServer) {
