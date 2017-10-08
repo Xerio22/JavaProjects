@@ -13,6 +13,7 @@ import utils.Utils;
 
 public class Filter {
 	private List<FilterProperty> filterProperties = new ArrayList<>();
+	private List<Filter> equivalents = new ArrayList<>();
 
 	public Filter(Filter filter){
 		for (FilterProperty prop : filter.filterProperties) {
@@ -50,6 +51,15 @@ public class Filter {
 			}
 		}
 		return null;
+	}
+	
+	
+	public void addEquivalent(Filter newEquivalent) {
+		this.equivalents.add(newEquivalent);
+	}
+	
+	public void setEquivalents(List<Filter> equivalents) {
+		this.equivalents = equivalents;
 	}
 	
 	
