@@ -30,15 +30,6 @@ public class FilterProperty {
 	public String toString() {
 		return propertyName + ": " + propertyValue;
 	}
-	
-	public boolean isValuable() {
-		return  this.getPropertyName().equals(Utils.obcy_skrot) ||
-				this.getPropertyName().equals("firma") || 
-				this.getPropertyName().equals(Utils.filtr_wf) || 
-				this.getPropertyName().contains("OEM") || 
-				this.getPropertyName().contains("brand") || 
-				this.getPropertyName().contains("hifiNumber"); 
-	}
 
 	public void getRidOfWhiteSpaces() {
 		propertyName = propertyName.replaceAll("\\s", "_");
