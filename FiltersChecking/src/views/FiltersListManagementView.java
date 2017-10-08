@@ -2,31 +2,38 @@ package views;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.util.ArrayList;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.ListModel;
+
+import models.Filter;
+import models.FilterProperty;
+import models.FiltersListModel;
 
 public class FiltersListManagementView extends JPanel {
 	private static final long serialVersionUID = -5756954534235195566L;
-	private JButton addFilterToList;
-	private JButton removeFilterFromList;
-	private JLabel filterOEMLabel;
-	private JTextField filterOEM;
-	private JLabel filterOEMnumberLabel;
-	private JTextField filterOEMnumber;
+	
+	private JList<Filter> filtersList;
+	private FiltersListModel filtersListModel;
+	private JButton addFilterToList = new JButton("Dodaj");
+	private JButton removeFilterFromList = new JButton("Usuń");
+	private JLabel filterOEMLabel = new JLabel("Brand name (OEM): "); 
+	private JTextField filterOEM = new JTextField(15);
+	private JLabel filterOEMnumberLabel = new JLabel("OEM number: "); 
+	private JTextField filterOEMnumber = new JTextField(15);
 	
 	private JPanel everythingPanel;
 	
-	public FiltersListManagementView() {
-		filterOEMLabel = new JLabel("Brand name (OEM): "); 
-		filterOEM = new JTextField(15);
-		filterOEMnumberLabel = new JLabel("OEM number: "); 
-		filterOEMnumber = new JTextField(15);
-		addFilterToList = new JButton("Dodaj");
-		removeFilterFromList = new JButton("Usuń");
-
+	public FiltersListManagementView(JList<Filter> filtersList) {
+		this.filtersList = filtersList;
+		this.filtersListModel = (FiltersListModel) filtersList.getModel();
+		
 		addActionListeners();
 		arrangePanel();
 	}
@@ -40,17 +47,38 @@ public class FiltersListManagementView extends JPanel {
 	
 	private void addActLsnForAddBtn() {
 		addFilterToList.addActionListener(buttonClicked -> {
+			String brandName = getBrandName();
+			String OEMnumber = getOemNumber();
 			
-		});
-	}
-	
-	
-	private void addActLsnForRmvBtn() {
-		removeFilterFromList.addActionListener(buttonClicked -> {
+			Filter newFilter = Filter.createFilterUsingBrandNameAndOEMnumber(brandName, OEMnumber);
 			
+			filtersListModel.addElement(newFilter);
 		});
 	}
 
+	
+	private void addActLsnForRmvBtn() {
+		removeFilterFromList.addActionListener(buttonClicked -> {
+			int selectedIndex = filtersList.getSelectedIndex();
+			removeFilterFromList(selectedIndex);
+		});
+	}
+
+	
+	private void removeFilterFromList(int selectedIndex) {
+		filtersListModel.remove(selectedIndex);
+	}
+
+
+	private String getBrandName() {
+		return filterOEM.getText();
+	}
+	
+	
+	private String getOemNumber() {
+		return filterOEMnumber.getText();
+	}
+	
 	
 	private void arrangePanel() {
 		everythingPanel = new JPanel(new GridLayout(2,1));
