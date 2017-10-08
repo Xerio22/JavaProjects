@@ -1,21 +1,19 @@
 package filterscheckers;
 
-import models.Filter;
+import models.FilterEquivalents;
 
-public class CumminsChecker extends FiltersChecker {
+public class CumminsChecker extends FilterChecker {
 
-	@Override
-	public boolean isFilterInDatabase(Filter filterToCheck) {
-		// TODO Auto-generated method stub
-		return false;
+	public static final String SERVER_URL_STRING = "_FILTERNAME_";
+	
+	public CumminsChecker() {
+		super(SERVER_URL_STRING);
 	}
 
 	@Override
-	public Filter getReplacementFor(Filter filter) {
-		// TODO Auto-generated method stub
+	protected FilterEquivalents parseServerResponseAndGetEquivalents(String serverResponse) {
 		return null;
 	}
-
 
 
 }
