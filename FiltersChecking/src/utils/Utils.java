@@ -51,6 +51,9 @@ public class Utils {
 			new DonaldsonChecker(), 
 			new BaldwinChecker()
 	};
+
+	public static final String DEFAULT_OEM_NAME = "Default";
+	public static final String OEM_NUMBER_TAG_NAME = "OEM_Number";
 	
 	
     /*
