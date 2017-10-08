@@ -31,7 +31,7 @@ public class MainView {
 		
 
 		/* Put everything into "the mainest" panel */
-		everythingPanel.add(startingScreen);
+		everythingPanel.add(tabsPanel);
 		
 		
 		/* Create and show frame */
@@ -41,7 +41,7 @@ public class MainView {
 
 	private JFrame createAndSetupFrame(JPanel mainPanel) {
 		frame = new JFrame("FiltersChecking");
-		frame.setMinimumSize(new Dimension(800, 600));
+		frame.setMinimumSize(new Dimension(1000, 600));
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.add(mainPanel);
 		frame.pack();
