@@ -9,4 +9,8 @@ public class FilterEquivalents {
 	public void addEquivalent(Filter equivalent) {
 		equivalents.add(equivalent);
 	}
+	
+	public List<Filter> getEquivalents() {
+		return equivalents;
+	}
 }
