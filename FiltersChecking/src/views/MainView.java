@@ -41,7 +41,8 @@ public class MainView {
 
 	private JFrame createAndSetupFrame(JPanel mainPanel) {
 		frame = new JFrame("FiltersChecking");
-		frame.setMinimumSize(new Dimension(1000, 600));
+		frame.setMinimumSize(new Dimension(1100, 600));
+		frame.setPreferredSize(new Dimension(1100, 600));
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.add(mainPanel);
 		frame.pack();
