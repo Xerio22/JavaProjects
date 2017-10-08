@@ -5,32 +5,128 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import models.FilterProperty;
 import models.Filter;
+import models.FilterEquivalents;
 import utils.Utils;
 
-public abstract class FiltersChecker {
+public abstract class FilterChecker {
 	private boolean isServerBlocked = false;
+	private String serverUrlString;
 	
-	public abstract boolean isFilterInDatabase(Filter filterToCheck);
-	
-	public abstract Filter getReplacementFor(Filter filter);
-	
-	protected boolean checkForFilterInFollowingServer(String filterName, String serverUrlString) {
+	protected void setServerUrlString(String serverUrlString){
+		this.serverUrlString = serverUrlString;
+	}
 
-//		printInfo(Utils.numberOfCheckedFilters + ". Waiting for connection...");
-		String serverResponse = getServerResponseFor(filterName, serverUrlString);
-//		printInfo("connected");
+	public FilterEquivalents getEquivalentsFor(Filter filter) {
+
+		FilterEquivalents fe = new FilterEquivalents();
+		
+//			String filterName = filter.getValueOfTag(Utils.filtr_wf);
+		
+			
+		
+		
+		return fe;
+	}
+	
+	
+	
+	
+	
+	private List<FilterProperty> findReplacementsPropertiesByOEMNumber(Filter filter, String name) {
+		// Manually get br to use it in further calculations without double connecting
+		String serverResponse = getServerResponseFor(name);
+		boolean isAnyOEMReplacementPresent = checkIsAnyReplacementPresent(serverResponse, name);
+		
+		if(!isAnyOEMReplacementPresent){
+			return null;
+		}
+		else{
+			serverResponse = serverResponse.replaceAll("\\t+", "");
+		
+			Pattern p = Pattern.compile("<table class=\"table table-hover\">"
+					+ "<thead><tr>"
+					+ "<th>Cross references</th>"
+					+ "<th>Brand</th>"
+					+ "<th>N° HIFI\\s*</th>"
+					+ "<th></th></tr></thead>"
+					+ "<tbody>"
+					+ "(<tr class=\"product-line img\">"
+					+ "<td>([a-zA-Z_0-9 -\\./\\\\]+)</td>"
+					+ "<td>([a-zA-Z_0-9 -\\./\\(\\)=]+)</td>"
+					+ "<td>([a-zA-Z_0-9 -]+)</td>"
+					+ "<td>.*</td>"
+					+ "</tr>)+</tbody></table>");
+
+			Matcher m = p.matcher(serverResponse);
+			
+			String replacementName = null;
+			String brand = null;
+			String hifiNumber = null;
+			
+			List<FilterProperty> hifiReplacementsForThisOem = new ArrayList<>();
+			
+			int propIdx = 1;
+			if(m.find()){
+				Pattern pp = Pattern.compile(
+						"<tr class=\"product-line img\">"
+						+ "<td>([[a-z][A-Z][_][0-9][ ][-][\\.][/][\\\\]]+)</td>"
+						+ "<td>([[a-z][A-Z][_][0-9][ ][-][\\.][/][\\(][\\)][=]]+)</td>"
+						+ "<td>([[a-z][A-Z][_][0-9][ ][-]]+)</td>"
+						+ "<td><a href=.*?></a></td>"
+						+ "</tr>");
+				
+				Matcher mm = pp.matcher(m.group(1));
+				
+				while(mm.find()){
+					replacementName = mm.group(1);
+					brand = mm.group(2);
+					hifiNumber = mm.group(3);
+	
+					// Create new properties with brand and number values and add them to list of replacement's properties
+					FilterProperty replacementNameProperty = new FilterProperty("OEM_" + propIdx, replacementName);
+					FilterProperty brandProperty = new FilterProperty("brand_" + propIdx, brand);
+					FilterProperty hifiNumberProperty = new FilterProperty("hifiNumber_" + propIdx, hifiNumber);
+					hifiReplacementsForThisOem.add(replacementNameProperty);
+					hifiReplacementsForThisOem.add(brandProperty);
+					hifiReplacementsForThisOem.add(hifiNumberProperty);
+					
+					propIdx++;
+				}
+			}
+			
+			return hifiReplacementsForThisOem;
+		}
+	}
+	
+	
+	
+	
+	
+	
+	private boolean isFilterInDatabase(String filterName) {
+		this.serverUrlString = insertFilterNameIntoUrlString(filterName);
+		String serverResponse = getServerResponseFor(filterName);
 		
 		boolean isFilterInDatabase = checkIsAnyReplacementPresent(serverResponse, filterName);
 		
 		return isFilterInDatabase;
 	}
+	
+	private String insertFilterNameIntoUrlString(String filterName) {
+		return serverUrlString.replaceAll("_FILTERNAME_", filterName);
+	}
 
-	private String getServerResponseFor(String name, String urlString) {
+	private String getServerResponseFor(String name) {
 		
 		// Create URL and open connection
-		URLConnection uc = createURLConnectionFromString(urlString);
+		URLConnection uc = createURLConnectionFromString(serverUrlString);
 			
 		// Get server response and put it into String Buffer
 		StringBuffer sb = new StringBuffer();
@@ -50,7 +146,7 @@ public abstract class FiltersChecker {
 					
 					Thread.sleep(10000);
 					
-					uc = createURLConnectionFromString(urlString);
+					uc = createURLConnectionFromString(serverUrlString);
 					br = new BufferedReader(new InputStreamReader(uc.getInputStream(), "UTF-8"));
 					
 				} catch (InterruptedException e1) {
@@ -103,6 +199,73 @@ public abstract class FiltersChecker {
 		
 		return false;
 	}
+	
+	
+//	private List<FilterProperty> findReplacementsPropertiesByOEMNumber(Filter filter, String filterName) {
+//		
+//		boolean isFilterInDatabase = isFilterInDatabase(filterName);
+//		
+//		if(!isFilterInDatabase){
+//			return null;
+//		}
+//		else{
+//			serverResponse = serverResponse.replaceAll("\\t+", "");
+//		
+//			Pattern p = Pattern.compile("<table class=\"table table-hover\">"
+//					+ "<thead><tr>"
+//					+ "<th>Cross references</th>"
+//					+ "<th>Brand</th>"
+//					+ "<th>N° HIFI\\s*</th>"
+//					+ "<th></th></tr></thead>"
+//					+ "<tbody>"
+//					+ "(<tr class=\"product-line img\">"
+//					+ "<td>([a-zA-Z_0-9 -\\./\\\\]+)</td>"
+//					+ "<td>([a-zA-Z_0-9 -\\./\\(\\)=]+)</td>"
+//					+ "<td>([a-zA-Z_0-9 -]+)</td>"
+//					+ "<td>.*</td>"
+//					+ "</tr>)+</tbody></table>");
+//
+//			Matcher m = p.matcher(serverResponse);
+//			
+//			String replacementName = null;
+//			String brand = null;
+//			String hifiNumber = null;
+//			
+//			List<FilterProperty> hifiReplacementsForThisOem = new ArrayList<>();
+//			
+//			int propIdx = 1;
+//			if(m.find()){
+//				Pattern pp = Pattern.compile(
+//						"<tr class=\"product-line img\">"
+//						+ "<td>([[a-z][A-Z][_][0-9][ ][-][\\.][/][\\\\]]+)</td>"
+//						+ "<td>([[a-z][A-Z][_][0-9][ ][-][\\.][/][\\(][\\)][=]]+)</td>"
+//						+ "<td>([[a-z][A-Z][_][0-9][ ][-]]+)</td>"
+//						+ "<td><a href=.*?></a></td>"
+//						+ "</tr>");
+//				
+//				Matcher mm = pp.matcher(m.group(1));
+//				
+//				while(mm.find()){
+//					replacementName = mm.group(1);
+//					brand = mm.group(2);
+//					hifiNumber = mm.group(3);
+//	
+//					// Create new properties with brand and number values and add them to list of replacement's properties
+//					FilterProperty replacementNameProperty = new FilterProperty("OEM_" + propIdx, replacementName);
+//					FilterProperty brandProperty = new FilterProperty("brand_" + propIdx, brand);
+//					FilterProperty hifiNumberProperty = new FilterProperty("hifiNumber_" + propIdx, hifiNumber);
+//					hifiReplacementsForThisOem.add(replacementNameProperty);
+//					hifiReplacementsForThisOem.add(brandProperty);
+//					hifiReplacementsForThisOem.add(hifiNumberProperty);
+//					
+//					propIdx++;
+//				}
+//			}
+//			
+//			return hifiReplacementsForThisOem;
+//		}
+//	}
+	
 	
 	
 	private void setServerBlocked(boolean isAppBlockedByServer) {
