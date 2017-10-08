@@ -64,32 +64,12 @@ public class FiltersCheckingManager {
 	private void findFilterEquivalentsFromEveryServer(Filter filter) {
 		for(FilterChecker checker : Utils.getFiltersCheckers()) {
 			FilterEquivalents newEquivalents = checker.getEquivalentsFor(filter); 
-			filter.setEquivalents(newEquivalents);
+			filter.addEquivalents(newEquivalents);
 		}		
 	}
 
 
-	private void addPropertiesToFilterAndPrintResults(Filter filter, String name, List<FilterProperty> oemReplacementsProperties) {
-		if(oemReplacementsProperties != null && !oemReplacementsProperties.isEmpty()){
-//			printResult("Zamienniki znalezione!\n");
-//			printResult("------ Dane wyszukiwanego filtra ---------------");
-			
-			filter.addProperties(oemReplacementsProperties);
-			
-//			printResult(filter);
-//			printResult("\n");
-		}
-		else{
-//			printResult("Calkowity brak danych o filtrze " + name + "!");
-//			printResult("------ Dane wyszukiwanego filtra ---------------");
-//			printResult(filter);
-//			printResult("\n");
-		}
-	}
 
-
-	
-	
 
 //	private void printInfo(String info) {
 //		view.printInfo(info);
