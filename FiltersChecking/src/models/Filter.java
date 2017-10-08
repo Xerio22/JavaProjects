@@ -71,7 +71,7 @@ public class Filter {
 	}
 	
 	
-	public void setEquivalents(FilterEquivalents equivalents) {
+	public void addEquivalents(FilterEquivalents equivalents) {
 		for(Filter equivalent : equivalents.getEquivalents()) {
 			this.addEquivalent(equivalent);
 		}
