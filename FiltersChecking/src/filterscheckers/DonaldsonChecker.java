@@ -1,18 +1,15 @@
 package filterscheckers;
 
+import java.util.List;
+
 import models.Filter;
+import models.FilterEquivalents;
 
-public class DonaldsonChecker extends FiltersChecker {
+public class DonaldsonChecker extends FilterChecker {
 
-	@Override
-	public boolean isFilterInDatabase(Filter filterToCheck) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	public static final String SERVER_URL_STRING = "https://catalog.donaldson.com/searchResults/en/C/_/N-2v?Ntk=cro&Ntt=_FILTERNAME_";
 	
-	@Override
-	public Filter getReplacementFor(Filter filter) {
-		// TODO Auto-generated method stub
-		return null;
+	public DonaldsonChecker() {
+		super.setServerUrlString(SERVER_URL_STRING);
 	}
 }
