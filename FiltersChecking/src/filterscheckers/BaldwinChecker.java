@@ -1,14 +1,16 @@
 package filterscheckers;
 
-import controllers.MyObserver;
+import connectionhandlers.URLBasedConnectionHandler;
+import connectionhandlers.ServerConnectionHandler;
 import models.FilterEquivalents;
 
 public class BaldwinChecker extends FilterChecker {
 
-	public static final String SERVER_URL_STRING = "_FILTERNAME_";
+	private static final String SERVER_URL_STRING = "_FILTERNAME_";
+	private static final ServerConnectionHandler connectionHandler = new URLBasedConnectionHandler(SERVER_URL_STRING);
 	
 	public BaldwinChecker() {
-		super(SERVER_URL_STRING);
+		super(connectionHandler);
 	}
 
 	@Override
