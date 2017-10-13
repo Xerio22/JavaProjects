@@ -23,7 +23,7 @@ public class MainView {
 		
 		
 		/* Create panel with starting screen and it's components */
-		JPanel startingScreen = new StartScreen();
+		JPanel startingScreen = new StartScreen(tabsPanel);
 		
 		
 		/* Add first tab with starting panel */ 
@@ -50,8 +50,6 @@ public class MainView {
 		
 		return frame;
 	}
-	
-
 }
 
 
