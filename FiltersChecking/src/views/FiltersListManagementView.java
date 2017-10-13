@@ -2,18 +2,14 @@ package views;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.util.ArrayList;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.ListModel;
 
 import models.Filter;
-import models.FilterProperty;
 import models.FiltersListModel;
 
 public class FiltersListManagementView extends JPanel {
