@@ -46,7 +46,11 @@ public class Utils {
 	public static int numberOfCheckedFilters = 0;
 	public static int numberOfIterationsBefereSaving = 50;
 
-
+	public static final FilterChecker[] checkers = {
+		new HifiChecker(), 
+		new DonaldsonChecker(), 
+		new BaldwinChecker()
+	};
 
 	public static final String DEFAULT_OEM_NAME = "Default";
 	public static final String OEM_NUMBER_TAG_NAME = "OEM_Number";
@@ -67,8 +71,6 @@ public class Utils {
     }
     
     public static final List<FilterChecker> getFiltersCheckers(MyObserver obs){ 
-		return new ArrayList<>(Arrays.asList(new HifiChecker(obs), 
-				new DonaldsonChecker(obs), 
-				new BaldwinChecker(obs)));
+		return new ArrayList<>(Arrays.asList(checkers));
 	}
 }
