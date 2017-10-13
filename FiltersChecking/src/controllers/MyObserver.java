@@ -9,7 +9,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
 import javax.swing.ListModel;
 
-import filterscheckers.ServerConnectionHandler;
+import connectionhandlers.ServerConnectionHandler;
 import models.Filter;
 import views.ConnectionInformationView;
 
