@@ -1,7 +1,5 @@
 package filterscheckers;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,7 +10,6 @@ import java.util.Observable;
 import utils.Utils;
 
 public class ServerConnectionHandler extends Observable {
-	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 	private boolean isServerBlocked = false;
 	private String serverUrlString;
 	
@@ -165,13 +162,4 @@ public class ServerConnectionHandler extends Observable {
 	private void setServerBlocked(boolean isAppBlockedByServer) {
 		isServerBlocked = isAppBlockedByServer;
 	}
-	
-	
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
-        pcs.addPropertyChangeListener(listener);
-    }
-    
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        pcs.removePropertyChangeListener(listener);
-    }
 }
