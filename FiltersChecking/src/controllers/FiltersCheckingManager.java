@@ -3,7 +3,6 @@ package controllers;
 import java.util.List;
 
 import javax.swing.JTabbedPane;
-import javax.swing.JTextPane;
 import javax.swing.ListModel;
 import javax.swing.SwingWorker;
 
@@ -61,9 +60,7 @@ public class FiltersCheckingManager {
 
 
 	private void findFilterEquivalentsFromEveryServer(Filter filter) {
-		List<FilterChecker> c = Utils.getFiltersCheckers(obs);
-		for(FilterChecker checker : c) {
-			System.out.println(c);
+		for(FilterChecker checker : Utils.getFiltersCheckers(obs)) {
 			try{
 				FilterEquivalents newEquivalents = checker.getEquivalentsFor(filter);
 				filter.addEquivalentsIfTheyExist(newEquivalents);
