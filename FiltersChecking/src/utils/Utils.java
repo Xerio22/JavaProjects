@@ -70,7 +70,7 @@ public class Utils {
         return extension;
     }
     
-    public static final List<FilterChecker> getFiltersCheckers(MyObserver obs){ 
+    public static final List<FilterChecker> getFiltersCheckers(){ 
 		return new ArrayList<>(Arrays.asList(checkers));
 	}
 }
