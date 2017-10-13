@@ -1,15 +1,15 @@
 package filterscheckers;
 
-import controllers.MyObserver;
+import java.util.Observer;
+
 import models.Filter;
 import models.FilterEquivalents;
 
 public abstract class FilterChecker {
 	private ServerConnectionHandler serverConnectionHandler;
 	
-	public FilterChecker(String serverRawUrlString, MyObserver obs){
+	public FilterChecker(String serverRawUrlString){
 		serverConnectionHandler = new ServerConnectionHandler(serverRawUrlString);
-		serverConnectionHandler.addObserver(obs);
 	}
 
 	public FilterEquivalents getEquivalentsFor(Filter filter) {
@@ -38,4 +38,8 @@ public abstract class FilterChecker {
 
 	
 	protected abstract FilterEquivalents parseServerResponseAndGetEquivalents(String serverResponse);
+	
+	public void putObserver(Observer obs){
+		serverConnectionHandler.addObserver(obs);
+	}
 }
