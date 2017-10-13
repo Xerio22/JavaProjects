@@ -60,7 +60,11 @@ public class FiltersCheckingManager {
 
 
 	private void findFilterEquivalentsFromEveryServer(Filter filter) {
-		for(FilterChecker checker : Utils.getFiltersCheckers(obs)) {
+		for(FilterChecker checker : Utils.getFiltersCheckers()) {
+			
+			checker.putObserver(obs);
+			
+			// TODO this try catch is only for testing purposes
 			try{
 				FilterEquivalents newEquivalents = checker.getEquivalentsFor(filter);
 				filter.addEquivalentsIfTheyExist(newEquivalents);
