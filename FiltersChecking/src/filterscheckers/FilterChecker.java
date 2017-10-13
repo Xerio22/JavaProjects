@@ -1,14 +1,15 @@
 package filterscheckers;
 
+import controllers.MyObserver;
 import models.Filter;
 import models.FilterEquivalents;
 
 public abstract class FilterChecker {
-	
 	private ServerConnectionHandler serverConnectionHandler;
 	
-	public FilterChecker(String serverRawUrlString){
+	public FilterChecker(String serverRawUrlString, MyObserver obs){
 		serverConnectionHandler = new ServerConnectionHandler(serverRawUrlString);
+		serverConnectionHandler.addObserver(obs);
 	}
 
 	public FilterEquivalents getEquivalentsFor(Filter filter) {
@@ -34,7 +35,7 @@ public abstract class FilterChecker {
 			return this.parseServerResponseAndGetEquivalents(serverResponse);
 		}
 	}
-	
+
 	
 	protected abstract FilterEquivalents parseServerResponseAndGetEquivalents(String serverResponse);
 }
