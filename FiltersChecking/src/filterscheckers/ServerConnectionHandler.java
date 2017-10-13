@@ -1,14 +1,18 @@
 package filterscheckers;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Observable;
 
 import utils.Utils;
 
-public class ServerConnectionHandler {
+public class ServerConnectionHandler extends Observable {
+	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 	private boolean isServerBlocked = false;
 	private String serverUrlString;
 	
@@ -18,8 +22,8 @@ public class ServerConnectionHandler {
 	}
 
 	
-	public String insertFilterNameIntoUrlString(String filterName) {
-		return serverUrlString.replaceAll("_FILTERNAME_", filterName);
+	public void insertFilterNameIntoUrlString(String filterName) {
+		serverUrlString = serverUrlString.replaceAll("_FILTERNAME_", filterName);
 	}
 
 	
@@ -42,10 +46,17 @@ public class ServerConnectionHandler {
 		BufferedReader br = null;
 		
 		try{
+			setChanged();
+			notifyObservers("Connecting");
 			br = new BufferedReader(new InputStreamReader(uc.getInputStream(), "UTF-8"));
+
+			setChanged();
+			notifyObservers("Connected");
 		}
 		catch(Exception e){
 			while(br == null){
+				setChanged();
+				notifyObservers("Reconnect");
 				br = reconnect(br, uc);
 			}
 		}
@@ -55,9 +66,6 @@ public class ServerConnectionHandler {
 	
 	private BufferedReader reconnect(BufferedReader br, URLConnection uc) {
 		try {
-//			printInfo("Przekroczono limit czasu polaczenia z serwerem!", Color.ORANGE);
-//			printInfo("Proba ponownego nawiazania polaczenia nastapi za 10 sekund...", Color.ORANGE);
-			
 			Thread.sleep(10000);
 			
 			uc = createURLConnectionFromString(serverUrlString);
@@ -110,31 +118,43 @@ public class ServerConnectionHandler {
 		try {
 			hifiUrl = new URL(urlString);
 			uc = hifiUrl.openConnection();
+			
+			setupConnection(uc);
+			
 		} catch (IOException e2) {
 			e2.printStackTrace();
+			setChanged();
+			notifyObservers("URL_error");
 		}
-		
-		// Setup connection
-		uc.setUseCaches(false);
-		uc.setDefaultUseCaches(false);
-		uc.setReadTimeout(10000);
-		uc.setConnectTimeout(10000);
 		
 		return uc;
 	}
 	
 	
+	private void setupConnection(URLConnection uc) {
+		uc.setUseCaches(false);
+		uc.setDefaultUseCaches(false);
+		uc.setReadTimeout(10000);
+		uc.setConnectTimeout(10000);
+	}
+
+
 	public boolean checkIsAnyReplacementPresent(String serverResponse) {
 		if(serverResponse.contains(Utils.SUCCESS_RESPONSE)) {
+			setChanged();
+			notifyObservers("Equiv_found");
 			setServerBlocked(false);
 			return true;
 		}
 		else if(serverResponse.contains(Utils.BLOCKED_BY_SERVER_RESPONSE)) {
-//			printInfo("Serwer zablokowal polaczenie. Nie mozna pobrac danych.", Color.RED);
+			setChanged();
+			notifyObservers("Blocked");
 //			printInfo("Ponowna proba polaczenia nastapi za " + millisToMinutes(Utils.reconnect_time) + " minut", Color.RED);
 			setServerBlocked(true);
 		}
 		else{
+			setChanged();
+			notifyObservers("Equiv_not_found");
 			setServerBlocked(false);
 		}
 		
@@ -145,4 +165,13 @@ public class ServerConnectionHandler {
 	private void setServerBlocked(boolean isAppBlockedByServer) {
 		isServerBlocked = isAppBlockedByServer;
 	}
+	
+	
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
+    }
+    
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        pcs.removePropertyChangeListener(listener);
+    }
 }
