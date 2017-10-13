@@ -7,6 +7,7 @@ import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 
 import controllers.FiltersCheckingManager;
 import models.Filter;
@@ -18,7 +19,7 @@ public class StartScreen extends JPanel {
 	private JButton startProcessingButton;
 	
 	/* Prepare StartScreen JPanel */
-	public StartScreen() {
+	public StartScreen(JTabbedPane tabsPanel) {
 		super(new BorderLayout());
 		JPanel mainPanel = new JPanel(new GridLayout(1, 3));
 		
@@ -36,7 +37,7 @@ public class StartScreen extends JPanel {
 		startProcessingButton.addActionListener(buttonClicked -> {
 			setButtonsEnabled(false);
 			
-			FiltersCheckingManager filterDataChecker = new FiltersCheckingManager(filtersListModel);
+			FiltersCheckingManager filterDataChecker = new FiltersCheckingManager(filtersListModel, tabsPanel, infoTextPane);
 			filterDataChecker.startProcessing();
 			
 			setButtonsEnabled(true);
