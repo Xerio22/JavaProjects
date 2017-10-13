@@ -2,14 +2,15 @@ package filterscheckers;
 
 import java.util.Observer;
 
+import connectionhandlers.ServerConnectionHandler;
 import models.Filter;
 import models.FilterEquivalents;
 
 public abstract class FilterChecker {
 	private ServerConnectionHandler serverConnectionHandler;
 	
-	public FilterChecker(String serverRawUrlString){
-		serverConnectionHandler = new ServerConnectionHandler(serverRawUrlString);
+	public FilterChecker(ServerConnectionHandler serverConnectionHandler){
+		this.serverConnectionHandler = serverConnectionHandler;
 	}
 
 	public FilterEquivalents getEquivalentsFor(Filter filter) {
