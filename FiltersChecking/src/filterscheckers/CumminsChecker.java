@@ -7,7 +7,7 @@ public class CumminsChecker extends FilterChecker {
 	public static final String SERVER_URL_STRING = "_FILTERNAME_";
 	
 	public CumminsChecker() {
-		super(SERVER_URL_STRING);
+		super(SERVER_URL_STRING, null);
 	}
 
 	@Override

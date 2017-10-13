@@ -3,6 +3,7 @@ package filterscheckers;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import controllers.MyObserver;
 import models.Brand;
 import models.FilterEquivalents;
 
@@ -11,8 +12,8 @@ public class HifiChecker extends FilterChecker {
 	private static final String SERVER_URL_STRING = "https://hifi-filter.com/en/catalog/_FILTERNAME_-recherche-equivalence.html";
 	private static final Brand brand = Brand.HIFI;
 	
-	public HifiChecker() {
-		super(SERVER_URL_STRING);
+	public HifiChecker(MyObserver obs) {
+		super(SERVER_URL_STRING, obs);
 	}
 
 	@Override

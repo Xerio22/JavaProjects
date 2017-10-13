@@ -7,7 +7,7 @@ public class WixChecker extends FilterChecker {
 	public static final String SERVER_URL_STRING = "_FILTERNAME_";
 	
 	public WixChecker() {
-		super(SERVER_URL_STRING);
+		super(SERVER_URL_STRING, null);
 	}
 
 	@Override
