@@ -25,7 +25,7 @@ public class StartScreen extends JPanel {
 		
 		FiltersListModel filtersListModel = new FiltersListModel();
 		JList<Filter> filtersList = new JList<>(filtersListModel);
-		JScrollPane filtersListScroll = new JScrollPane(filtersList);
+		JScrollPane filtersListScroll = new JScrollPane(filtersList, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
 		filtersAddingPanel = new FiltersListManagementView(filtersList);
 		
