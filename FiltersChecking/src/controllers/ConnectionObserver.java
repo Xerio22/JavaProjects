@@ -13,13 +13,13 @@ import connectionhandlers.ServerConnectionHandler;
 import models.Filter;
 import views.ConnectionInformationView;
 
-public class MyObserver implements Observer {
+public class ConnectionObserver implements Observer {
 
 	private ListModel<Filter> filtersListModel;
 	private JTabbedPane tabsPanel;
 	private ConnectionInformationView infoView;
 
-	public MyObserver(ListModel<Filter> filtersListModel, JTabbedPane tabsPanel, ConnectionInformationView infoView) {
+	public ConnectionObserver(ListModel<Filter> filtersListModel, JTabbedPane tabsPanel, ConnectionInformationView infoView) {
 		this.filtersListModel = filtersListModel;
 		this.tabsPanel = tabsPanel;
 		this.infoView = infoView;
