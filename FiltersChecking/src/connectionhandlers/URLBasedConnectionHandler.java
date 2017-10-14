@@ -142,12 +142,6 @@ public class URLBasedConnectionHandler extends ServerConnectionHandler {
 	}
 
 
-	public static ServerConnectionHandler createConnectionHandlerByType(String handlerType) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
 	public void setUrlString(String serverRawUrlString) {
 		this.serverUrlString = serverRawUrlString;
 	}
