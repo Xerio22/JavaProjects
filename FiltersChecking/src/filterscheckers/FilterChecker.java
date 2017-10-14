@@ -44,7 +44,7 @@ public abstract class FilterChecker extends Observable {
 			return this.parseServerResponseAndGetEquivalents(serverResponse);
 		}
 		else{
-			// TODO notify new filter checker observer and inform about lack of replacements 
+			// TODO notify new filter checker observer and inform about lack of replacements  
 			return null;
 		}
 	}
