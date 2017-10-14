@@ -6,11 +6,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
-import utils.Utils;
-
 public class URLBasedConnectionHandler extends ServerConnectionHandler {
 
-	private boolean isServerBlocked = false;
 	private String serverUrlString;
 	
 	
@@ -19,17 +16,19 @@ public class URLBasedConnectionHandler extends ServerConnectionHandler {
 	}
 
 	
-	public void insertFilterNameIntoUrlString(String filterName) {
-		serverUrlString = serverUrlString.replaceAll("_FILTERNAME_", filterName);
+	public void supplyFilterOEMnumber(String filterName) {
+		insertFilterNameIntoUrlString(filterName);
 	}
 
 	
+	private void insertFilterNameIntoUrlString(String filterName) {
+		serverUrlString = serverUrlString.replaceAll("_FILTERNAME_", filterName);
+	}
+
+
 	public String getServerResponse() {
 		
-		// Create URL and open connection
-		URLConnection uc = createURLConnectionFromString(serverUrlString);
-			
-		BufferedReader br = tryToGetBufferedReader(uc);
+		BufferedReader br = createConnectionAndOpenStream();
 		
 		String serverResponse = getResponseFromServerAndGetRidOfTabs(br);
 		
@@ -39,28 +38,36 @@ public class URLBasedConnectionHandler extends ServerConnectionHandler {
 	}
 	
 	
+	private BufferedReader createConnectionAndOpenStream() {
+		// Create URL and open connection
+		URLConnection uc = createURLConnectionFromString(serverUrlString);
+			
+		BufferedReader br = tryToGetBufferedReader(uc);
+		
+		return br;
+	}
+
+
 	private BufferedReader tryToGetBufferedReader(URLConnection uc) {
 		BufferedReader br = null;
 		
 		try{
-			setChanged();
-			notifyObservers("Connecting");
+			notifyObserverAboutChange(ServerConnectionHandler.CONNECTING_MESSAGE);
 			br = new BufferedReader(new InputStreamReader(uc.getInputStream(), "UTF-8"));
 
-			setChanged();
-			notifyObservers("Connected");
+			notifyObserverAboutChange(ServerConnectionHandler.CONNECTED_MESSAGE);
 		}
 		catch(Exception e){
 			while(br == null){
-				setChanged();
-				notifyObservers("Reconnect");
+				notifyObserverAboutChange(ServerConnectionHandler.RECONNECT_MESSAGE);
+				
 				br = reconnect(br, uc);
 			}
 		}
 		return br;
 	}
-	
-	
+
+
 	private BufferedReader reconnect(BufferedReader br, URLConnection uc) {
 		try {
 			Thread.sleep(10000);
@@ -120,8 +127,7 @@ public class URLBasedConnectionHandler extends ServerConnectionHandler {
 			
 		} catch (IOException e2) {
 			e2.printStackTrace();
-			setChanged();
-			notifyObservers("URL_error");
+			notifyObserverAboutChange("URL_error");
 		}
 		
 		return uc;
@@ -135,34 +141,6 @@ public class URLBasedConnectionHandler extends ServerConnectionHandler {
 		uc.setConnectTimeout(10000);
 	}
 
-	// TODO ACTIONS TO PERFORM ARE IN PLANS FILE
-	public boolean checkIsAnyReplacementPresent(String serverResponse) {
-		if(serverResponse.contains(Utils.SUCCESS_RESPONSE)) {
-			setChanged();
-			notifyObservers("Equiv_found");
-			setServerBlocked(false);
-			return true;
-		}
-		else if(serverResponse.contains(Utils.BLOCKED_BY_SERVER_RESPONSE)) {
-			setChanged();
-			notifyObservers("Blocked");
-//			printInfo("Ponowna proba polaczenia nastapi za " + millisToMinutes(Utils.reconnect_time) + " minut", Color.RED);
-			setServerBlocked(true);
-		}
-		else{
-			setChanged();
-			notifyObservers("Equiv_not_found");
-			setServerBlocked(false);
-		}
-		
-		return false;
-	}
-	
-	
-	private void setServerBlocked(boolean isAppBlockedByServer) {
-		isServerBlocked = isAppBlockedByServer;
-	}
-
 
 	public static ServerConnectionHandler createConnectionHandlerByType(String handlerType) {
 		// TODO Auto-generated method stub
@@ -172,6 +150,11 @@ public class URLBasedConnectionHandler extends ServerConnectionHandler {
 
 	public void setUrlString(String serverRawUrlString) {
 		this.serverUrlString = serverRawUrlString;
-		
+	}
+	
+	
+	private void notifyObserverAboutChange(String reconnectMessage) {
+		setChanged();
+		notifyObservers(reconnectMessage);
 	}
 }
