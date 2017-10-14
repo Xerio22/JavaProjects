@@ -16,11 +16,11 @@ import views.ConnectionInformationView;
 
 public class FiltersCheckingManager {
 	private ListModel<Filter> filtersListModel;
-	private MyObserver obs;
+	private ConnectionObserver connectionObserver;
 	
 	public FiltersCheckingManager(ListModel<Filter> filtersListModel, JTabbedPane tabsPanel, ConnectionInformationView infoView) {
 		this.filtersListModel = filtersListModel;
-		this.obs = new MyObserver(filtersListModel, tabsPanel, infoView);
+		this.connectionObserver = new ConnectionObserver(filtersListModel, tabsPanel, infoView);
 	}
 	
 	
@@ -62,7 +62,7 @@ public class FiltersCheckingManager {
 	private void findFilterEquivalentsFromEveryServer(Filter filter) {
 		for(FilterChecker checker : Utils.getFiltersCheckers()) {
 			
-			checker.putObserver(obs);
+			checker.putObserver(connectionObserver);
 			
 			// TODO this try catch is only for testing purposes
 			try{
