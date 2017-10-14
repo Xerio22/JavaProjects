@@ -3,7 +3,7 @@ package connectionhandlers;
 public class JSBasedConnectionHandler extends ServerConnectionHandler {
 
 	@Override
-	public void insertFilterNameIntoUrlString(String searchedFilterOEMnumber) {
+	public void supplyFilterOEMnumber(String searchedFilterOEMnumber) {
 		// TODO Auto-generated method stub
 
 	}
@@ -13,11 +13,4 @@ public class JSBasedConnectionHandler extends ServerConnectionHandler {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public boolean checkIsAnyReplacementPresent(String serverResponse) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }
