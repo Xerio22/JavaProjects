@@ -3,10 +3,11 @@ package connectionhandlers;
 import java.util.Observable;
 
 public abstract class ServerConnectionHandler extends Observable {
-
-	public abstract void insertFilterNameIntoUrlString(String searchedFilterOEMnumber);
-
-	public abstract String getServerResponse() ;
-
-	public abstract boolean checkIsAnyReplacementPresent(String serverResponse) ;
+	public static final String RECONNECT_MESSAGE = "Reconnect";
+	public static final String CONNECTING_MESSAGE = "Connecting";
+	public static final String CONNECTED_MESSAGE = "Connected";
+	
+	public abstract void supplyFilterOEMnumber(String searchedFilterOEMnumber);
+	
+	public abstract String getServerResponse();
 }
