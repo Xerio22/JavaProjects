@@ -34,10 +34,6 @@ public class Utils {
     // PROPERTIES NAMES
     public final static String filtr_wf = "filtr_wf";
     public final static String obcy_skrot = "obcy_skrot";
-    
-    // CONTENTS OF HTTP RESPONSES
-	public static final String SUCCESS_RESPONSE = "<h2>The result of your request for filter";
-	public static final String BLOCKED_BY_SERVER_RESPONSE = "<h2>Merci de patienter ...</h2>";
 
 	public static final String default_input_path = "zamienniki_wf.xml";
 
