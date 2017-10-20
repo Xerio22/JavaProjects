@@ -15,6 +15,7 @@ import javax.swing.event.ListDataListener;
 
 import controllers.EnablingButtonOnListChangeListener;
 import controllers.FiltersCheckingManager;
+import controllers.FiltersCheckingObserver;
 import models.Filter;
 import models.FiltersListModel;
 
@@ -22,7 +23,7 @@ public class StartScreen extends JPanel {
 	private static final long serialVersionUID = 5710757420934143060L;
 	private JTabbedPane tabsPanel;
 	private FiltersListManagementView filtersListManagementPanel;
-	private JButton startProcessingButton;
+	private JButton startProcessingButton = new JButton("Szukaj");
 	private FiltersListModel filtersListModel;
 	private JList<Filter> filtersList;
 	private ConnectionInformationView infoTextPane;
@@ -73,15 +74,19 @@ public class StartScreen extends JPanel {
 	
 	
 	private void createAndConfigureStartProcessingButton() {
-		startProcessingButton = new JButton("Szukaj");
 		startProcessingButton.setEnabled(false);
 		
 		startProcessingButton.addActionListener(buttonClicked -> {
 			setButtonsEnabled(false);
+			try{
+			FiltersCheckingManager filterDataChecker = new FiltersCheckingManager(filtersListModel, infoTextPane);
+			filterDataChecker.addObserver(new FiltersCheckingObserver(filtersList, tabsPanel));
 			
-			FiltersCheckingManager filterDataChecker = new FiltersCheckingManager(filtersListModel, tabsPanel, infoTextPane);
 			filterDataChecker.startProcessing();
-			
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
 			setButtonsEnabled(true);
 		});
 	}
@@ -89,6 +94,8 @@ public class StartScreen extends JPanel {
 
 	private void setButtonsEnabled(boolean isEnabled){
 		startProcessingButton.setEnabled(isEnabled);
+		// buttons disable properly but in result of swing worker 
+		// and processing in background they instantly are enabled
 		filtersListManagementPanel.setButtonsEnabled(isEnabled);
 	}
 	
