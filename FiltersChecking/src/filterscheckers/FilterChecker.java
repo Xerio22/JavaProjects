@@ -32,6 +32,9 @@ public abstract class FilterChecker extends Observable {
 		
 		FilterEquivalents fe = findEquivalentsOnServer();
 		
+		// TODO notifying ConnectionObserver about change (about end of getting equivalents) we can use getCheckerName method in observer to check which checker ended
+		notifyCheckerUpdate(this);
+		
 		return fe;
 	}
 	
@@ -43,9 +46,8 @@ public abstract class FilterChecker extends Observable {
 		if(isAnyReplacementPresentInServerResponse(serverResponse)){
 			return this.parseServerResponseAndGetEquivalents(serverResponse);
 		}
-		else{
-			// TODO notify new filter checker observer and inform about lack of replacements  
-			return null;
+		else{ 
+			return new FilterEquivalents();
 		}
 	}
 
@@ -83,5 +85,11 @@ public abstract class FilterChecker extends Observable {
 	}
 	
 	
+	private void notifyCheckerUpdate(FilterChecker checker) {
+		setChanged();
+		notifyObservers(checker);
+	}
+	
 	protected abstract FilterEquivalents parseServerResponseAndGetEquivalents(String serverResponse);
+	protected abstract String getCheckerName();
 }
