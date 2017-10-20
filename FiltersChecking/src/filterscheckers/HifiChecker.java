@@ -8,7 +8,7 @@ import connectionhandlers.URLBasedConnectionHandler;
 import models.FilterEquivalents;
 
 public class HifiChecker extends FilterChecker {
-
+	private static final String CHECKER_NAME = "HIFI";
 	private static final String SERVER_URL_STRING = "https://hifi-filter.com/en/catalog/_FILTERNAME_-recherche-equivalence.html";
 	private static final String SUCCESS_RESPONSE = "<h2>The result of your request for filter";
 	private static final String BLOCKED_BY_SERVER_RESPONSE = "<h2>Merci de patienter ...</h2>";
@@ -66,5 +66,10 @@ public class HifiChecker extends FilterChecker {
 		}
 		
 		return equivalentsForThisOem;
+	}
+
+	@Override
+	protected String getCheckerName() {
+		return CHECKER_NAME;
 	}
 }
