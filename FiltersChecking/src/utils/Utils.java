@@ -42,9 +42,9 @@ public class Utils {
 	public static int numberOfIterationsBefereSaving = 50;
 
 	public static final FilterChecker[] checkers = {
-		new HifiChecker(), 
-		new DonaldsonChecker(), 
-		new BaldwinChecker()
+		new HifiChecker() 
+//		new DonaldsonChecker(), 
+//		new BaldwinChecker()
 	};
 
 	public static final String DEFAULT_OEM_NAME = "Default";
