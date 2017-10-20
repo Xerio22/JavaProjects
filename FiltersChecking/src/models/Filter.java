@@ -74,11 +74,9 @@ public class Filter {
 	}
 	
 	
-	public void addEquivalentsIfTheyExist(FilterEquivalents equivalents) {
-		if(equivalents != null){
-			for(Filter equivalent : equivalents.getEquivalents()) {
-				this.addEquivalent(equivalent);
-			}
+	public void addEquivalents(FilterEquivalents equivalents) {
+		for(Filter equivalent : equivalents.getEquivalents()) {
+			this.addEquivalent(equivalent);
 		}
 	}
 	
