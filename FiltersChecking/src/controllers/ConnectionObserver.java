@@ -16,17 +16,15 @@ import views.ConnectionInformationView;
 public class ConnectionObserver implements Observer {
 
 	private ListModel<Filter> filtersListModel;
-	private JTabbedPane tabsPanel;
 	private ConnectionInformationView infoView;
 
-	public ConnectionObserver(ListModel<Filter> filtersListModel, JTabbedPane tabsPanel, ConnectionInformationView infoView) {
+	public ConnectionObserver(ListModel<Filter> filtersListModel, ConnectionInformationView infoView) {
 		this.filtersListModel = filtersListModel;
-		this.tabsPanel = tabsPanel;
 		this.infoView = infoView;
 	}
 
 	@Override
-	public void update(Observable o, Object arg) {
+	public void update(Observable observable, Object arg) {
 		String message = getMessage(arg);
 		
 		switch(message){
@@ -68,7 +66,6 @@ public class ConnectionObserver implements Observer {
 
 	private void printConnectedInfo() {
 		infoView.printInfo("Connected");
-		tabsPanel.addTab("new", new JPanel());
 	}
 
 	private void printBlockedInfo() {
