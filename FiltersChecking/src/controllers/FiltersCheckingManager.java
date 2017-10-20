@@ -1,11 +1,9 @@
 package controllers;
 
 import java.util.List;
-
-import javax.swing.JTabbedPane;
+import java.util.Observable;
 import javax.swing.ListModel;
 import javax.swing.SwingWorker;
-
 import filterscheckers.FilterChecker;
 import filtersreaders.FiltersReader;
 import filtersreaders.FiltersReaderFromListModel;
@@ -14,27 +12,23 @@ import models.FilterEquivalents;
 import utils.Utils;
 import views.ConnectionInformationView;
 
-public class FiltersCheckingManager {
-	private ListModel<Filter> filtersListModel;
+public class FiltersCheckingManager extends Observable {
 	private ConnectionObserver connectionObserver;
+	private FiltersReader filtersReader;
 	
-	public FiltersCheckingManager(ListModel<Filter> filtersListModel, JTabbedPane tabsPanel, ConnectionInformationView infoView) {
-		this.filtersListModel = filtersListModel;
-		this.connectionObserver = new ConnectionObserver(filtersListModel, tabsPanel, infoView);
+	public FiltersCheckingManager(ListModel<Filter> filtersListModel, ConnectionInformationView infoView) {
+		/* Create FilterReader */
+		filtersReader = new FiltersReaderFromListModel(filtersListModel);	
+		
+		/* Prepare Observer for connections */
+		this.connectionObserver = new ConnectionObserver(filtersListModel, infoView);
 	}
 	
 	
 	public void startProcessing() {
-		List<Filter> filtersFromInput = getFiltersFromInput();
+		List<Filter> filtersFromInput = filtersReader.getFiltersAsList();
 		
 		runBackgroundChecking(filtersFromInput);
-	}
-
-	
-	private List<Filter> getFiltersFromInput() {
-		FiltersReader filtersReader = new FiltersReaderFromListModel(filtersListModel);	
-		
-		return filtersReader.getFiltersAsList();
 	}
 	
 	
@@ -55,10 +49,17 @@ public class FiltersCheckingManager {
 		for(Filter filter : filtersFromInput) {
 			// TODO every operation in new thread
 			findFilterEquivalentsFromEveryServer(filter);
+			notifyFilterChecked(filter);
 		}
 	}
 
 
+	private void notifyFilterChecked(Filter filter) {
+		setChanged();
+		notifyObservers(filter);
+	}
+
+	
 	private void findFilterEquivalentsFromEveryServer(Filter filter) {
 		for(FilterChecker checker : Utils.getFiltersCheckers()) {
 			
@@ -67,12 +68,11 @@ public class FiltersCheckingManager {
 			// TODO this try catch is only for testing purposes
 			try{
 				FilterEquivalents newEquivalents = checker.getEquivalentsFor(filter);
-				filter.addEquivalentsIfTheyExist(newEquivalents);
+				filter.addEquivalents(newEquivalents);
 			}
 			catch(Exception e){
 				e.printStackTrace();
 			}
-			
 		}		
 	}
 }
