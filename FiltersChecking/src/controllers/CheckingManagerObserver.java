@@ -30,8 +30,6 @@ public class CheckingManagerObserver implements Observer {
 		
 		switch(manager.getState()){
 			case FiltersCheckingManager.STATE_FILTER_CHECKED:
-				// TODO if it would be need for having a message I can create special 
-				// class CheckedFilter containing checked filter and attached messages 
 				addNewTabWithCheckedFilterData((Filter) filter);
 				removeCheckedFilterFromList();
 			break;
@@ -40,9 +38,8 @@ public class CheckingManagerObserver implements Observer {
 				filtersListManagementPanel.setButtonsToInitState();
 			break;
 		}
-		
-
 	}
+	
 	
 	private void addNewTabWithCheckedFilterData(Filter filter) {
 		Filter checkedFilter = filter;
@@ -51,7 +48,7 @@ public class CheckingManagerObserver implements Observer {
 
 	
 	private void addCloseableTabToTabsPanel(String title, CheckedFilterTab checkedFilterTab) {
-		tabsPanel.addTab(null, checkedFilterTab);
+		tabsPanel.addTab(title, checkedFilterTab);
 		TabTitle tabTitle = new TabTitle(title, tabsPanel);
 		tabsPanel.setTabComponentAt(tabsPanel.getTabCount()-1, tabTitle);
 	}
