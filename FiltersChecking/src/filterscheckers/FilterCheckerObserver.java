@@ -8,6 +8,7 @@ import javax.swing.ListModel;
 
 import connectionhandlers.ServerConnectionHandler;
 import models.Filter;
+import models.ObjectWithMessage;
 import views.ConnectionInformationView;
 
 public class FilterCheckerObserver implements Observer {
@@ -22,7 +23,12 @@ public class FilterCheckerObserver implements Observer {
 
 	@Override
 	public void update(Observable observable, Object arg) {
-		String message = getMessage(arg);
+		FilterChecker checker = (FilterChecker) observable;
+		ObjectWithMessage<Filter> owm = (ObjectWithMessage<Filter>) arg;
+		String message = owm.getMessage();
+		Filter filter = owm.getObj();
+		
+		printSummary(checker, filter);
 		
 		switch(message){
 		case FilterChecker.BLOCKED_BY_SERVER_MESSAGE:
@@ -37,20 +43,29 @@ public class FilterCheckerObserver implements Observer {
 		}
 	}
 
+	private void printSummary(FilterChecker checker, Filter filter) {
+		printLine("Wyszukiwarka: " + checker.getCheckerName());
+		printLine("Numer filtra: " + filter.getOemNumber());
+		print("Wynik wyszukiwania: ");
+	}
+
+	private void printLine(String msg) {
+		infoView.printInfoLine(msg);
+	}
+
+	private void print(String msg) {
+		infoView.printInfo(msg);
+	}
+	
 	private void printEquivNotFound() {
-		infoView.printInfo("Equivalent not found");
+		infoView.printInfoLine("Equivalent not found");
 	}
 
 	private void printEquivFound() {
-		infoView.printInfo("Equivalent found");
+		infoView.printInfoLine("Equivalent found");
 	}
 
 	private void printBlockedInfo() {
 		infoView.printInfo("Serwer zablokowal polaczenie. Nie mozna pobrac danych.", Color.RED);
 	}
-
-	private String getMessage(Object arg) {
-		return (String) arg;
-	}
-
 }
