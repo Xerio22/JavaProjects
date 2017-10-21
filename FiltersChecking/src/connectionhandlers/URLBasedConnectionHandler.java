@@ -127,7 +127,7 @@ public class URLBasedConnectionHandler extends ServerConnectionHandler {
 			
 		} catch (IOException e2) {
 			e2.printStackTrace();
-			notifyObserverAboutChange("URL_error");
+			notifyObserverAboutChange(ServerConnectionHandler.URL_ERROR);
 		}
 		
 		return uc;
