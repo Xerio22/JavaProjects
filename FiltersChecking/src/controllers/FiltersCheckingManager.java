@@ -19,16 +19,19 @@ public class FiltersCheckingManager extends Observable {
 	private ConnectionObserver connectionObserver;
 	private FilterCheckerObserver filterCheckerObserver;
 	private FiltersReader filtersReader;
+	private String state;
+	public static final String STATE_FINISHED_CHECKING = "checking_finished";
+	public static final String STATE_FILTER_CHECKED = "filter_checked";
 	
 	public FiltersCheckingManager(ListModel<Filter> filtersListModel, ConnectionInformationView infoView) {
 		/* Create FilterReader */
 		filtersReader = new FiltersReaderFromListModel(filtersListModel);	
 		
 		/* Prepare Observer for connections */
-		this.connectionObserver = new ConnectionObserver(filtersListModel, infoView);
+		this.connectionObserver = new ConnectionObserver(infoView);
 		
 		/* Prepare Observer for checkers */
-		this.filterCheckerObserver = new FilterCheckerObserver(filtersListModel, infoView);
+		this.filterCheckerObserver = new FilterCheckerObserver(infoView);
 	}
 	
 	
@@ -56,20 +59,37 @@ public class FiltersCheckingManager extends Observable {
 		for(Filter filter : filtersFromInput) {
 			// TODO every operation in new thread
 			findFilterEquivalentsFromEveryServer(filter);
+			
 			notifyFilterChecked(filter);
 		}
+		
+		notifyFinishChecking();
 	}
 
 
 	private void notifyFilterChecked(Filter filter) {
+		setState(STATE_FILTER_CHECKED);
 		setChanged();
 		notifyObservers(filter);
 	}
 
 	
+	private void setState(String newState) {
+		this.state = newState;
+	}
+
+
+	private void notifyFinishChecking() {
+		setState(STATE_FINISHED_CHECKING);
+		setChanged();
+		notifyObservers();
+	}
+	
+	
 	private void findFilterEquivalentsFromEveryServer(Filter filter) {
 		for(FilterChecker checker : Utils.getFiltersCheckers()) {
 			
+			removePreviousObserversFromChecker(checker);
 			putObserversToChecker(checker);
 			
 			// TODO this try catch is only for testing purposes
@@ -84,9 +104,19 @@ public class FiltersCheckingManager extends Observable {
 	}
 
 
+	private void removePreviousObserversFromChecker(FilterChecker checker) {
+		checker.removeAttachedObservers();
+	}
+
+
 	private void putObserversToChecker(FilterChecker checker) {
 		checker.putObserverForFilterChecker(filterCheckerObserver);
 		checker.putObserverForConnection(connectionObserver);
+	}
+
+
+	public String getState() {
+		return state;
 	}
 }
 
