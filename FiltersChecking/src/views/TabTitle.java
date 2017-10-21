@@ -15,8 +15,10 @@ import javax.swing.event.ChangeListener;
 public class TabTitle extends JPanel{
 	private static final long serialVersionUID = 8100956171144306740L;
 	private JButton closeButton;
+	private String title;
 	
 	public TabTitle(String title, JTabbedPane tabbedPane) {
+		this.title = title;
 		JLabel titleLabel = new JLabel(title);
 		titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
 		
@@ -41,9 +43,10 @@ public class TabTitle extends JPanel{
 		});
 		
 		closeButton.addActionListener(buttonClicked -> {
-			int selected = tabbedPane.getSelectedIndex();
-	        if (selected != -1) {
-	            tabbedPane.removeTabAt(selected);
+			int index = tabbedPane.indexOfTab(title);
+			
+	        if (index != -1) {
+	            tabbedPane.removeTabAt(index);
 //	            ((JButton)buttonClicked.getSource()).removeActionListener(null);
 	        }
 		});
