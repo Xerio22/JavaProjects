@@ -37,22 +37,22 @@ public class ConnectionObserver implements Observer {
 		case ServerConnectionHandler.RECONNECT_MESSAGE:
 			printReconnectInfo();
 			break;
-		case "URL_error":
+		case ServerConnectionHandler.URL_ERROR:
 			printURLerror();
 			break;
 		}
 	}
 
 	private void printURLerror() {
-		infoView.printInfo("Something went wrong with URL");
+		infoView.printInfoLine("Something went wrong with URL");
 	}
 
 	private void printConnectedInfo() {
-		infoView.printInfo("Connected");
+		infoView.printInfoLine("Connected");
 	}
 
 	private void printConnectingInfo() {
-		infoView.printInfo("Connecting");
+		infoView.printInfoLine("Connecting");
 	}
 
 	private void printReconnectInfo() {
