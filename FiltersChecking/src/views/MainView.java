@@ -26,9 +26,12 @@ public class MainView {
 		JPanel startingScreen = new StartScreen(tabsPanel);
 		
 		
-		/* Add first tab with starting panel */ 
+		/* Add first tab with starting panel */
+		tabsPanel.addTab(" ", null);
+		tabsPanel.setEnabledAt(0, false);
+		tabsPanel.setTabComponentAt(0, new CloseAllButtonTab(tabsPanel));
 		tabsPanel.addTab("Start", startingScreen);
-		
+		tabsPanel.setSelectedIndex(1);
 
 		/* Put everything into "the mainest" panel */
 		everythingPanel.add(tabsPanel);
