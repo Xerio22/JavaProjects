@@ -3,10 +3,12 @@ package views;
 import java.awt.BorderLayout;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import models.Filter;
+import models.FilterProperty;
 
 public class CheckedFilterTab extends JPanel {
 	private static final long serialVersionUID = 7159948324475908470L;
@@ -20,11 +22,26 @@ public class CheckedFilterTab extends JPanel {
 
 	private void createTabGui() {
 		JTable table = new JTable();
-		DefaultTableModel dtm = new DefaultTableModel(new String[]{"col1", "col2"}, 1);
+		String[] tableHeaders = new String[]{
+			"Property name", 
+			"Property value"
+		};
+		
+		DefaultTableModel dtm = new DefaultTableModel(tableHeaders, 0);
 		table.setModel(dtm);
+		Object[] row = new Object[tableHeaders.length];
+		
+		for(FilterProperty fp : checkedFilter.getProperties()){
+			
+			row[0] = fp.getPropertyName();
+			row[1] = fp.getPropertyValue();
+			dtm.addRow(row);
+		}
+		
+		
 		
 		this.setLayout(new BorderLayout());
-		this.add(table);
+		this.add(new JScrollPane(table));
 	}
 
 }
