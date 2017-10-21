@@ -15,7 +15,7 @@ import javax.swing.event.ListDataListener;
 
 import controllers.EnablingButtonOnListChangeListener;
 import controllers.FiltersCheckingManager;
-import controllers.FiltersCheckingObserver;
+import controllers.CheckingManagerObserver;
 import models.Filter;
 import models.FiltersListModel;
 
@@ -80,7 +80,7 @@ public class StartScreen extends JPanel {
 			setButtonsEnabled(false);
 			try{
 			FiltersCheckingManager filterDataChecker = new FiltersCheckingManager(filtersListModel, infoTextPane);
-			filterDataChecker.addObserver(new FiltersCheckingObserver(filtersList, tabsPanel));
+			filterDataChecker.addObserver(new CheckingManagerObserver(filtersList, tabsPanel));
 			
 			filterDataChecker.startProcessing();
 			}
