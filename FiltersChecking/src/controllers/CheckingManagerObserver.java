@@ -5,35 +5,57 @@ import java.util.Observer;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import models.Filter;
 import views.CheckedFilterTab;
+import views.FiltersListManagementView;
+import views.TabTitle;
 
 public class CheckingManagerObserver implements Observer {
 
 	private JTabbedPane tabsPanel;
 	private JList<Filter> filtersList;
+	private FiltersListManagementView filtersListManagementPanel;
 
-	public CheckingManagerObserver(JList<Filter> filtersList, JTabbedPane tabsPanel) {
+	public CheckingManagerObserver(JList<Filter> filtersList, JTabbedPane tabsPanel, FiltersListManagementView filtersListManagementPanel) {
 		this.filtersList = filtersList;
 		this.tabsPanel = tabsPanel;
+		this.filtersListManagementPanel = filtersListManagementPanel;
 	}
 
 	@Override
 	public void update(Observable observable, Object filter) {
-		// TODO if it would be need for having a message I can create special class CheckedFilter containing checked filter and attached messages 
-		addNewTabWithCheckedFilterData((Filter) filter);
-		removeCheckedFilterFromList();
+		FiltersCheckingManager manager = (FiltersCheckingManager) observable;
+		
+		switch(manager.getState()){
+			case FiltersCheckingManager.STATE_FILTER_CHECKED:
+				// TODO if it would be need for having a message I can create special 
+				// class CheckedFilter containing checked filter and attached messages 
+				addNewTabWithCheckedFilterData((Filter) filter);
+				removeCheckedFilterFromList();
+			break;
+			
+			case FiltersCheckingManager.STATE_FINISHED_CHECKING:
+				filtersListManagementPanel.setButtonsToInitState();
+			break;
+		}
+		
+
 	}
 	
 	private void addNewTabWithCheckedFilterData(Filter filter) {
 		Filter checkedFilter = filter;
-		tabsPanel.addTab(checkedFilter.getOemNumber(), new CheckedFilterTab(checkedFilter));
+		addCloseableTabToTabsPanel(checkedFilter.getOemNumber(), new CheckedFilterTab(checkedFilter));
 	}
 
 	
+	private void addCloseableTabToTabsPanel(String title, CheckedFilterTab checkedFilterTab) {
+		tabsPanel.addTab(null, checkedFilterTab);
+		TabTitle tabTitle = new TabTitle(title, tabsPanel);
+		tabsPanel.setTabComponentAt(tabsPanel.getTabCount()-1, tabTitle);
+	}
+
 	private void removeCheckedFilterFromList() {
 		DefaultListModel<Filter> listModel = (DefaultListModel<Filter>) filtersList.getModel();
 		listModel.removeElementAt(0);
