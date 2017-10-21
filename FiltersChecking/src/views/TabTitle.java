@@ -8,6 +8,7 @@ import javax.swing.ButtonModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -15,7 +16,7 @@ public class TabTitle extends JPanel{
 	private static final long serialVersionUID = 8100956171144306740L;
 	private JButton closeButton;
 	
-	public TabTitle(String title, MyTabbedPane tabbedPane) {
+	public TabTitle(String title, JTabbedPane tabbedPane) {
 		JLabel titleLabel = new JLabel(title);
 		titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
 		
@@ -53,10 +54,5 @@ public class TabTitle extends JPanel{
 		this.setOpaque(false);
 		this.add(titleLabel,BorderLayout.CENTER);
 		this.add(closeButton,BorderLayout.EAST);
-	}
-	
-	public void setBackgroundColor(Color c){
-		this.setBackground(c);
-		closeButton.setBackground(c);
 	}
 }
