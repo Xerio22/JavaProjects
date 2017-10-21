@@ -9,8 +9,9 @@ import java.net.URLConnection;
 public class URLBasedConnectionHandler extends ServerConnectionHandler {
 
 	private String serverUrlString;
-	
-	
+	private String currentUrlString;
+
+
 	public URLBasedConnectionHandler(String serverUrlString) {
 		this.serverUrlString = serverUrlString;
 	}
@@ -22,7 +23,7 @@ public class URLBasedConnectionHandler extends ServerConnectionHandler {
 
 	
 	private void insertFilterNameIntoUrlString(String filterName) {
-		serverUrlString = serverUrlString.replaceAll("_FILTERNAME_", filterName);
+		currentUrlString = serverUrlString.replaceAll("_FILTERNAME_", filterName);
 	}
 
 
@@ -40,7 +41,7 @@ public class URLBasedConnectionHandler extends ServerConnectionHandler {
 	
 	private BufferedReader createConnectionAndOpenStream() {
 		// Create URL and open connection
-		URLConnection uc = createURLConnectionFromString(serverUrlString);
+		URLConnection uc = createURLConnectionFromString(currentUrlString);
 			
 		BufferedReader br = tryToGetBufferedReader(uc);
 		
@@ -72,7 +73,7 @@ public class URLBasedConnectionHandler extends ServerConnectionHandler {
 		try {
 			Thread.sleep(10000);
 			
-			uc = createURLConnectionFromString(serverUrlString);
+			uc = createURLConnectionFromString(currentUrlString);
 			br = new BufferedReader(new InputStreamReader(uc.getInputStream(), "UTF-8"));
 			
 		} catch (InterruptedException e1) {
@@ -139,11 +140,6 @@ public class URLBasedConnectionHandler extends ServerConnectionHandler {
 		uc.setDefaultUseCaches(false);
 		uc.setReadTimeout(10000);
 		uc.setConnectTimeout(10000);
-	}
-
-
-	public void setUrlString(String serverRawUrlString) {
-		this.serverUrlString = serverRawUrlString;
 	}
 	
 	
