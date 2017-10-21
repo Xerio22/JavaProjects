@@ -53,13 +53,13 @@ public abstract class FilterChecker extends Observable {
 
 	
 	public boolean isAnyReplacementPresentInServerResponse(String serverResponse) {
-		if(serverResponse.contains(successResponse)) {
+		if(isEquivalentFound(serverResponse)) {
 			setChanged();
 			notifyObservers(EQUIVALENT_FOUND_MESSAGE);
 			setServerBlocked(false);
 			return true;
 		}
-		else if(serverResponse.contains(blockedByServerResponse)) {
+		else if(isIPBlockedByServer(serverResponse)) {
 			setChanged();
 			notifyObservers(BLOCKED_BY_SERVER_MESSAGE);
 //			printInfo("Ponowna proba polaczenia nastapi za " + millisToMinutes(Utils.reconnect_time) + " minut", Color.RED);
@@ -75,13 +75,28 @@ public abstract class FilterChecker extends Observable {
 	}
 	
 	
+	private boolean isEquivalentFound(String serverResponse) {
+		return serverResponse.contains(successResponse);
+	}
+
+	
+	private boolean isIPBlockedByServer(String serverResponse) {
+		return serverResponse.contains(blockedByServerResponse);
+	}
+	
+
 	private void setServerBlocked(boolean isAppBlockedByServer) {
 		isServerBlocked = isAppBlockedByServer;
 	}
 	
 	
-	public void putObserver(Observer obs){
+	public void putObserverForConnection(Observer obs){
 		serverConnectionHandler.addObserver(obs);
+	}
+	
+	
+	public void putObserverForFilterChecker(Observer obs){
+		this.addObserver(obs);
 	}
 	
 	
