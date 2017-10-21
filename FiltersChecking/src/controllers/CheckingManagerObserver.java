@@ -11,12 +11,12 @@ import javax.swing.JTabbedPane;
 import models.Filter;
 import views.CheckedFilterTab;
 
-public class FiltersCheckingObserver implements Observer {
+public class CheckingManagerObserver implements Observer {
 
 	private JTabbedPane tabsPanel;
 	private JList<Filter> filtersList;
 
-	public FiltersCheckingObserver(JList<Filter> filtersList, JTabbedPane tabsPanel) {
+	public CheckingManagerObserver(JList<Filter> filtersList, JTabbedPane tabsPanel) {
 		this.filtersList = filtersList;
 		this.tabsPanel = tabsPanel;
 	}
