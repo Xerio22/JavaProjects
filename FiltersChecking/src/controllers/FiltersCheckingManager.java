@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.Observable;
 import javax.swing.ListModel;
 import javax.swing.SwingWorker;
+
+import connectionhandlers.ConnectionObserver;
 import filterscheckers.FilterChecker;
+import filterscheckers.FilterCheckerObserver;
 import filtersreaders.FiltersReader;
 import filtersreaders.FiltersReaderFromListModel;
 import models.Filter;
@@ -14,6 +17,7 @@ import views.ConnectionInformationView;
 
 public class FiltersCheckingManager extends Observable {
 	private ConnectionObserver connectionObserver;
+	private FilterCheckerObserver filterCheckerObserver;
 	private FiltersReader filtersReader;
 	
 	public FiltersCheckingManager(ListModel<Filter> filtersListModel, ConnectionInformationView infoView) {
@@ -22,6 +26,9 @@ public class FiltersCheckingManager extends Observable {
 		
 		/* Prepare Observer for connections */
 		this.connectionObserver = new ConnectionObserver(filtersListModel, infoView);
+		
+		/* Prepare Observer for checkers */
+		this.filterCheckerObserver = new FilterCheckerObserver(filtersListModel, infoView);
 	}
 	
 	
@@ -63,10 +70,10 @@ public class FiltersCheckingManager extends Observable {
 	private void findFilterEquivalentsFromEveryServer(Filter filter) {
 		for(FilterChecker checker : Utils.getFiltersCheckers()) {
 			
-			checker.putObserver(connectionObserver);
+			putObserversToChecker(checker);
 			
 			// TODO this try catch is only for testing purposes
-			try{
+			try{	
 				FilterEquivalents newEquivalents = checker.getEquivalentsFor(filter);
 				filter.addEquivalents(newEquivalents);
 			}
@@ -74,6 +81,12 @@ public class FiltersCheckingManager extends Observable {
 				e.printStackTrace();
 			}
 		}		
+	}
+
+
+	private void putObserversToChecker(FilterChecker checker) {
+		checker.putObserverForFilterChecker(filterCheckerObserver);
+		checker.putObserverForConnection(connectionObserver);
 	}
 }
 
