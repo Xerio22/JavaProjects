@@ -30,10 +30,25 @@ public class ConnectionInformationView extends JTextPane {
 		this.setMargin(new Insets(5, 5, 5, 5));
 	}
 	
-	public void printInfo(String info) {
+	public void printInfoLine(String info) {
 		try {
 			infoDoc.insertString(infoDoc.getLength(), info, infoStyle);
 			infoDoc.insertString(infoDoc.getLength(), "\n", infoStyle);
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		} 
+	}
+	
+	public void printInfoLine(String info, Color color) {
+        StyleConstants.setForeground(infoStyle, color);
+        this.printInfoLine(info);
+        StyleConstants.setForeground(infoStyle, Color.BLACK);
+	}
+	
+	
+	public void printInfo(String info) {
+		try {
+			infoDoc.insertString(infoDoc.getLength(), info, infoStyle);
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		} 
