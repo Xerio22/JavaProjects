@@ -1,14 +1,21 @@
 package views;
 
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
+import controllers.CheckingManagerObserver;
+import controllers.EnablingButtonsOnListChangeListener;
+import controllers.FiltersCheckingManager;
 import models.Filter;
 import models.FiltersListModel;
 
@@ -23,11 +30,16 @@ public class FiltersListManagementView extends JPanel {
 	private JTextField filterOEM = new JTextField(15);
 	private JLabel filterOEMnumberLabel = new JLabel("OEM number: "); 
 	private JTextField filterOEMnumber = new JTextField(15);
+	private JButton startProcessingButton = new JButton("Szukaj");
+
+	private JPanel inputsPanel;
+	private ConnectionInformationView infoTextPane;
+	private JTabbedPane tabsPanel;
 	
-	private JPanel everythingPanel;
-	
-	public FiltersListManagementView(JList<Filter> filtersList) {
+	public FiltersListManagementView(JList<Filter> filtersList, ConnectionInformationView infoTextPane, JTabbedPane tabsPanel) {
 		this.filtersList = filtersList;
+		this.infoTextPane = infoTextPane;
+		this.tabsPanel = tabsPanel;
 		this.filtersListModel = (FiltersListModel) filtersList.getModel();
 		
 		addActionListeners();
@@ -36,22 +48,54 @@ public class FiltersListManagementView extends JPanel {
 	
 	
 	private void addActionListeners() {
+		addActionListenersToButtons();
+		
+		filtersListModel.addListDataListener(
+				new EnablingButtonsOnListChangeListener(
+						filtersList, 
+						new ArrayList<>(Arrays.asList(startProcessingButton, removeFilterFromList))
+				)
+		);
+	}
+	
+
+	private void addActionListenersToButtons() {
 		addActLsnForAddBtn();
 		addActLsnForRmvBtn();
+		addActLsnForStartProcessingButton();
 	}
 
-	
+
 	private void addActLsnForAddBtn() {
 		addFilterToList.addActionListener(buttonClicked -> {
 			String brandName = getBrandName();
 			String OEMnumber = getOemNumber();
+			clearInputFields();
 			
 			Filter newFilter = Filter.createFilterUsingBrandNameAndOEMnumber(brandName, OEMnumber);
 			
 			filtersListModel.addElement(newFilter);
+			
+			filterOEM.requestFocus();
 		});
 	}
 
+
+	private String getBrandName() {
+		return filterOEM.getText();
+	}
+	
+	
+	private String getOemNumber() {
+		return filterOEMnumber.getText();
+	}
+
+	
+	private void clearInputFields() {
+		filterOEM.setText("");
+		filterOEMnumber.setText("");
+	}
+	
 	
 	private void addActLsnForRmvBtn() {
 		removeFilterFromList.addActionListener(buttonClicked -> {
@@ -65,27 +109,42 @@ public class FiltersListManagementView extends JPanel {
 		filtersListModel.remove(selectedIndex);
 	}
 
-
-	private String getBrandName() {
-		return filterOEM.getText();
-	}
 	
-	
-	private String getOemNumber() {
-		return filterOEMnumber.getText();
+	private void addActLsnForStartProcessingButton() {
+		setButtonsToInitState();
+		
+		startProcessingButton.addActionListener(buttonClicked -> {
+			setButtonsEnabled(false);
+			try{
+				FiltersCheckingManager filterDataChecker = new FiltersCheckingManager(filtersListModel, infoTextPane);
+				filterDataChecker.addObserver(new CheckingManagerObserver(filtersList, tabsPanel, this));
+				
+				filterDataChecker.startProcessing();
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+			
+		});
 	}
 	
 	
 	private void arrangePanel() {
-		everythingPanel = new JPanel(new GridLayout(2,1));
+		this.setLayout(new GridLayout(2, 1));
 		
-		addComponentsToEverythingPanel();
+		JPanel northInputsPanel = new JPanel();
+		addComponentsToInputPanel();
+		northInputsPanel.add(inputsPanel);
 		
-		this.add(everythingPanel);
+		JPanel southButtonPanel = new JPanel(new BorderLayout());
+		southButtonPanel.add(startProcessingButton, BorderLayout.SOUTH);
+		
+		this.add(northInputsPanel);
+		this.add(southButtonPanel);
 	}
 
 	
-	private void addComponentsToEverythingPanel() {
+	private void addComponentsToInputPanel() {
 		addInputComponentsToPanel();
 		addButtonsToPanel();
 	}
@@ -106,7 +165,8 @@ public class FiltersListManagementView extends JPanel {
 		inputs.add(fieldsLabelsPanel);
 		inputs.add(textFieldsPanel);
 		
-		everythingPanel.add(inputs);
+		inputsPanel = new JPanel(new GridLayout(2,1));
+		inputsPanel.add(inputs);
 	}
 	
 	
@@ -116,12 +176,26 @@ public class FiltersListManagementView extends JPanel {
 		buttonsPanel.add(addFilterToList);
 		buttonsPanel.add(removeFilterFromList);
 		
-		everythingPanel.add(buttonsPanel);
+		inputsPanel.add(buttonsPanel);
 	}
 	
 	
 	public void setButtonsEnabled(boolean isEnabled){
 		this.addFilterToList.setEnabled(isEnabled);
 		this.removeFilterFromList.setEnabled(isEnabled);
+		this.startProcessingButton.setEnabled(isEnabled);
+	}
+
+
+	public void disableButtonsOnInit() {
+		this.removeFilterFromList.setEnabled(false);
+		this.startProcessingButton.setEnabled(false);
+	}
+
+
+	public void setButtonsToInitState() {
+		this.addFilterToList.setEnabled(true);
+		this.removeFilterFromList.setEnabled(false);
+		this.startProcessingButton.setEnabled(false);
 	}
 }
