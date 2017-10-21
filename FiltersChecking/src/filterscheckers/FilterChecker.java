@@ -6,17 +6,18 @@ import java.util.Observer;
 import connectionhandlers.ServerConnectionHandler;
 import models.Filter;
 import models.FilterEquivalents;
-import models.ObjectWithMessage;
 
 public abstract class FilterChecker extends Observable {
-	public static final String EQUIVALENT_FOUND_MESSAGE = "Equiv_found";
-	public static final String EQUIVALENT_NOT_FOUND_MESSAGE = "Equiv_not_found";
-	public static final String BLOCKED_BY_SERVER_MESSAGE = "Blocked";
+	public static final String STATE_EQUIVALENT_FOUND = "Equiv_found";
+	public static final String STATE_EQUIVALENT_NOT_FOUND = "Equiv_not_found";
+	public static final String STATE_BLOCKED_BY_SERVER = "Blocked";
 	
 	private boolean isServerBlocked = false;
 	private String successResponse;
 	private String blockedByServerResponse;
 	private ServerConnectionHandler serverConnectionHandler;
+	private String state;
+	private Filter filter;
 	
 	
 	public FilterChecker(ServerConnectionHandler serverConnectionHandler, String successResponse, String blockedByServerResponse){
@@ -27,6 +28,7 @@ public abstract class FilterChecker extends Observable {
 
 	
 	public FilterEquivalents getEquivalentsFor(Filter filter) {
+		this.filter = filter;
 		String searchedFilterOEMnumber = filter.getOemNumber();
 		
 		serverConnectionHandler.supplyFilterOEMnumber(searchedFilterOEMnumber);
@@ -35,8 +37,7 @@ public abstract class FilterChecker extends Observable {
 		
 		// TODO notifying FilterCheckerObserver about change (about end of getting equivalents) 
 		// we can use getCheckerName method in observer to check which checker ended
-		ObjectWithMessage<Filter> owm = new ObjectWithMessage<>(filter, "up");
-		notifyCheckerUpdate(owm);
+		notifyCheckerUpdate();
 		
 		return fe;
 	}
@@ -57,20 +58,17 @@ public abstract class FilterChecker extends Observable {
 	
 	public boolean isAnyReplacementPresentInServerResponse(String serverResponse) {
 		if(isEquivalentFound(serverResponse)) {
-			setChanged();
-			notifyObservers(EQUIVALENT_FOUND_MESSAGE);
+			setState(STATE_EQUIVALENT_FOUND);
 			setServerBlocked(false);
 			return true;
 		}
 		else if(isIPBlockedByServer(serverResponse)) {
-			setChanged();
-			notifyObservers(BLOCKED_BY_SERVER_MESSAGE);
+			setState(STATE_BLOCKED_BY_SERVER);
 //			printInfo("Ponowna proba polaczenia nastapi za " + millisToMinutes(Utils.reconnect_time) + " minut", Color.RED);
 			setServerBlocked(true);
 		}
 		else{
-			setChanged();
-			notifyObservers(EQUIVALENT_NOT_FOUND_MESSAGE);
+			setState(STATE_EQUIVALENT_NOT_FOUND);
 			setServerBlocked(false);
 		}
 		
@@ -78,6 +76,11 @@ public abstract class FilterChecker extends Observable {
 	}
 	
 	
+	private void setState(String state) {
+		this.state = state;
+	}
+
+
 	private boolean isEquivalentFound(String serverResponse) {
 		return serverResponse.contains(successResponse);
 	}
@@ -103,9 +106,24 @@ public abstract class FilterChecker extends Observable {
 	}
 	
 	
-	private void notifyCheckerUpdate(ObjectWithMessage<?> owm) {
+	private void notifyCheckerUpdate() {
 		setChanged();
-		notifyObservers(owm);
+		notifyObservers();
+	}
+	
+	
+	public void removeAttachedObservers() {
+		this.deleteObservers();
+		serverConnectionHandler.deleteObservers();
+	}
+	
+	
+	public String getState() {
+		return state;
+	}
+	
+	public Filter getFilter() {
+		return filter;
 	}
 	
 	protected abstract FilterEquivalents parseServerResponseAndGetEquivalents(String serverResponse);
