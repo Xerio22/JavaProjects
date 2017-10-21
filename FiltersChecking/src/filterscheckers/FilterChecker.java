@@ -6,6 +6,7 @@ import java.util.Observer;
 import connectionhandlers.ServerConnectionHandler;
 import models.Filter;
 import models.FilterEquivalents;
+import models.ObjectWithMessage;
 
 public abstract class FilterChecker extends Observable {
 	public static final String EQUIVALENT_FOUND_MESSAGE = "Equiv_found";
@@ -32,8 +33,10 @@ public abstract class FilterChecker extends Observable {
 		
 		FilterEquivalents fe = findEquivalentsOnServer();
 		
-		// TODO notifying ConnectionObserver about change (about end of getting equivalents) we can use getCheckerName method in observer to check which checker ended
-		notifyCheckerUpdate(this);
+		// TODO notifying FilterCheckerObserver about change (about end of getting equivalents) 
+		// we can use getCheckerName method in observer to check which checker ended
+		ObjectWithMessage<Filter> owm = new ObjectWithMessage<>(filter, "up");
+		notifyCheckerUpdate(owm);
 		
 		return fe;
 	}
@@ -100,9 +103,9 @@ public abstract class FilterChecker extends Observable {
 	}
 	
 	
-	private void notifyCheckerUpdate(FilterChecker checker) {
+	private void notifyCheckerUpdate(ObjectWithMessage<?> owm) {
 		setChanged();
-		notifyObservers(checker);
+		notifyObservers(owm);
 	}
 	
 	protected abstract FilterEquivalents parseServerResponseAndGetEquivalents(String serverResponse);
