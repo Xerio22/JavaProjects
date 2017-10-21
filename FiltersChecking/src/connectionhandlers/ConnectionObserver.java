@@ -1,4 +1,4 @@
-package controllers;
+package connectionhandlers;
 
 import java.awt.Color;
 import java.util.Observable;
@@ -9,7 +9,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
 import javax.swing.ListModel;
 
-import connectionhandlers.ServerConnectionHandler;
+import filterscheckers.FilterChecker;
 import models.Filter;
 import views.ConnectionInformationView;
 
@@ -28,26 +28,17 @@ public class ConnectionObserver implements Observer {
 		String message = getMessage(arg);
 		
 		switch(message){
-		case "Connecting":
+		case ServerConnectionHandler.CONNECTING_MESSAGE:
 			printConnectingInfo();
 			break;
-		case "Connected":
+		case ServerConnectionHandler.CONNECTED_MESSAGE:
 			printConnectedInfo();
 			break;
-		case "Reconnect":
+		case ServerConnectionHandler.RECONNECT_MESSAGE:
 			printReconnectInfo();
-			break;
-		case "Blocked":
-			printBlockedInfo();
 			break;
 		case "URL_error":
 			printURLerror();
-			break;
-		case "Equiv_found":
-			printEquivFound();
-			break;
-		case "Equiv_not_found":
-			printEquivNotFound();
 			break;
 		}
 	}
@@ -56,20 +47,8 @@ public class ConnectionObserver implements Observer {
 		infoView.printInfo("Something went wrong with URL");
 	}
 
-	private void printEquivNotFound() {
-		infoView.printInfo("Equivalent not found");
-	}
-
-	private void printEquivFound() {
-		infoView.printInfo("Equivalent found");
-	}
-
 	private void printConnectedInfo() {
 		infoView.printInfo("Connected");
-	}
-
-	private void printBlockedInfo() {
-		infoView.printInfo("Serwer zablokowal polaczenie. Nie mozna pobrac danych.", Color.RED);
 	}
 
 	private void printConnectingInfo() {
