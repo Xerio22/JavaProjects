@@ -4,40 +4,33 @@ import java.awt.Color;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.ListModel;
-
-import connectionhandlers.ServerConnectionHandler;
 import models.Filter;
-import models.ObjectWithMessage;
 import views.ConnectionInformationView;
 
 public class FilterCheckerObserver implements Observer {
 
-	private ListModel<Filter> filtersListModel;
 	private ConnectionInformationView infoView;
 
-	public FilterCheckerObserver(ListModel<Filter> filtersListModel, ConnectionInformationView infoView) {
-		this.filtersListModel = filtersListModel;
+	public FilterCheckerObserver(ConnectionInformationView infoView) {
 		this.infoView = infoView;
 	}
 
 	@Override
 	public void update(Observable observable, Object arg) {
 		FilterChecker checker = (FilterChecker) observable;
-		ObjectWithMessage<Filter> owm = (ObjectWithMessage<Filter>) arg;
-		String message = owm.getMessage();
-		Filter filter = owm.getObj();
+		String state = checker.getState();
+		Filter filter = checker.getFilter();
 		
 		printSummary(checker, filter);
 		
-		switch(message){
-		case FilterChecker.BLOCKED_BY_SERVER_MESSAGE:
+		switch(state){
+		case FilterChecker.STATE_BLOCKED_BY_SERVER:
 			printBlockedInfo();
 			break;
-		case FilterChecker.EQUIVALENT_FOUND_MESSAGE:
+		case FilterChecker.STATE_EQUIVALENT_FOUND:
 			printEquivFound();
 			break;
-		case FilterChecker.EQUIVALENT_NOT_FOUND_MESSAGE:
+		case FilterChecker.STATE_EQUIVALENT_NOT_FOUND:
 			printEquivNotFound();
 			break;
 		}
@@ -62,7 +55,7 @@ public class FilterCheckerObserver implements Observer {
 	}
 
 	private void printEquivFound() {
-		infoView.printInfoLine("Equivalent found");
+		infoView.printInfoLine("Equivalent found", Color.GREEN);
 	}
 
 	private void printBlockedInfo() {
