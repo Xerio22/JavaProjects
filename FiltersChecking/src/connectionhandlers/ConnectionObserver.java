@@ -4,22 +4,13 @@ import java.awt.Color;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextPane;
-import javax.swing.ListModel;
-
-import filterscheckers.FilterChecker;
-import models.Filter;
 import views.ConnectionInformationView;
 
 public class ConnectionObserver implements Observer {
 
-	private ListModel<Filter> filtersListModel;
 	private ConnectionInformationView infoView;
 
-	public ConnectionObserver(ListModel<Filter> filtersListModel, ConnectionInformationView infoView) {
-		this.filtersListModel = filtersListModel;
+	public ConnectionObserver(ConnectionInformationView infoView) {
 		this.infoView = infoView;
 	}
 
