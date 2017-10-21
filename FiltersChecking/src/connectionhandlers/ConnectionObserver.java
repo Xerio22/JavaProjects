@@ -1,6 +1,7 @@
 package connectionhandlers;
 
 import java.awt.Color;
+import java.time.LocalTime;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -47,7 +48,7 @@ public class ConnectionObserver implements Observer {
 	}
 
 	private void printReconnectInfo() {
-		infoView.printInfo("Przekroczono limit czasu polaczenia z serwerem!", Color.ORANGE);
+		infoView.printInfo("(" + LocalTime.now() + ") Przekroczono limit czasu polaczenia z serwerem!", Color.ORANGE);
 		infoView.printInfo("Proba ponownego nawiazania polaczenia nastapi za 10 sekund...", Color.ORANGE);
 	}
 
