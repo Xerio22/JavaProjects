@@ -15,17 +15,17 @@ import models.FilterEquivalents;
 import utils.Utils;
 import views.ConnectionInformationView;
 
-public class FiltersCheckingManager extends Observable {
+public class FiltersCheckingManager extends Observable implements Runnable{
 	private ConnectionObserver connectionObserver;
 	private FilterCheckerObserver filterCheckerObserver;
 	private FiltersReader filtersReader;
 	private String state;
 	public static final String STATE_FINISHED_CHECKING = "checking_finished";
 	public static final String STATE_FILTER_CHECKED = "filter_checked";
-	
-	public FiltersCheckingManager(ListModel<Filter> filtersListModel, ConnectionInformationView infoView) {
+	List<Filter> filtersFromInput;Thread t;
+	public FiltersCheckingManager(FiltersReader filtersReader, ConnectionInformationView infoView) {
 		/* Create FilterReader */
-		filtersReader = new FiltersReaderFromListModel(filtersListModel);	
+		this.filtersReader = filtersReader;	
 		
 		/* Prepare Observer for connections */
 		this.connectionObserver = new ConnectionObserver(infoView);
@@ -36,22 +36,16 @@ public class FiltersCheckingManager extends Observable {
 	
 	
 	public void startProcessing() {
-		List<Filter> filtersFromInput = filtersReader.getFiltersAsList();
+		this.filtersFromInput = filtersReader.getFiltersAsList();
 		
-		runBackgroundChecking(filtersFromInput);
+		t = new Thread(this);
+		t.start();
 	}
 	
 	
-	private void runBackgroundChecking(List<Filter> filtersFromInput) {
-		SwingWorker<Void, Void> myWorker = new SwingWorker<Void, Void>() {
-		    @Override
-		    protected Void doInBackground() {
-				runFiltersChecking(filtersFromInput);
-				return null;
-		    }
-		};
-		
-		myWorker.execute();
+	@Override
+	public void run() {
+		runFiltersChecking(filtersFromInput);
 	}
 	
 
@@ -67,6 +61,28 @@ public class FiltersCheckingManager extends Observable {
 	}
 
 
+	private void findFilterEquivalentsFromEveryServer(Filter filter) {
+		for(FilterChecker checker : Utils.getFiltersCheckers()) {
+			
+			removePreviousObserversFromChecker(checker);
+			putObserversToChecker(checker);
+			
+			// TODO this try catch is only for testing purposes
+			try{	
+				FilterEquivalents newEquivalents = checker.getEquivalentsFor(filter);
+				if(checker.getState().equals(FilterChecker.STATE_BAD_OEM_TAG)){
+					t.interrupt();
+					t.stop();
+				}
+				filter.addEquivalents(newEquivalents);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		}		
+	}
+	
+	
 	private void notifyFilterChecked(Filter filter) {
 		setState(STATE_FILTER_CHECKED);
 		setChanged();
@@ -84,24 +100,6 @@ public class FiltersCheckingManager extends Observable {
 		setChanged();
 		notifyObservers();
 	}
-	
-	
-	private void findFilterEquivalentsFromEveryServer(Filter filter) {
-		for(FilterChecker checker : Utils.getFiltersCheckers()) {
-			
-			removePreviousObserversFromChecker(checker);
-			putObserversToChecker(checker);
-			
-			// TODO this try catch is only for testing purposes
-			try{	
-				FilterEquivalents newEquivalents = checker.getEquivalentsFor(filter);
-				filter.addEquivalents(newEquivalents);
-			}
-			catch(Exception e){
-				e.printStackTrace();
-			}
-		}		
-	}
 
 
 	private void removePreviousObserversFromChecker(FilterChecker checker) {
@@ -118,5 +116,8 @@ public class FiltersCheckingManager extends Observable {
 	public String getState() {
 		return state;
 	}
+
+
+	
 }
 
