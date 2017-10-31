@@ -17,6 +17,8 @@ public class DonaldsonChecker extends FilterChecker {
 
 	@Override
 	protected FilterEquivalents parseServerResponseAndGetEquivalents(String serverResponse) {
+		
+		
 		return null;
 	}
 	
