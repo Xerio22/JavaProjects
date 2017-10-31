@@ -13,15 +13,26 @@ import utils.Utils;
 
 public class Filter {
 	private List<FilterProperty> filterProperties = new ArrayList<>();
+	private String oemNumberTagName = "OEM_Number";
 
-	private Filter(String brandName, String OEMnumber){
-		this.addProperty("Brand", brandName);
-		this.addProperty("OEM_Number", OEMnumber);
+	private Filter(String OEMnumber){
+		this.addProperty(oemNumberTagName, OEMnumber);
 	}
+	
+	public static Filter createFilterUsingOEMnumber(String OEMnumber) {
+		return new Filter(OEMnumber);
+	}
+	
 	
 	public static Filter createFilterUsingBrandNameAndOEMnumber(String brandName, String OEMnumber) {
 		return new Filter(brandName, OEMnumber);
 	}
+	
+	private Filter(String brandName, String OEMnumber){
+		this(OEMnumber);
+		this.addProperty("Brand", brandName);
+	}
+	
 	
 	private Filter(Filter filter){
 		for (FilterProperty prop : filter.filterProperties) {
@@ -35,7 +46,9 @@ public class Filter {
 	}
 	
 	
-	private Filter(Element zamiennik) {
+	private Filter(Element zamiennik, String oemNumberTagName) {
+		this.oemNumberTagName = oemNumberTagName;
+		
 		NodeList zamiennikPropertiesList = zamiennik.getChildNodes();
 
 		for (int j = 0; j < zamiennikPropertiesList.getLength(); j++) {
@@ -50,8 +63,8 @@ public class Filter {
 		}
 	}
 	
-	public static Filter createFilterFromXmlElement(Element zamiennik) {
-		return new Filter(zamiennik);
+	public static Filter createFilterFromXmlElement(Element zamiennik, String oemNumberTagName) {
+		return new Filter(zamiennik, oemNumberTagName);
 	}
 	
 	
@@ -149,7 +162,7 @@ public class Filter {
 	}
 
 	public String getOemNumber() {
-		return this.getPropertyValueByName(Utils.OEM_NUMBER_TAG_NAME);
+		return this.getPropertyValueByName(oemNumberTagName);//Utils.OEM_NUMBER_TAG_NAME);
 	}
 }
 
