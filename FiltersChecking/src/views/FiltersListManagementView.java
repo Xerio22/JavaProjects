@@ -3,6 +3,7 @@ package views;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -12,12 +13,21 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 import controllers.CheckingManagerObserver;
 import controllers.EnablingButtonsOnListChangeListener;
 import controllers.FiltersCheckingManager;
+import filtersreaders.FiltersReader;
+import filtersreaders.FiltersReaderFromListModel;
+import filtersreaders.FiltersReaderFromTxt;
+import filtersreaders.FiltersReaderFromXml;
+import utils.XmlTxtFilter;
 import models.Filter;
 import models.FiltersListModel;
+import utils.FileLoader;
+import utils.Utils;
+import utils.XmlStructureProvider;
 
 public class FiltersListManagementView extends JPanel {
 	private static final long serialVersionUID = -5756954534235195566L;
@@ -26,11 +36,13 @@ public class FiltersListManagementView extends JPanel {
 	private FiltersListModel filtersListModel;
 	private JButton addFilterToList = new JButton("Dodaj");
 	private JButton removeFilterFromList = new JButton("Usuń");
+	private JButton readFiltersFromFile = new JButton("Wczytaj z pliku");
 	private JLabel filterOEMLabel = new JLabel("Brand name (OEM): "); 
 	private JTextField filterOEM = new JTextField(15);
 	private JLabel filterOEMnumberLabel = new JLabel("OEM number: "); 
 	private JTextField filterOEMnumber = new JTextField(15);
 	private JButton startProcessingButton = new JButton("Szukaj");
+	private FiltersReader filtersReaderFromFile;
 
 	private JPanel inputsPanel;
 	private ConnectionInformationView infoTextPane;
@@ -62,6 +74,7 @@ public class FiltersListManagementView extends JPanel {
 	private void addActionListenersToButtons() {
 		addActLsnForAddBtn();
 		addActLsnForRmvBtn();
+		addActLsnForReadFromFileBtn();
 		addActLsnForStartProcessingButton();
 	}
 
@@ -99,26 +112,48 @@ public class FiltersListManagementView extends JPanel {
 	
 	private void addActLsnForRmvBtn() {
 		removeFilterFromList.addActionListener(buttonClicked -> {
-			int selectedIndex = filtersList.getSelectedIndex();
-			removeFilterFromList(selectedIndex);
+			removeSelectedFilterFromList();
 		});
 	}
 
 	
-	private void removeFilterFromList(int selectedIndex) {
+	private void removeSelectedFilterFromList() {
+		int selectedIndex = filtersList.getSelectedIndex();
 		filtersListModel.remove(selectedIndex);
+	}
+	
+	
+	private void addActLsnForReadFromFileBtn() {
+		readFiltersFromFile.addActionListener(buttonClicked -> {
+			FileLoader fileLoader = new FileLoader(new XmlTxtFilter());
+			File file = fileLoader.loadFile();
+			
+			String extension = Utils.getExtension(file);
+			
+			if(extension.equals(Utils.xml)){
+				XmlStructureProvider xsp = new XmlStructureProvider();
+				xsp.getXmlStructureUsingDialog();
+				filtersReaderFromFile = new FiltersReaderFromXml(file, xsp);
+			}
+			else {
+				filtersReaderFromFile = new FiltersReaderFromTxt(file); 
+			}
+			
+			filtersListModel.addAll(filtersReaderFromFile.getFiltersAsList());
+		});
 	}
 
 	
 	private void addActLsnForStartProcessingButton() {
 		setButtonsToInitState();
 		
+		FiltersCheckingManager filterDataChecker = getProperCheckingManager();
+		filterDataChecker.addObserver(new CheckingManagerObserver(filtersList, tabsPanel, this));
+		
 		startProcessingButton.addActionListener(buttonClicked -> {
 			setButtonsEnabled(false);
+			
 			try{
-				FiltersCheckingManager filterDataChecker = new FiltersCheckingManager(filtersListModel, infoTextPane);
-				filterDataChecker.addObserver(new CheckingManagerObserver(filtersList, tabsPanel, this));
-				
 				filterDataChecker.startProcessing();
 			}
 			catch(Exception e){
@@ -129,6 +164,16 @@ public class FiltersListManagementView extends JPanel {
 	}
 	
 	
+	private FiltersCheckingManager getProperCheckingManager() {		
+		if(filtersReaderFromFile != null){
+			return new FiltersCheckingManager(filtersReaderFromFile, infoTextPane);
+		}
+		else{
+			return new FiltersCheckingManager(new FiltersReaderFromListModel(filtersListModel), infoTextPane);
+		}
+	}
+
+
 	private void arrangePanel() {
 		this.setLayout(new GridLayout(2, 1));
 		
@@ -172,9 +217,11 @@ public class FiltersListManagementView extends JPanel {
 	
 	private void addButtonsToPanel() {
 		JPanel buttonsPanel = new JPanel(new FlowLayout());
+		buttonsPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
 		
 		buttonsPanel.add(addFilterToList);
 		buttonsPanel.add(removeFilterFromList);
+		buttonsPanel.add(readFiltersFromFile);
 		
 		inputsPanel.add(buttonsPanel);
 	}
@@ -183,6 +230,7 @@ public class FiltersListManagementView extends JPanel {
 	public void setButtonsEnabled(boolean isEnabled){
 		this.addFilterToList.setEnabled(isEnabled);
 		this.removeFilterFromList.setEnabled(isEnabled);
+		this.readFiltersFromFile.setEnabled(isEnabled);
 		this.startProcessingButton.setEnabled(isEnabled);
 	}
 
@@ -196,6 +244,7 @@ public class FiltersListManagementView extends JPanel {
 	public void setButtonsToInitState() {
 		this.addFilterToList.setEnabled(true);
 		this.removeFilterFromList.setEnabled(false);
+		this.readFiltersFromFile.setEnabled(true);
 		this.startProcessingButton.setEnabled(false);
 	}
 }
