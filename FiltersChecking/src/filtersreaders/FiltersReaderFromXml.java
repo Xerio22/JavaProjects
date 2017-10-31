@@ -16,12 +16,15 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import models.Filter;
+import utils.XmlStructureProvider;
 
-public class FiltersReaderFromXml implements FiltersReader{
+public class FiltersReaderFromXml implements FiltersReader {
 	private File file;
+	private XmlStructureProvider xsp;
 	
-	public FiltersReaderFromXml(File file) {
+	public FiltersReaderFromXml(File file, XmlStructureProvider xsp) {
 		this.file = file;
+		this.xsp = xsp;
 	}
 	
 	public List<Filter> getFiltersAsList() {
@@ -40,15 +43,15 @@ public class FiltersReaderFromXml implements FiltersReader{
 			e.printStackTrace();
 		}
 		
-        NodeList zamienniki = doc.getElementsByTagName("zamiennik");
+        NodeList elements = doc.getElementsByTagName(xsp.getElementTagName());
        
-        for (int i = 0; i < zamienniki.getLength(); i++) {
-           Node zamiennikNode = zamienniki.item(i);
+        for (int i = 0; i < elements.getLength(); i++) {
+           Node elementNode = elements.item(i);
            
-           if (zamiennikNode.getNodeType() == Node.ELEMENT_NODE) {
-              Element zamiennik = (Element) zamiennikNode;
+           if (elementNode.getNodeType() == Node.ELEMENT_NODE) {
+              Element filterElement = (Element) elementNode;
               
-              Filter filterToCheck = Filter.createFilterFromXmlElement(zamiennik);
+              Filter filterToCheck = Filter.createFilterFromXmlElement(filterElement, xsp.getOemNumberTagName());
               filters.add(filterToCheck);
            }
         }
