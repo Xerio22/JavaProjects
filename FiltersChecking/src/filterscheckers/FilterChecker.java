@@ -11,6 +11,7 @@ public abstract class FilterChecker extends Observable {
 	public static final String STATE_EQUIVALENT_FOUND = "Equiv_found";
 	public static final String STATE_EQUIVALENT_NOT_FOUND = "Equiv_not_found";
 	public static final String STATE_BLOCKED_BY_SERVER = "Blocked";
+	public static final String STATE_BAD_OEM_TAG = "Bad_oem_tag";
 	
 	private boolean isServerBlocked = false;
 	private String successResponse;
@@ -31,18 +32,22 @@ public abstract class FilterChecker extends Observable {
 		this.filter = filter;
 		String searchedFilterOEMnumber = filter.getOemNumber();
 		
+		if(searchedFilterOEMnumber == null){
+			setState(STATE_BAD_OEM_TAG);
+			notifyCheckerUpdate();
+			return new FilterEquivalents();
+		}
+		
 		serverConnectionHandler.supplyFilterOEMnumber(searchedFilterOEMnumber);
 		
 		FilterEquivalents fe = findEquivalentsOnServer();
-		
-		// TODO notifying FilterCheckerObserver about change (about end of getting equivalents) 
-		// we can use getCheckerName method in observer to check which checker ended
+
 		notifyCheckerUpdate();
 		
 		return fe;
 	}
-	
-	
+
+
 	private FilterEquivalents findEquivalentsOnServer() {
 		// TODO maybe put serverResponse as a field and access in checkers by using getter?
 		String serverResponse = serverConnectionHandler.getServerResponse();
