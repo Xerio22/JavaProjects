@@ -33,25 +33,20 @@ public class FilterCheckerObserver implements Observer {
 		case FilterChecker.STATE_EQUIVALENT_NOT_FOUND:
 			printEquivNotFound();
 			break;
+		case FilterChecker.STATE_BAD_OEM_TAG:
+			printBadOemTag();
+			break;
 		}
 	}
 
 	private void printSummary(FilterChecker checker, Filter filter) {
-		printLine("Wyszukiwarka: " + checker.getCheckerName());
-		printLine("Numer filtra: " + filter.getOemNumber());
-		print("Wynik wyszukiwania: ");
-	}
-
-	private void printLine(String msg) {
-		infoView.printInfoLine(msg);
-	}
-
-	private void print(String msg) {
-		infoView.printInfo(msg);
+		infoView.printInfoLine("Wyszukiwarka: " + checker.getCheckerName());
+		infoView.printInfoLine("Numer filtra: " + filter.getOemNumber());
+		infoView.printInfo("Wynik wyszukiwania: ");
 	}
 	
 	private void printEquivNotFound() {
-		infoView.printInfoLine("Equivalent not found");
+		infoView.printInfoLine("Equivalent not found", Color.RED);
 	}
 
 	private void printEquivFound() {
@@ -59,6 +54,10 @@ public class FilterCheckerObserver implements Observer {
 	}
 
 	private void printBlockedInfo() {
-		infoView.printInfo("Serwer zablokowal polaczenie. Nie mozna pobrac danych.", Color.RED);
+		infoView.printInfoLine("Serwer zablokowal polaczenie. Nie mozna pobrac danych.", Color.RED);
+	}
+	
+	private void printBadOemTag() {
+		infoView.printInfoLine("Podano nieprawidlowy znacznik xml dla numerow oem", Color.RED);
 	}
 }
