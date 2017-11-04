@@ -132,5 +132,5 @@ public abstract class FilterChecker extends Observable {
 	}
 	
 	protected abstract FilterEquivalents parseServerResponseAndGetEquivalents(String serverResponse);
-	protected abstract String getCheckerName();
+	public abstract String getCheckerName();
 }
