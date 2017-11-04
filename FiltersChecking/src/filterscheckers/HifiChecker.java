@@ -29,7 +29,7 @@ public class HifiChecker extends FilterChecker {
 				+ "<tbody>"
 				+ "(<tr class=\"product-line img\">"
 				+ "<td>([a-zA-Z_0-9 -\\./\\\\]+)</td>"
-				+ "<td>([a-zA-Z_0-9 -\\./\\(\\)=]+)</td>"
+				+ "<td>([a-zA-Z_0-9 -\\./\\(\\)=&]+)</td>"
 				+ "<td>([a-zA-Z_0-9 -]+)</td>"
 				+ "<td>.*</td>"
 				+ "</tr>)+</tbody></table>");
@@ -47,7 +47,7 @@ public class HifiChecker extends FilterChecker {
 			Pattern pp = Pattern.compile(
 					"<tr class=\"product-line img\">"
 					+ "<td>([[a-z][A-Z][_][0-9][ ][-][\\.][/][\\\\]]+)</td>"
-					+ "<td>([[a-z][A-Z][_][0-9][ ][-][\\.][/][\\(][\\)][=]]+)</td>"
+					+ "<td>([[a-z][A-Z][_][0-9][ ][-][\\.][/][\\(][\\)][=][&]]+)</td>"
 					+ "<td>([[a-z][A-Z][_][0-9][ ][-]]+)</td>"
 					+ "<td><a href=.*?></a></td>"
 					+ "</tr>");
@@ -59,7 +59,7 @@ public class HifiChecker extends FilterChecker {
 				equivalentBrand = mm.group(2); // TODO mozna zastapic brand.name()
 				equivalentNumber = mm.group(3);
 
-				equivalentsForThisOem.createAndAddEquivalent(searchResultOEM, equivalentBrand, equivalentNumber, propIdx);
+				equivalentsForThisOem.createAndAddEquivalent(getCheckerName(), searchResultOEM, equivalentBrand, equivalentNumber, propIdx);
 				
 				propIdx++;
 			}
