@@ -89,7 +89,7 @@ public class FiltersListManagementView extends JPanel {
 			
 			filtersListModel.addElement(newFilter);
 			
-			filterOEM.requestFocus();
+			filterOEMnumber.requestFocus();
 		});
 	}
 
