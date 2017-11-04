@@ -8,12 +8,10 @@ import java.net.URLConnection;
 
 public class URLBasedConnectionHandler extends ServerConnectionHandler {
 
-	private String serverUrlString;
 	private String currentUrlString;
 
-
 	public URLBasedConnectionHandler(String serverUrlString) {
-		this.serverUrlString = serverUrlString;
+		super(serverUrlString);
 	}
 
 	
@@ -23,7 +21,7 @@ public class URLBasedConnectionHandler extends ServerConnectionHandler {
 
 	
 	private void insertFilterNameIntoUrlString(String filterName) {
-		currentUrlString = serverUrlString.replaceAll("_FILTERNAME_", filterName);
+		currentUrlString = super.getServerUrlString().replaceAll("_FILTERNAME_", filterName);
 	}
 
 
