@@ -1,4 +1,4 @@
-package controllers;
+package observers;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -7,6 +7,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JTabbedPane;
 
+import controllers.FiltersCheckingManager;
 import models.Filter;
 import views.CheckedFilterTab;
 import views.FiltersListManagementView;

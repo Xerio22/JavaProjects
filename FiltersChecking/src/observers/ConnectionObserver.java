@@ -1,10 +1,11 @@
-package connectionhandlers;
+package observers;
 
 import java.awt.Color;
 import java.time.LocalTime;
 import java.util.Observable;
 import java.util.Observer;
 
+import connectionhandlers.ServerConnectionHandler;
 import views.ConnectionInformationView;
 
 public class ConnectionObserver implements Observer {

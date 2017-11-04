@@ -1,9 +1,10 @@
-package filterscheckers;
+package observers;
 
 import java.awt.Color;
 import java.util.Observable;
 import java.util.Observer;
 
+import filterscheckers.FilterChecker;
 import models.Filter;
 import views.ConnectionInformationView;
 
