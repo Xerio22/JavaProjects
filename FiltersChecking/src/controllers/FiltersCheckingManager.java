@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Observable;
 import javax.swing.SwingWorker;
 
-import connectionhandlers.ConnectionObserver;
 import filterscheckers.FilterChecker;
-import filterscheckers.FilterCheckerObserver;
 import filtersreaders.FiltersReader;
 import models.Filter;
 import models.FilterEquivalents;
+import observers.ConnectionObserver;
+import observers.FilterCheckerObserver;
 import utils.Utils;
 import views.ConnectionInformationView;
 

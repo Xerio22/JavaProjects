@@ -15,7 +15,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import controllers.CheckingManagerObserver;
 import controllers.EnablingButtonsOnListChangeListener;
 import controllers.FiltersCheckingManager;
 import filtersreaders.FiltersReader;
@@ -25,6 +24,7 @@ import filtersreaders.FiltersReaderFromXml;
 import utils.XmlTxtFilter;
 import models.Filter;
 import models.FiltersListModel;
+import observers.CheckingManagerObserver;
 import utils.FileLoader;
 import utils.Utils;
 import utils.XmlStructureProvider;
