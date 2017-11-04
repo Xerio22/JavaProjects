@@ -29,26 +29,26 @@ public class DonaldsonChecker extends FilterChecker {
 				+ "<th class=\"u-identifier\">Donaldson Number</th>"
 				+ "<th class=\"p-name\">Product</th>"
 				+ "<th class=\"p-notes\">Notes</th>"
-				+ ".*</tr></thead>"
+				+ ".*?</tr></thead>"
 				+ "<tbody>"
 				+ "<!-- Loop Item -->"
 				+ "(<tr class=\"item h-product\" align=\"left\">" // row
 				+ "<td class=\"hidden-print item-mark\">(\\s*<input type=\"checkbox\" .*\"\\s*/>\\s*)?</td>"
 				+ "<td>"
-				+ "<a class=\"hidden-print u-url\" href=\".*\">"
-				+ "<img class=\"u-photo\" src=\".*\" alt=\".*\" title=\".*\" />"
+				+ "<a class=\"hidden-print u-url\" href=\".*?\">"
+				+ "<img class=\"u-photo\" src=\".*?\" alt=\".*?\" title=\".*?\" />"
 				+ "</a>"
-				+ "<img class=\"visible-print-block\" src=\".*\" alt=\".*\" />"
+				+ "<img class=\"visible-print-block\" src=\".*?\" alt=\".*?\" />"
 				+ "</td>"
-				+ "<td class=\"p-brand\">(.*)</td>" // oem
-				+ "<td class=\"u-identifier\"><span class=\"type hidden\">OEM</span><span class=\"value\">(.*)</span></td>" // oem number
+				+ "<td class=\"p-brand\">(.*?)</td>" // oem
+				+ "<td class=\"u-identifier\"><span class=\"type hidden\">OEM</span><span class=\"value\">(.*?)</span></td>" // oem number
 				+ "<td class=\"u-identifier\">"
 				+ "<span class=\"type hidden\">UPC</span>"
-				+ "<a class=\"hidden-print underline value u-url\" href=\".*\">.*</a>"
-				+ "<span class=\"visible-print-inline\">(.*)</span>" // donaldson number
+				+ "<a class=\"hidden-print underline value u-url\" href=\".*?\">.*?</a>"
+				+ "<span class=\"visible-print-inline\">(.*?)</span>" // donaldson number
 				+ "</td>"
-				+ "<td class=\"p-name\">(.*)</td>" // product
-				+ "<td class=\"p-notes\">(.*)</td>" // notes
+				+ "<td class=\"p-name\">(.*?)</td>" // product
+				+ "<td class=\"p-notes\">(.*?)</td>" // notes
 				+ "<td class=\"operation inventory\">"
 				+ "<div class=\"hidden-print\">"
 				+ "</div>"
@@ -57,7 +57,7 @@ public class DonaldsonChecker extends FilterChecker {
 				+ "<div class=\"hidden-print\">"
 				+ "</div>"
 				+ "</td>"
-				+ "</tr>)*"
+				+ "</tr>)*?"
 				+ "</tbody></table>");
 
 		Matcher m = p.matcher(serverResponse);
@@ -72,6 +72,7 @@ public class DonaldsonChecker extends FilterChecker {
 		
 		int propIdx = 1;
 		while(m.find()){
+			System.out.println(m.group(0));
 			Pattern pp = Pattern.compile(
 					"<td class=\"p-brand\">(.*?)</td>" // oem
 					+ "<td class=\"u-identifier\"><span class=\"type hidden\">OEM</span><span class=\"value\">(.*?)</span></td>" // oem number
