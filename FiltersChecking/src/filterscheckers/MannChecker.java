@@ -21,7 +21,7 @@ public class MannChecker extends FilterChecker {
 	}
 
 	@Override
-	protected String getCheckerName() {
+	public String getCheckerName() {
 		return CHECKER_NAME;
 	}
 }

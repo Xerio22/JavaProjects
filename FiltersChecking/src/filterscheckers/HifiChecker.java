@@ -69,7 +69,7 @@ public class HifiChecker extends FilterChecker {
 	}
 
 	@Override
-	protected String getCheckerName() {
+	public String getCheckerName() {
 		return CHECKER_NAME;
 	}
 }

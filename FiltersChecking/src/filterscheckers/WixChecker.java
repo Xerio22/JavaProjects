@@ -47,7 +47,6 @@ public class WixChecker extends FilterChecker {
 		
 			
 			while(m.find()){
-				System.out.println("ferferg");
 				equivalentOEM = m.group(1);
 				equivalentOEMNumber = m.group(2);
 				equivalentNumber = m.group(3);
@@ -68,7 +67,7 @@ public class WixChecker extends FilterChecker {
 	}
 
 	@Override
-	protected String getCheckerName() {
+	public String getCheckerName() {
 		return CHECKER_NAME;
 	}
 }

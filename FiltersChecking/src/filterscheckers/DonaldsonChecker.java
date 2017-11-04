@@ -72,7 +72,6 @@ public class DonaldsonChecker extends FilterChecker {
 		
 		int propIdx = 1;
 		while(m.find()){
-			System.out.println(m.group(0));
 			Pattern pp = Pattern.compile(
 					"<td class=\"p-brand\">(.*?)</td>" // oem
 					+ "<td class=\"u-identifier\"><span class=\"type hidden\">OEM</span><span class=\"value\">(.*?)</span></td>" // oem number
@@ -112,7 +111,7 @@ public class DonaldsonChecker extends FilterChecker {
 	}
 	
 	@Override
-	protected String getCheckerName() {
+	public String getCheckerName() {
 		return CHECKER_NAME;
 	}
 }
