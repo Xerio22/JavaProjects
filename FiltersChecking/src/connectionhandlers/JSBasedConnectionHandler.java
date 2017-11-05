@@ -7,7 +7,7 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlDivision;
+import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
@@ -35,7 +35,7 @@ public class JSBasedConnectionHandler extends ServerConnectionHandler {
 
 	
 	private String prepareWebClientAndRunJSToGetResponse() {
-		try (WebClient webClient = new WebClient(BrowserVersion.FIREFOX_52)) {
+		try (WebClient webClient = new WebClient(BrowserVersion.CHROME)) {
 			// get rid of HTMLUnit logging messages
 			java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(java.util.logging.Level.OFF);
 			
@@ -48,20 +48,21 @@ public class JSBasedConnectionHandler extends ServerConnectionHandler {
 			e.printStackTrace();
 			notifyObserverAboutChange(ServerConnectionHandler.RECONNECT_MESSAGE);
 		}
+		
 		return "";
 	}
 	
 	
 	private void configureWebClient(WebClient webClient) {
-		webClient.getOptions().setJavaScriptEnabled(true);
+		webClient.getOptions().setJavaScriptEnabled(true); //TODO false will be faster but might not work
 		webClient.getOptions().setUseInsecureSSL(true);
 		webClient.getOptions().setRedirectEnabled(true);
-        webClient.getOptions().setThrowExceptionOnScriptError(true);
         webClient.getOptions().setCssEnabled(true);
         webClient.getOptions().setUseInsecureSSL(true);
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(true);
         webClient.getCookieManager().setCookiesEnabled(true);
         webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+        webClient.getOptions().setThrowExceptionOnScriptError(false);
 	}
 
 	public String getFilterName() {
@@ -75,12 +76,12 @@ public class JSBasedConnectionHandler extends ServerConnectionHandler {
 		notifyObserverAboutChange(ServerConnectionHandler.CONNECTED_MESSAGE);
         
         final HtmlTextInput filterNameInput = (HtmlTextInput) pageToRequest.getElementById(this.inputFieldId);
-        HtmlDivision divFindCrosses = (HtmlDivision) pageToRequest.getElementById(this.searchButtonId);
+        DomElement findCrosses = pageToRequest.getElementById(this.searchButtonId);
         
         filterNameInput.setValueAttribute(this.filterName);
+       
+        final HtmlPage page = findCrosses.click();
         
-        final HtmlPage page = divFindCrosses.click();
-
         return page != null ? page.asXml() : "";
 	}
 	
