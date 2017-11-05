@@ -15,18 +15,26 @@ public abstract class FilterChecker extends Observable {
 	
 	private boolean isServerBlocked = false;
 	private String successResponse;
+	private String failureResponse;
 	private String blockedByServerResponse;
 	private ServerConnectionHandler serverConnectionHandler;
 	private String state;
 	private Filter filter;
 	
-	
 	public FilterChecker(ServerConnectionHandler serverConnectionHandler, String successResponse, String blockedByServerResponse){
 		this.serverConnectionHandler = serverConnectionHandler;
 		this.successResponse = successResponse;
 		this.blockedByServerResponse = blockedByServerResponse;
+		this.failureResponse = "";
 	}
 
+	public FilterChecker(ServerConnectionHandler serverConnectionHandler, String successResponse, String blockedByServerResponse, String failureResponse){
+		this.serverConnectionHandler = serverConnectionHandler;
+		this.successResponse = successResponse;
+		this.blockedByServerResponse = blockedByServerResponse;
+		this.failureResponse = failureResponse;
+	}
+	
 	
 	public FilterEquivalents getEquivalentsFor(Filter filter) {
 		this.filter = filter;
@@ -69,7 +77,6 @@ public abstract class FilterChecker extends Observable {
 		}
 		else if(isIPBlockedByServer(serverResponse)) {
 			setState(STATE_BLOCKED_BY_SERVER);
-//			printInfo("Ponowna proba polaczenia nastapi za " + millisToMinutes(Utils.reconnect_time) + " minut", Color.RED);
 			setServerBlocked(true);
 		}
 		else{
@@ -79,15 +86,15 @@ public abstract class FilterChecker extends Observable {
 		
 		return false;
 	}
-	
-	
+
+
 	private void setState(String state) {
 		this.state = state;
 	}
 
 
 	private boolean isEquivalentFound(String serverResponse) {
-		return serverResponse.contains(successResponse);
+		return serverResponse.contains(successResponse) || !serverResponse.contains(failureResponse);
 	}
 
 	
