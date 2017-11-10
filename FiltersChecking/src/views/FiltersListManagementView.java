@@ -14,6 +14,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 
 import controllers.EnablingButtonsOnListChangeListener;
 import controllers.FiltersCheckingManager;
@@ -72,10 +74,31 @@ public class FiltersListManagementView extends JPanel {
 	
 
 	private void addActionListenersToButtons() {
+		addActLsnForOEMnrLabel();
 		addActLsnForAddBtn();
 		addActLsnForRmvBtn();
 		addActLsnForReadFromFileBtn();
 		addActLsnForStartProcessingButton();
+	}
+
+
+	private void addActLsnForOEMnrLabel() {
+		filterOEMnumber.addCaretListener(new CaretListener() {
+
+			@Override
+			public void caretUpdate(CaretEvent arg0) {
+				if(isFieldNotEmpty(filterOEMnumber)){
+					addFilterToList.setEnabled(true);
+				}
+				else{
+					addFilterToList.setEnabled(false);
+				}
+			}
+
+			private boolean isFieldNotEmpty(JTextField filterOEMnumber) {
+				return !filterOEMnumber.getText().trim().isEmpty();
+			}
+		});
 	}
 
 
@@ -235,14 +258,8 @@ public class FiltersListManagementView extends JPanel {
 	}
 
 
-	public void disableButtonsOnInit() {
-		this.removeFilterFromList.setEnabled(false);
-		this.startProcessingButton.setEnabled(false);
-	}
-
-
 	public void setButtonsToInitState() {
-		this.addFilterToList.setEnabled(true);
+		this.addFilterToList.setEnabled(false);
 		this.removeFilterFromList.setEnabled(false);
 		this.readFiltersFromFile.setEnabled(true);
 		this.startProcessingButton.setEnabled(false);
