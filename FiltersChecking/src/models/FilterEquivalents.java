@@ -33,7 +33,7 @@ public class FilterEquivalents {
 		if(additionalPropertiesWithNames != null){
 			properties.addAll(createAdditionalPropertiesFromNameValueArray(additionalPropertiesWithNames, checkerName, propIdx));
 		}
-		System.out.println(properties);
+		
 		Filter equivalent = Filter.createFilterFromProperties(properties);
 		
 		return equivalent;
