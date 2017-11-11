@@ -10,14 +10,15 @@ import models.FilterEquivalents;
 public class BaldwinChecker extends FilterChecker {
 	private static final String CHECKER_NAME = "Baldwin";
 	private static final String SERVER_URL_STRING = "http://stage.catalog.baldwinfilter.com/Cross-Reference";
-	private static final String SUCCESS_RESPONSE = "<table id=\"PartsList\" cellspacing=\"0\">"; // TODO trzeba zmienic bo ten warunek juz nie dziala!!! DODAC failure
+	private static final String SUCCESS_RESPONSE = "some_success_response";
 	private static final String BLOCKED_BY_SERVER_RESPONSE = "some_blocked_by_server_response";
+	private static final String FAILURE_RESPONSE = "No crosses exist in the database for these items";
 	private static final String INPUT_FIELD_ID = "fieldCrossReference1";
 	private static final String SEARCH_BUTTON_ID = "btnFindCrosses";
 	private static final ServerConnectionHandler connectionHandler = new JSBasedConnectionHandler(SERVER_URL_STRING, INPUT_FIELD_ID, SEARCH_BUTTON_ID);
 
 	public BaldwinChecker() {
-		super(connectionHandler, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
+		super(connectionHandler, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE, FAILURE_RESPONSE);
 	}
 
 	@Override
