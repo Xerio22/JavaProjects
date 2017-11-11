@@ -104,6 +104,8 @@ public class FiltersListManagementView extends JPanel {
 			String OEMnumber = getOemNumber();
 			clearInputFields();
 			
+			OEMnumber = OEMnumber.replaceAll("\\s", "");
+			
 			Filter newFilter = Filter.createFilterUsingBrandNameAndOEMnumber(brandName, OEMnumber);
 			
 			filtersListModel.addElement(newFilter);
