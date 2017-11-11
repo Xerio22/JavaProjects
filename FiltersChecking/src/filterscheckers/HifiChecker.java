@@ -20,52 +20,42 @@ public class HifiChecker extends FilterChecker {
 
 	@Override
 	protected FilterEquivalents parseServerResponseAndGetEquivalents(String serverResponse) {
-		Pattern p = Pattern.compile("<table class=\"table table-hover\">"
-				+ "<thead><tr>"
-				+ "<th>Cross references</th>"
-				+ "<th>Brand</th>"
-				+ "<th>N° HIFI\\s*</th>"
-				+ "<th></th></tr></thead>"
-				+ "<tbody>"
-				+ "(<tr class=\"product-line [img]?\">"
-				+ "<td>([a-zA-Z_0-9 -\\./\\\\]+)</td>"
-				+ "<td>([a-zA-Z_0-9 -\\./\\(\\)=&]+)</td>"
-				+ "<td>([a-zA-Z_0-9 -]+)</td>"
-				+ "<td>(.*)?</td>"
-				+ "</tr>)+</tbody></table>");
+		Pattern p = Pattern.compile(
+				  "<tbody>"
+				+ "<tr class=\".*?\">"
+				+ "<td>(.*?)</td>" // OEM number
+				+ "<td>(.*?)</td>" // OEM
+				+ "<td>(.*?)</td>" // HIFI number
+				+ "<td>.*?</td>"
+				+ "</tr>"
+				+ "</tbody>");
 
-		Matcher m = p.matcher(serverResponse);
-		
-		String searchResultOEM = null;
-		String equivalentBrand = null;
-		String equivalentNumber = null;
-		
-		FilterEquivalents equivalentsForThisOem = new FilterEquivalents();
-		
-		int propIdx = 1;
-		if(m.find()){
-			Pattern pp = Pattern.compile(
-					"<tr class=\"product-line [img]?\">"
-					+ "<td>([[a-z][A-Z][_][0-9][ ][-][\\.][/][\\\\]]+)</td>"
-					+ "<td>([[a-z][A-Z][_][0-9][ ][-][\\.][/][\\(][\\)][=][&]]+)</td>"
-					+ "<td>([[a-z][A-Z][_][0-9][ ][-]]+)</td>"
-					+ "<td>(<a href=(.*)?></a>)?</td>"
-					+ "</tr>");
+			Matcher m = p.matcher(serverResponse);
 			
-			Matcher mm = pp.matcher(m.group(1));
+			String equivalentOEMNumber = null;
+			String equivalentOEM = null;
+			String equivalentNumber = null;
 			
-			while(mm.find()){
-				searchResultOEM = mm.group(1);
-				equivalentBrand = mm.group(2); // TODO mozna zastapic brand.name()
-				equivalentNumber = mm.group(3);
+			FilterEquivalents equivalentsForThisOem = new FilterEquivalents();
+			
+			int propIdx = 1;
+			while(m.find()){
+				equivalentOEMNumber = m.group(1);
+				equivalentOEM = m.group(2);
+				equivalentNumber = m.group(3);
 
-				equivalentsForThisOem.createAndAddEquivalent(getCheckerName(), searchResultOEM, equivalentBrand, equivalentNumber, propIdx);
+				equivalentsForThisOem.createAndAddEquivalent(
+						getCheckerName(), 
+						equivalentOEMNumber, 
+						equivalentOEM, 
+						equivalentNumber, 
+						propIdx
+				);
 				
 				propIdx++;
 			}
-		}
-		
-		return equivalentsForThisOem;
+			
+			return equivalentsForThisOem;
 	}
 
 	@Override
