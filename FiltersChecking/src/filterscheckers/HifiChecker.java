@@ -27,11 +27,11 @@ public class HifiChecker extends FilterChecker {
 				+ "<th>N° HIFI\\s*</th>"
 				+ "<th></th></tr></thead>"
 				+ "<tbody>"
-				+ "(<tr class=\"product-line img\">"
+				+ "(<tr class=\"product-line [img]?\">"
 				+ "<td>([a-zA-Z_0-9 -\\./\\\\]+)</td>"
 				+ "<td>([a-zA-Z_0-9 -\\./\\(\\)=&]+)</td>"
 				+ "<td>([a-zA-Z_0-9 -]+)</td>"
-				+ "<td>.*</td>"
+				+ "<td>(.*)?</td>"
 				+ "</tr>)+</tbody></table>");
 
 		Matcher m = p.matcher(serverResponse);
@@ -45,11 +45,11 @@ public class HifiChecker extends FilterChecker {
 		int propIdx = 1;
 		if(m.find()){
 			Pattern pp = Pattern.compile(
-					"<tr class=\"product-line img\">"
+					"<tr class=\"product-line [img]?\">"
 					+ "<td>([[a-z][A-Z][_][0-9][ ][-][\\.][/][\\\\]]+)</td>"
 					+ "<td>([[a-z][A-Z][_][0-9][ ][-][\\.][/][\\(][\\)][=][&]]+)</td>"
 					+ "<td>([[a-z][A-Z][_][0-9][ ][-]]+)</td>"
-					+ "<td><a href=.*?></a></td>"
+					+ "<td>(<a href=(.*)?></a>)?</td>"
 					+ "</tr>");
 			
 			Matcher mm = pp.matcher(m.group(1));
