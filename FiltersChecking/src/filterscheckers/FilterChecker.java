@@ -25,7 +25,7 @@ public abstract class FilterChecker extends Observable {
 		this.serverConnectionHandler = serverConnectionHandler;
 		this.successResponse = successResponse;
 		this.blockedByServerResponse = blockedByServerResponse;
-		this.failureResponse = "";
+		this.failureResponse = "some_failure_response";
 	}
 
 	public FilterChecker(ServerConnectionHandler serverConnectionHandler, String successResponse, String blockedByServerResponse, String failureResponse){
