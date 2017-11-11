@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -17,9 +18,11 @@ public class MainView {
 	private JPanel everythingPanel = new JPanel(new BorderLayout());
 	private StartScreen startingScreen;
 	
+	
 	public MainView(){
 		createAndShowGUI();
 	}
+	
 	
 	private void createAndShowGUI() {
 		/* Create tab container for presenting data using tabs */
@@ -45,6 +48,7 @@ public class MainView {
 		createAndSetupFrame();
 		frame.setVisible(true);
 	}
+	
 
 	private void addKeyStrokeToWindowForQuickStart() {
 		Action startAction = new AbstractAction(){
@@ -54,10 +58,9 @@ public class MainView {
 			public void actionPerformed(ActionEvent e) {
 				startingScreen.getStartProcessingButton().doClick();
 			}
-			
 		};
 		
-		everythingPanel.getInputMap().put(
+		everythingPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
 				KeyStroke.getKeyStroke(
 						KeyEvent.VK_ENTER, 
 						KeyEvent.CTRL_DOWN_MASK
@@ -65,6 +68,7 @@ public class MainView {
 		everythingPanel.getActionMap().put("cmd", startAction);
 	}
 
+	
 	private JFrame createAndSetupFrame() {
 		frame = new JFrame("FiltersChecking");
 		frame.setMinimumSize(new Dimension(1100, 600));
