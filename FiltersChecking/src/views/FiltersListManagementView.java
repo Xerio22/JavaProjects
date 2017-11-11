@@ -281,4 +281,8 @@ public class FiltersListManagementView extends JPanel {
 		this.readFiltersFromFileButton.setEnabled(true);
 		this.startProcessingButton.setEnabled(false);
 	}
+	
+	public JButton getStartProcessingButton() {
+		return startProcessingButton;
+	}
 }

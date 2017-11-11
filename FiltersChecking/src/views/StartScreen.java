@@ -3,6 +3,7 @@ package views;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 
+import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -69,5 +70,9 @@ public class StartScreen extends JPanel {
 		mainPanel.add(infoScroll);
 		
 		this.add(mainPanel, BorderLayout.CENTER);
+	}
+	
+	public JButton getStartProcessingButton() {
+		return filtersListManagementPanel.getStartProcessingButton();
 	}
 }
