@@ -3,6 +3,8 @@ package views;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,13 +38,13 @@ public class FiltersListManagementView extends JPanel {
 	
 	private JList<Filter> filtersList;
 	private FiltersListModel filtersListModel;
-	private JButton addFilterToList = new JButton("Dodaj");
-	private JButton removeFilterFromList = new JButton("Usuń");
-	private JButton readFiltersFromFile = new JButton("Wczytaj z pliku");
+	private JButton addFilterToListButton = new JButton("Dodaj");
+	private JButton removeFilterFromListButton = new JButton("Usuń");
+	private JButton readFiltersFromFileButton = new JButton("Wczytaj z pliku");
 	private JLabel filterOEMLabel = new JLabel("Brand name (OEM): "); 
-	private JTextField filterOEM = new JTextField(15);
+	private JTextField filterOEMField = new JTextField(15);
 	private JLabel filterOEMnumberLabel = new JLabel("OEM number: "); 
-	private JTextField filterOEMnumber = new JTextField(15);
+	private JTextField filterOEMnumberField = new JTextField(15);
 	private JButton startProcessingButton = new JButton("Szukaj");
 	private FiltersReader filtersReaderFromFile;
 
@@ -63,15 +65,9 @@ public class FiltersListManagementView extends JPanel {
 	
 	private void addActionListeners() {
 		addActionListenersToButtons();
-		
-		filtersListModel.addListDataListener(
-				new EnablingButtonsOnListChangeListener(
-						filtersList, 
-						new ArrayList<>(Arrays.asList(startProcessingButton, removeFilterFromList))
-				)
-		);
+		addActionListenersToOtherComponents();
 	}
-	
+
 
 	private void addActionListenersToButtons() {
 		addActLsnForOEMnrLabel();
@@ -83,15 +79,15 @@ public class FiltersListManagementView extends JPanel {
 
 
 	private void addActLsnForOEMnrLabel() {
-		filterOEMnumber.addCaretListener(new CaretListener() {
+		filterOEMnumberField.addCaretListener(new CaretListener() {
 
 			@Override
 			public void caretUpdate(CaretEvent arg0) {
-				if(isFieldNotEmpty(filterOEMnumber)){
-					addFilterToList.setEnabled(true);
+				if(isFieldNotEmpty(filterOEMnumberField)){
+					addFilterToListButton.setEnabled(true);
 				}
 				else{
-					addFilterToList.setEnabled(false);
+					addFilterToListButton.setEnabled(false);
 				}
 			}
 
@@ -103,7 +99,7 @@ public class FiltersListManagementView extends JPanel {
 
 
 	private void addActLsnForAddBtn() {
-		addFilterToList.addActionListener(buttonClicked -> {
+		addFilterToListButton.addActionListener(buttonClicked -> {
 			String brandName = getBrandName();
 			String OEMnumber = getOemNumber();
 			clearInputFields();
@@ -112,29 +108,29 @@ public class FiltersListManagementView extends JPanel {
 			
 			filtersListModel.addElement(newFilter);
 			
-			filterOEMnumber.requestFocus();
+			filterOEMnumberField.requestFocus();
 		});
 	}
 
 
 	private String getBrandName() {
-		return filterOEM.getText();
+		return filterOEMField.getText();
 	}
 	
 	
 	private String getOemNumber() {
-		return filterOEMnumber.getText();
+		return filterOEMnumberField.getText();
 	}
 
 	
 	private void clearInputFields() {
-		filterOEM.setText("");
-		filterOEMnumber.setText("");
+		filterOEMField.setText("");
+		filterOEMnumberField.setText("");
 	}
 	
 	
 	private void addActLsnForRmvBtn() {
-		removeFilterFromList.addActionListener(buttonClicked -> {
+		removeFilterFromListButton.addActionListener(buttonClicked -> {
 			removeSelectedFilterFromList();
 		});
 	}
@@ -147,7 +143,7 @@ public class FiltersListManagementView extends JPanel {
 	
 	
 	private void addActLsnForReadFromFileBtn() {
-		readFiltersFromFile.addActionListener(buttonClicked -> {
+		readFiltersFromFileButton.addActionListener(buttonClicked -> {
 			FileLoader fileLoader = new FileLoader(new XmlTxtFilter());
 			File file = fileLoader.loadFile();
 			
@@ -195,6 +191,27 @@ public class FiltersListManagementView extends JPanel {
 			return new FiltersCheckingManager(new FiltersReaderFromListModel(filtersListModel), infoTextPane);
 		}
 	}
+	
+	
+	private void addActionListenersToOtherComponents() {
+		filtersListModel.addListDataListener(
+				new EnablingButtonsOnListChangeListener(
+						filtersList, 
+						new ArrayList<>(Arrays.asList(startProcessingButton, removeFilterFromListButton))
+				)
+		);
+		
+		filterOEMnumberField.addKeyListener(new KeyAdapter(){
+			@Override
+			public void keyReleased(KeyEvent e) {
+				super.keyReleased(e);
+				
+				if(e.getKeyCode() == KeyEvent.VK_ENTER){
+					addFilterToListButton.doClick();
+				}
+			}
+		});
+	}
 
 
 	private void arrangePanel() {
@@ -225,9 +242,9 @@ public class FiltersListManagementView extends JPanel {
 		fieldsLabelsPanel.add(filterOEMnumberLabel);
 		
 		JPanel textFieldsPanel = new JPanel(new GridLayout(3, 1));
-		textFieldsPanel.add(filterOEM);
+		textFieldsPanel.add(filterOEMField);
 		textFieldsPanel.add(new JPanel());
-		textFieldsPanel.add(filterOEMnumber);
+		textFieldsPanel.add(filterOEMnumberField);
 		
 		JPanel inputs = new JPanel(new GridLayout(1, 2));
 		inputs.add(fieldsLabelsPanel);
@@ -242,26 +259,26 @@ public class FiltersListManagementView extends JPanel {
 		JPanel buttonsPanel = new JPanel(new FlowLayout());
 		buttonsPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
 		
-		buttonsPanel.add(addFilterToList);
-		buttonsPanel.add(removeFilterFromList);
-		buttonsPanel.add(readFiltersFromFile);
+		buttonsPanel.add(addFilterToListButton);
+		buttonsPanel.add(removeFilterFromListButton);
+		buttonsPanel.add(readFiltersFromFileButton);
 		
 		inputsPanel.add(buttonsPanel);
 	}
 	
 	
 	public void setButtonsEnabled(boolean isEnabled){
-		this.addFilterToList.setEnabled(isEnabled);
-		this.removeFilterFromList.setEnabled(isEnabled);
-		this.readFiltersFromFile.setEnabled(isEnabled);
+		this.addFilterToListButton.setEnabled(isEnabled);
+		this.removeFilterFromListButton.setEnabled(isEnabled);
+		this.readFiltersFromFileButton.setEnabled(isEnabled);
 		this.startProcessingButton.setEnabled(isEnabled);
 	}
 
 
 	public void setButtonsToInitState() {
-		this.addFilterToList.setEnabled(false);
-		this.removeFilterFromList.setEnabled(false);
-		this.readFiltersFromFile.setEnabled(true);
+		this.addFilterToListButton.setEnabled(false);
+		this.removeFilterFromListButton.setEnabled(false);
+		this.readFiltersFromFileButton.setEnabled(true);
 		this.startProcessingButton.setEnabled(false);
 	}
 }
