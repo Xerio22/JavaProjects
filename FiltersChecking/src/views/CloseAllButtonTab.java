@@ -6,6 +6,7 @@ import java.awt.Color;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonModel;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
@@ -36,9 +37,16 @@ public class CloseAllButtonTab extends JPanel {
 		});
 
 		closeButton.addActionListener(buttonClicked -> {
-			int tabsCount = tabbedPane.getTabCount();
-			for (int i = 2; i < tabsCount; i++) {
-				tabbedPane.removeTabAt(2);
+			int answer = JOptionPane.showConfirmDialog(
+					tabbedPane, 
+					"Czy na pewno chcesz zamknąć wszystkie karty?", "Zamknięcie wszystkich kart", 
+					JOptionPane.OK_CANCEL_OPTION, 
+					JOptionPane.WARNING_MESSAGE);
+			if(answer == JOptionPane.OK_OPTION){
+				int tabsCount = tabbedPane.getTabCount();
+				for (int i = 2; i < tabsCount; i++) {
+					tabbedPane.removeTabAt(2);
+				}
 			}
 		});
 
