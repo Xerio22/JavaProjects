@@ -38,7 +38,7 @@ public class MannChecker extends FilterChecker {
 				+ "</div>\\s*"
 				+ "</div>\\s*"
 				+ "<div class=\"column compare_availability\" data-label=\"\">\\s*"
-				+ "<div class=\"tableContent\">\\s*(available)?\\s*" // availability
+				+ "<div class=\"tableContent\">\\s*(.*?)?\\s*" // availability info
 				+ "</div>\\s*"
 				+ "</div>\\s*"
 				+ "<div class=\"column compare_info\" data-label=\"\">\\s*"
@@ -52,7 +52,7 @@ public class MannChecker extends FilterChecker {
 			String equivalentOEMNumber = null;
 			String equivalentOEM = null;
 			String equivalentNumber = null;
-			String equivalentAvailability = null;
+			String equivalentAvailabilityInfo = null;
 			
 			FilterEquivalents equivalentsForThisOem = new FilterEquivalents();
 			
@@ -61,10 +61,10 @@ public class MannChecker extends FilterChecker {
 				equivalentOEMNumber = m.group(1);
 				equivalentOEM = m.group(2);
 				equivalentNumber = m.group(3);
-				equivalentAvailability = m.group(4);
+				equivalentAvailabilityInfo = m.group(4);
 				
-				if(equivalentAvailability.equals("")){
-					equivalentAvailability = "Not available";
+				if(equivalentAvailabilityInfo.equals("")){
+					equivalentAvailabilityInfo = "Not available";
 				}
 				
 				equivalentsForThisOem.createAndAddEquivalent(
@@ -73,7 +73,7 @@ public class MannChecker extends FilterChecker {
 						equivalentOEM, 
 						equivalentNumber, 
 						propIdx,
-						new String[]{"Availability", equivalentAvailability}
+						new String[]{"Availability", equivalentAvailabilityInfo}
 				);
 				
 				propIdx++;
