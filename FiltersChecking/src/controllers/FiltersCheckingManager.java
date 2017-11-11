@@ -71,18 +71,33 @@ public class FiltersCheckingManager extends Observable {
 			removePreviousObserversFromChecker(checker);
 			putObserversToChecker(checker);
 			
-			// TODO this try catch is only for testing purposes
-			try{	
-				FilterEquivalents newEquivalents = checker.getEquivalentsFor(filter);
-				filter.addEquivalents(newEquivalents);
-			}
-			catch(Exception e){
-				e.printStackTrace();
+			addEquivalentsToFilterUsingSuppliedChecker(filter, checker);
+			
+			if(checker.getCheckerName().equals("HIFI")){
+				String oemNumber = filter.getOemNumber();
+				
+				if(oemNumber.startsWith("0")){
+					Filter filterWithoutLeadingZeros = Filter.createFilterUsingOEMnumber(Utils.getRidOfLeadingZeros(oemNumber));
+					addEquivalentsToFilterUsingSuppliedChecker(filterWithoutLeadingZeros, checker);
+					filter.addEquivalent(filterWithoutLeadingZeros);
+				}
 			}
 		}		
 	}
 	
 	
+	private void addEquivalentsToFilterUsingSuppliedChecker(Filter filter, FilterChecker checker) {
+		// TODO this try catch is only for testing purposes
+		try{	
+			FilterEquivalents newEquivalents = checker.getEquivalentsFor(filter);
+			filter.addEquivalents(newEquivalents);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
+
 	private void notifyFilterChecked(Filter filter) {
 		setState(STATE_FILTER_CHECKED);
 		setChanged();
