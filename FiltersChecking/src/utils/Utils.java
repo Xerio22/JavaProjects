@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import filterscheckers.*;
 
@@ -72,4 +74,16 @@ public class Utils {
         }
         return extension;
     }
+    
+    public static String getRidOfLeadingZeros(String str) {
+		String nameWithoutZeros = null;
+		Pattern p = Pattern.compile("(0*)(.*)");
+		Matcher m = p.matcher(str);
+		
+		if(m.matches()){
+			nameWithoutZeros = m.group(2);
+		}
+
+		return nameWithoutZeros;
+	}
 }
