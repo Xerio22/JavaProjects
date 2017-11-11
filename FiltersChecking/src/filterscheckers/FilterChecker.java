@@ -94,7 +94,7 @@ public abstract class FilterChecker extends Observable {
 
 
 	private boolean isEquivalentFound(String serverResponse) {
-		return serverResponse.contains(successResponse) || !serverResponse.contains(failureResponse);
+		return serverResponse.contains(successResponse) && !serverResponse.contains(failureResponse);
 	}
 
 	
