@@ -20,45 +20,16 @@ public class DonaldsonChecker extends FilterChecker {
 
 	@Override
 	protected FilterEquivalents parseServerResponseAndGetEquivalents(String serverResponse) {
-		Pattern p = Pattern.compile("<table class=\"table table-striped table-hover clear-marginBtm\" width=\"100%\" id=\"searchResults\">"
-				+ "<thead><tr align=\"left\">"
-				+ "<th class=\"hidden-print item-mark\"></th>"
-				+ "<th>Image</th>"
-				+ "<th class=\"p-brand\">Manufacturer</th>"
-				+ "<th class=\"u-identifier\">Manufacturer Number</th>"
-				+ "<th class=\"u-identifier\">Donaldson Number</th>"
-				+ "<th class=\"p-name\">Product</th>"
-				+ "<th class=\"p-notes\">Notes</th>"
-				+ ".*?</tr></thead>"
-				+ "<tbody>"
-				+ "<!-- Loop Item -->"
-				+ "(<tr class=\"item h-product\" align=\"left\">" // row
-				+ "<td class=\"hidden-print item-mark\">(\\s*<input type=\"checkbox\" .*\"\\s*/>\\s*)?</td>"
-				+ "<td>"
-				+ "<a class=\"hidden-print u-url\" href=\".*?\">"
-				+ "<img class=\"u-photo\" src=\".*?\" alt=\".*?\" title=\".*?\" />"
-				+ "</a>"
-				+ "<img class=\"visible-print-block\" src=\".*?\" alt=\".*?\" />"
-				+ "</td>"
-				+ "<td class=\"p-brand\">(.*?)</td>" // oem
-				+ "<td class=\"u-identifier\"><span class=\"type hidden\">OEM</span><span class=\"value\">(.*?)</span></td>" // oem number
-				+ "<td class=\"u-identifier\">"
+		Pattern p = Pattern.compile(
+				  "<td class=\"p-brand\">(.*?)</td>\\s*" // oem
+				+ "<td class=\"u-identifier\"><span class=\"type hidden\">OEM</span><span class=\"value\">(.*?)</span></td>\\s*" // oem number
+				+ "<td class=\"u-identifier\">\\s*"
 				+ "<span class=\"type hidden\">UPC</span>"
-				+ "<a class=\"hidden-print underline value u-url\" href=\".*?\">.*?</a>"
-				+ "<span class=\"visible-print-inline\">(.*?)</span>" // donaldson number
-				+ "</td>"
-				+ "<td class=\"p-name\">(.*?)</td>" // product
-				+ "<td class=\"p-notes\">(.*?)</td>" // notes
-				+ "<td class=\"operation inventory\">"
-				+ "<div class=\"hidden-print\">"
-				+ "</div>"
-				+ "</td>"
-				+ "<td class=\"operation actions\">"
-				+ "<div class=\"hidden-print\">"
-				+ "</div>"
-				+ "</td>"
-				+ "</tr>)*?"
-				+ "</tbody></table>");
+				+ ".*?"
+				+ "<span class=\".*?\">(.*?)</span>\\s*" // donaldson number
+				+ "</td>\\s*"
+				+ "<td class=\"p-name\">(.*?)</td>\\s*" // product
+				+ "<td class=\"p-notes\">(.*?)</td>\\s*"); // notes"
 
 		Matcher m = p.matcher(serverResponse);
 		
@@ -72,40 +43,25 @@ public class DonaldsonChecker extends FilterChecker {
 		
 		int propIdx = 1;
 		while(m.find()){
-			Pattern pp = Pattern.compile(
-					"<td class=\"p-brand\">(.*?)</td>" // oem
-					+ "<td class=\"u-identifier\"><span class=\"type hidden\">OEM</span><span class=\"value\">(.*?)</span></td>" // oem number
-					+ "<td class=\"u-identifier\">"
-					+ "<span class=\"type hidden\">UPC</span>"
-					+ "<a class=\"hidden-print underline value u-url\" href=\".*?\">.*?</a>"
-					+ "<span class=\"visible-print-inline\">(.*?)</span>" // donaldson number
-					+ "</td>"
-					+ "<td class=\"p-name\">(.*?)</td>" // product
-					+ "<td class=\"p-notes\">(.*?)</td>" // notes
+			equivalentOEM = m.group(1);
+			equivalentOEMNumber = m.group(2);
+			equivalentNumber = m.group(3);
+			equivalentProduct = m.group(4);
+			equivalentNotes = m.group(5);
+
+			equivalentsForThisOem.createAndAddEquivalent(
+					getCheckerName(), 
+					equivalentOEMNumber, 
+					equivalentOEM, 
+					equivalentNumber, 
+					propIdx, 
+					new String[][]{{"Product", equivalentProduct},
+								   {"Notes", equivalentNotes}}
 			);
 			
-			Matcher mm = pp.matcher(m.group(1));
-			
-			while(mm.find()){
-				equivalentOEM = mm.group(1);
-				equivalentOEMNumber = mm.group(2);
-				equivalentNumber = mm.group(3);
-				equivalentProduct = mm.group(4);
-				equivalentNotes = mm.group(5);
-
-				equivalentsForThisOem.createAndAddEquivalent(
-						getCheckerName(), 
-						equivalentOEMNumber, 
-						equivalentOEM, 
-						equivalentNumber, 
-						propIdx, 
-						new String[][]{{"Product", equivalentProduct},
-									   {"Notes", equivalentNotes}}
-				);
-				
-				propIdx++;
-			}
+			propIdx++;
 		}
+		
 		
 		return equivalentsForThisOem;
 	}
@@ -115,3 +71,5 @@ public class DonaldsonChecker extends FilterChecker {
 		return CHECKER_NAME;
 	}
 }
+
+ 
