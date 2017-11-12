@@ -8,8 +8,10 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -21,6 +23,7 @@ import javax.swing.event.CaretListener;
 
 import controllers.EnablingButtonsOnListChangeListener;
 import controllers.FiltersCheckingManager;
+import filterscheckers.FilterChecker;
 import filtersreaders.FiltersReader;
 import filtersreaders.FiltersReaderFromListModel;
 import filtersreaders.FiltersReaderFromTxt;
@@ -41,13 +44,13 @@ public class FiltersListManagementView extends JPanel {
 	private JButton addFilterToListButton = new JButton("Dodaj");
 	private JButton removeFilterFromListButton = new JButton("Usuń");
 	private JButton readFiltersFromFileButton = new JButton("Wczytaj z pliku");
-	private JLabel filterOEMLabel = new JLabel("Brand name (OEM): "); 
-	private JTextField filterOEMField = new JTextField(15);
-	private JLabel filterOEMnumberLabel = new JLabel("OEM number: "); 
+	private JLabel filterOEMnumberLabel = new JLabel("Numer OEM: "); 
 	private JTextField filterOEMnumberField = new JTextField(15);
 	private JButton startProcessingButton = new JButton("Szukaj");
+	private List<JCheckBox> checkBoxes = new ArrayList<>();
 	private FiltersReader filtersReaderFromFile;
 
+	private JPanel checkBoxesPanel = new JPanel(new GridLayout(1, 3));;
 	private JPanel inputsPanel;
 	private ConnectionInformationView infoTextPane;
 	private JTabbedPane tabsPanel;
@@ -57,6 +60,10 @@ public class FiltersListManagementView extends JPanel {
 		this.infoTextPane = infoTextPane;
 		this.tabsPanel = tabsPanel;
 		this.filtersListModel = (FiltersListModel) filtersList.getModel();
+		
+		for(FilterChecker checker : Utils.getFiltersCheckers()){
+			checkBoxes.add(new JCheckBox(checker.getCheckerName()));
+		}
 		
 		addActionListeners();
 		arrangePanel();
@@ -100,7 +107,6 @@ public class FiltersListManagementView extends JPanel {
 
 	private void addActLsnForAddBtn() {
 		addFilterToListButton.addActionListener(buttonClicked -> {
-			String brandName = getBrandName();
 			String OEMnumber = getOemNumber();
 			clearInputFields();
 			
@@ -114,11 +120,6 @@ public class FiltersListManagementView extends JPanel {
 		});
 	}
 
-
-	private String getBrandName() {
-		return filterOEMField.getText();
-	}
-	
 	
 	private String getOemNumber() {
 		return filterOEMnumberField.getText();
@@ -126,7 +127,6 @@ public class FiltersListManagementView extends JPanel {
 
 	
 	private void clearInputFields() {
-		filterOEMField.setText("");
 		filterOEMnumberField.setText("");
 	}
 	
@@ -175,7 +175,8 @@ public class FiltersListManagementView extends JPanel {
 			setButtonsEnabled(false);
 			
 			try{
-				filterDataChecker.startProcessing();
+				List<FilterChecker> selectedCheckers = getSelectedCheckers();
+				filterDataChecker.startProcessing(selectedCheckers);
 			}
 			catch(Exception e){
 				e.printStackTrace();
@@ -185,6 +186,18 @@ public class FiltersListManagementView extends JPanel {
 	}
 	
 	
+	private List<FilterChecker> getSelectedCheckers() {
+		List<FilterChecker> selectedCheckers = new ArrayList<>();
+		for(int i = 0; i < checkBoxes.size(); i++){
+			if(checkBoxes.get(i).isSelected()){
+				selectedCheckers.add(Utils.getFiltersCheckers().get(i));
+			}
+		}
+		
+		return selectedCheckers;
+	}
+
+
 	private FiltersCheckingManager getProperCheckingManager() {		
 		if(filtersReaderFromFile != null){
 			return new FiltersCheckingManager(filtersReaderFromFile, infoTextPane);
@@ -220,7 +233,10 @@ public class FiltersListManagementView extends JPanel {
 		this.setLayout(new GridLayout(2, 1));
 		
 		JPanel northInputsPanel = new JPanel();
+		addComponentsToCheckBoxesPanel();
 		addComponentsToInputPanel();
+		
+		northInputsPanel.add(checkBoxesPanel);
 		northInputsPanel.add(inputsPanel);
 		
 		JPanel southButtonPanel = new JPanel(new BorderLayout());
@@ -231,6 +247,28 @@ public class FiltersListManagementView extends JPanel {
 	}
 
 	
+	private void addComponentsToCheckBoxesPanel() {
+		JPanel leftCheckBoxesPanel = new JPanel(new GridLayout(2, 1));
+		JPanel middleCheckBoxesPanel = new JPanel(new GridLayout(2, 1));
+		JPanel rightCheckBoxesPanel = new JPanel(new GridLayout(2, 1));
+		
+		for(int i = 0; i < checkBoxes.size(); i++){
+			JCheckBox checkBox = checkBoxes.get(i);
+			checkBox.setSelected(true);
+			if(i < 2)
+				leftCheckBoxesPanel.add(checkBox);
+			else if(i < 4)
+				middleCheckBoxesPanel.add(checkBox);
+			else
+				rightCheckBoxesPanel.add(checkBox);
+		}
+		
+		checkBoxesPanel.add(leftCheckBoxesPanel);
+		checkBoxesPanel.add(middleCheckBoxesPanel);
+		checkBoxesPanel.add(rightCheckBoxesPanel);
+	}
+
+
 	private void addComponentsToInputPanel() {
 		addInputComponentsToPanel();
 		addButtonsToPanel();
@@ -239,12 +277,10 @@ public class FiltersListManagementView extends JPanel {
 	
 	private void addInputComponentsToPanel() {
 		JPanel fieldsLabelsPanel = new JPanel(new GridLayout(3, 1));
-		fieldsLabelsPanel.add(filterOEMLabel);
 		fieldsLabelsPanel.add(new JPanel());
 		fieldsLabelsPanel.add(filterOEMnumberLabel);
 		
 		JPanel textFieldsPanel = new JPanel(new GridLayout(3, 1));
-		textFieldsPanel.add(filterOEMField);
 		textFieldsPanel.add(new JPanel());
 		textFieldsPanel.add(filterOEMnumberField);
 		
