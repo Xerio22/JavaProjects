@@ -12,6 +12,7 @@ public abstract class FilterChecker extends Observable {
 	public static final String STATE_EQUIVALENT_NOT_FOUND = "Equiv_not_found";
 	public static final String STATE_BLOCKED_BY_SERVER = "Blocked";
 	public static final String STATE_BAD_OEM_TAG = "Bad_oem_tag";
+	private static final String UNSET_FAILURE_RESPONSE = "_ufr_";
 	
 	private boolean isServerBlocked = false;
 	private String successResponse;
@@ -25,7 +26,7 @@ public abstract class FilterChecker extends Observable {
 		this.serverConnectionHandler = serverConnectionHandler;
 		this.successResponse = successResponse;
 		this.blockedByServerResponse = blockedByServerResponse;
-		this.failureResponse = "some_failure_response";
+		this.failureResponse = UNSET_FAILURE_RESPONSE;
 	}
 
 	public FilterChecker(ServerConnectionHandler serverConnectionHandler, String successResponse, String blockedByServerResponse, String failureResponse){
@@ -94,7 +95,15 @@ public abstract class FilterChecker extends Observable {
 
 
 	private boolean isEquivalentFound(String serverResponse) {
-		return serverResponse.contains(successResponse) && !serverResponse.contains(failureResponse);
+		if(isFailureResponseSet()) 
+			return serverResponse.contains(successResponse) || !serverResponse.contains(failureResponse);
+		
+		return serverResponse.contains(successResponse);
+	}
+	
+	
+	private boolean isFailureResponseSet() {
+		return !failureResponse.equals(UNSET_FAILURE_RESPONSE);
 	}
 
 	
