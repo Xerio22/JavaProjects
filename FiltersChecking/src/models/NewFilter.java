@@ -2,16 +2,10 @@ package models;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import javafx.util.Callback;
-import utils.Utils;
 
 public class NewFilter {
 	private List<FilterProperty> filterProperties = new ArrayList<>();
@@ -75,15 +69,11 @@ public class NewFilter {
 	
 	public void addEquivalents(NewFilterEquivalents equivalents) {
 		this.equivalents.addAll(equivalents);
-//		for(Filter equivalent : equivalents.getEquivalents()) {
-//			this.addEquivalent(equivalent);
-//		}
 	}
 	
 	
 	public void addEquivalent(NewFilter newEquivalent) {
 		this.equivalents.add(newEquivalent);
-//		this.addProperties(newEquivalent.getProperties());
 	}
 	
 
@@ -121,7 +111,7 @@ public class NewFilter {
 	}
 
 	public String getOemNumber() {
-		return this.getPropertyValueByName(oemNumberTagName);//Utils.OEM_NUMBER_TAG_NAME);
+		return this.getPropertyValueByName(oemNumberTagName);
 	}
 
 	public NewFilterEquivalents getEquivalents() {

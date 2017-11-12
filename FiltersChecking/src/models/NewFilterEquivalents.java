@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NewFilterEquivalents extends ArrayList<NewFilter>{
-	
+	private static final long serialVersionUID = 3871295183697752767L;
+
 	public void createAndAddEquivalent(String checkerName, String equivalentOEM, String equvalentBrand, String equivalentNumber, int propIdx, String[]... additionalPropertiesWithNames) {
 		NewFilter newEquivalent = createEquivalent(checkerName, equivalentOEM, equvalentBrand, equivalentNumber, propIdx, additionalPropertiesWithNames);
 		this.add(newEquivalent);
