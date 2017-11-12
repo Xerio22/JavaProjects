@@ -20,6 +20,7 @@ public class FiltersCheckingManager extends Observable {
 	private String state;
 	public static final String STATE_FINISHED_CHECKING = "checking_finished";
 	public static final String STATE_FILTER_CHECKED = "filter_checked";
+	private List<FilterChecker> selectedCheckers;
 	
 	public FiltersCheckingManager(FiltersReader filtersReader, ConnectionInformationView infoView) {
 		/* Create FilterReader */
@@ -33,7 +34,8 @@ public class FiltersCheckingManager extends Observable {
 	}
 	
 	
-	public void startProcessing() {
+	public void startProcessing(List<FilterChecker> selectedCheckers) {
+		this.selectedCheckers = selectedCheckers;
 		List<Filter> filtersFromInput = filtersReader.getFiltersAsList();
 		
 		runBackgroundChecking(filtersFromInput);
@@ -66,7 +68,7 @@ public class FiltersCheckingManager extends Observable {
 
 
 	private void findFilterEquivalentsFromEveryServer(Filter filter) {
-		for(FilterChecker checker : Utils.getFiltersCheckers()) {
+		for(FilterChecker checker : selectedCheckers) {
 			
 			removePreviousObserversFromChecker(checker);
 			putObserversToChecker(checker);
