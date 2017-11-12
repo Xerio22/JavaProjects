@@ -48,12 +48,12 @@ public class Utils {
 	
 	public static final FilterChecker[] checkers = {
 			// url
-			new HifiChecker()
-//			new DonaldsonChecker(),
-//			new WixChecker(),
+			new HifiChecker(),
+			new DonaldsonChecker(),
+			new WixChecker(),
 			// js
-//			new BaldwinChecker(),
-//			new MannChecker()
+			new BaldwinChecker(),
+			new MannChecker()
 //			new CumminsChecker()
 		};
     
