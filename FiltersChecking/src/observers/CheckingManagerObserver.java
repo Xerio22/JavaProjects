@@ -10,7 +10,6 @@ import javax.swing.JTabbedPane;
 
 import controllers.FiltersCheckingManager;
 import models.Filter;
-import views.CheckedFilterTab;
 import views.CheckedFilterTabJTable;
 import views.FiltersListManagementView;
 import views.TabTitle;
