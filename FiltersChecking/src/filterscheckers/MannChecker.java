@@ -86,4 +86,11 @@ public class MannChecker extends FilterChecker {
 	public String getCheckerName() {
 		return CHECKER_NAME;
 	}
+	
+//	@Override
+//	public List<String> getColumnsNames() {
+//		List<String> inheritedNames = super.getColumnsNames();
+//		inheritedNames.add("Dostępność");
+//		return inheritedNames;
+//	}
 }

@@ -46,14 +46,14 @@ public class Utils {
 	public static final String DEFAULT_OEM_NAME = "Default";
 	public static final String OEM_NUMBER_TAG_NAME = "OEM_Number";
 	
-	public static final FilterChecker[] checkers = {
+	private static final FilterChecker[] checkers = {
 			// url
-			new HifiChecker()
+			new HifiChecker(),
 //			new DonaldsonChecker(),
 //			new WixChecker(),
 			// js
 //			new BaldwinChecker(),
-//			new MannChecker()
+			new MannChecker()
 //			new CumminsChecker()
 		};
     

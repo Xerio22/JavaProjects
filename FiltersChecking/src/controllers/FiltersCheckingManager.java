@@ -80,6 +80,7 @@ public class FiltersCheckingManager extends Observable {
 					Filter filterWithoutLeadingZeros = Filter.createFilterUsingOEMnumber(Utils.getRidOfLeadingZeros(oemNumber));
 					addEquivalentsToFilterUsingSuppliedChecker(filterWithoutLeadingZeros, checker);
 					filter.addEquivalent(filterWithoutLeadingZeros);
+					//filter.addEquivalents(filterWithoutLeadingZeros.getEquivalents()); do dzialania newfilter implementation
 				}
 			}
 		}		
