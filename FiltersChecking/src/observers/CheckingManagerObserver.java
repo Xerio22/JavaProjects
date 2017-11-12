@@ -10,6 +10,7 @@ import javax.swing.JTabbedPane;
 import controllers.FiltersCheckingManager;
 import models.Filter;
 import views.CheckedFilterTab;
+import views.CheckedFilterTabJTable;
 import views.FiltersListManagementView;
 import views.TabTitle;
 
@@ -42,13 +43,12 @@ public class CheckingManagerObserver implements Observer {
 	}
 	
 	
-	private void addNewTabWithCheckedFilterData(Filter filter) {
-		Filter checkedFilter = filter;
-		addCloseableTabToTabsPanel(checkedFilter.getOemNumber(), new CheckedFilterTab(checkedFilter));
+	private void addNewTabWithCheckedFilterData(Filter checkedFilter) {
+		addCloseableTabToTabsPanel(checkedFilter.getOemNumber(), new CheckedFilterTabJTable(checkedFilter));
 	}
 
 	
-	private void addCloseableTabToTabsPanel(String title, CheckedFilterTab checkedFilterTab) {
+	private void addCloseableTabToTabsPanel(String title, CheckedFilterTabJTable checkedFilterTab) {
 		tabsPanel.addTab(title, checkedFilterTab);
 		TabTitle tabTitle = new TabTitle(title, tabsPanel);
 		tabsPanel.setTabComponentAt(tabsPanel.getTabCount()-1, tabTitle);
