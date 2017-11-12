@@ -10,11 +10,11 @@ import javax.swing.table.DefaultTableModel;
 import models.Filter;
 import models.FilterProperty;
 
-public class CheckedFilterTab extends JPanel {
+public class CheckedFilterTabJTable extends JPanel {
 	private static final long serialVersionUID = 7159948324475908470L;
 	private Filter checkedFilter;
 	
-	public CheckedFilterTab(Filter checkedFilter) {
+	public CheckedFilterTabJTable(Filter checkedFilter) {
 		this.checkedFilter = checkedFilter;
 		
 		createTabGui();
