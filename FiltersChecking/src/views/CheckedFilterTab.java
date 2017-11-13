@@ -38,20 +38,19 @@ public class CheckedFilterTab extends JPanel {
             	StringBuilder htmlCodeBuilder = new StringBuilder();
             	
             	htmlCodeBuilder.append(Utils.HTML_TOP_PART);
-            	System.out.println(filter.getProperties());
             	for(FilterChecker checker : Utils.getFiltersCheckers()){
             		int columnsCount = 0;
             		
-            		htmlCodeBuilder.append("<h4>" + checker.getCheckerName() + "</h1>");
-            		htmlCodeBuilder.append("<table class=\"striped highlight\">");
+            		htmlCodeBuilder.append("<h4 style=\"text-align: center;\">" + checker.getCheckerName() + "</h4>");
+            		htmlCodeBuilder.append("<table class=\"striped highlight centered\">");
             			htmlCodeBuilder.append("<thead>");
 		            		htmlCodeBuilder.append("<tr>");
 			            		for(FilterProperty fp : filter.getProperties()){
 				            		if(isPropertyConcernsThisChecker(fp, checker)){
 				            			if(fp.getPropertyName().contains("1")){
-				            				htmlCodeBuilder.append("<td>");
-				            					htmlCodeBuilder.append(fp.getPropertyName());
-						            		htmlCodeBuilder.append("</td>");
+				            				htmlCodeBuilder.append("<th>");
+				            					htmlCodeBuilder.append(fp.getPropertyName().replaceAll(checker.getCheckerName() + "_equiv_\\d+_", ""));
+						            		htmlCodeBuilder.append("</th>");
 						            		
 											columnsCount++;
 				            			}
@@ -81,7 +80,7 @@ public class CheckedFilterTab extends JPanel {
 			            		}
 			            	}
 	            		htmlCodeBuilder.append("</tbody>");
-	            	htmlCodeBuilder.append("</table><br><br>");
+	            	htmlCodeBuilder.append("</table><br><br><br><br>");
             	}
             	
             	htmlCodeBuilder.append(Utils.HTML_BOTTOM_PART);
