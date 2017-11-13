@@ -81,7 +81,7 @@ public class FiltersCheckingManager extends Observable {
 				if(oemNumber.startsWith("0")){
 					Filter filterWithoutLeadingZeros = Filter.createFilterUsingOEMnumber(Utils.getRidOfLeadingZeros(oemNumber));
 					addEquivalentsToFilterUsingSuppliedChecker(filterWithoutLeadingZeros, checker);
-					filter.addEquivalent(filterWithoutLeadingZeros);
+					filter.addEquivalentQQ(filterWithoutLeadingZeros, filter.getProperties().get(filter.getProperties().size()-1).getPropertyName().substring(11, 13));
 					//filter.addEquivalents(filterWithoutLeadingZeros.getEquivalents()); do dzialania newfilter implementation
 				}
 			}
