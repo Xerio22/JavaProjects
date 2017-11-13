@@ -45,7 +45,7 @@ public class CheckingManagerObserver implements Observer {
 	
 	
 	private void addNewTabWithCheckedFilterData(Filter checkedFilter) {
-		addCloseableTabToTabsPanel(checkedFilter.getOemNumber(), new CheckedFilterTabJTable(checkedFilter));
+		addCloseableTabToTabsPanel(checkedFilter.getOemNumber(), new CheckedFilterTab(checkedFilter));
 	}
 
 	
