@@ -1,26 +1,21 @@
 package views;
 
 import java.awt.BorderLayout;
-import java.util.List;
 
 import javax.swing.JPanel;
 
 import filterscheckers.FilterChecker;
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import models.NewFilterEquivalents;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
+import models.Filter;
 import models.FilterProperty;
-import models.NewFilter;
 import utils.Utils;
 
 public class CheckedFilterTab extends JPanel {
@@ -28,9 +23,9 @@ public class CheckedFilterTab extends JPanel {
 	
 	private JFXPanel mainPanel = new JFXPanel();
 	private final VBox vbox = new VBox();
-	private NewFilter filter;
+	private Filter filter;
 	
-	public CheckedFilterTab(NewFilter filter) {
+	public CheckedFilterTab(Filter filter) {
 		this.setLayout(new BorderLayout());
 		this.filter = filter;
 		
@@ -40,73 +35,79 @@ public class CheckedFilterTab extends JPanel {
 		Platform.runLater(new Runnable() { 
             @Override
             public void run() {
+            	StringBuilder htmlCodeBuilder = new StringBuilder();
+            	
+            	htmlCodeBuilder.append(Utils.HTML_TOP_PART);
+            	System.out.println(filter.getProperties());
             	for(FilterChecker checker : Utils.getFiltersCheckers()){
-	            	TableView<NewFilter> tableViewForChecker = createAndSetupTable();
-	            	
-//        			createColumns(checker.getColumnsNames(), tableViewForChecker);
-        			
-        			int i = 0;
-        			for(NewFilter equivalent : getFilterEquivalents()){
-        				if(equivalent.getProperties().get(0).getPropertyName().contains(checker.getCheckerName())){
-			    			for(FilterProperty fp : equivalent.getProperties()){
-			    				System.out.println(fp);
-			        			String propName = fp.getPropertyName();
-			        			
-			        			((TableColumn<NewFilter, String>)tableViewForChecker
-			        					.getColumns().get(i++)).setCellValueFactory(
-			        							cellData -> new ReadOnlyStringWrapper(cellData.getValue().getPropertyValueByName(propName)));
-			        		}
-        				}
-        				i = 0;
-        			}
-	    			
-	    			tableViewForChecker.setItems(getFilterEquivalents());
-	        		
-	        		prepareTablePresentationLayer(checker, tableViewForChecker);
-	        		
+            		int columnsCount = 0;
+            		
+            		htmlCodeBuilder.append("<h4>" + checker.getCheckerName() + "</h1>");
+            		htmlCodeBuilder.append("<table class=\"striped highlight\">");
+            			htmlCodeBuilder.append("<thead>");
+		            		htmlCodeBuilder.append("<tr>");
+			            		for(FilterProperty fp : filter.getProperties()){
+				            		if(isPropertyConcernsThisChecker(fp, checker)){
+				            			if(fp.getPropertyName().contains("1")){
+				            				htmlCodeBuilder.append("<td>");
+				            					htmlCodeBuilder.append(fp.getPropertyName());
+						            		htmlCodeBuilder.append("</td>");
+						            		
+											columnsCount++;
+				            			}
+				            		}
+				            	}
+		            		htmlCodeBuilder.append("</tr>");
+	            		htmlCodeBuilder.append("</thead>");
+	            		htmlCodeBuilder.append("<tbody>");
+	            			int currentColumn = 0;
+	            		
+		            		for(FilterProperty fp : filter.getProperties()){
+			            		if(isPropertyConcernsThisChecker(fp, checker)){
+			            			if(currentColumn == 0){
+										htmlCodeBuilder.append("<tr>");
+			            			}
+			            			
+			            			htmlCodeBuilder.append("<td>");
+	            					htmlCodeBuilder.append(fp.getPropertyValue());
+	            					htmlCodeBuilder.append("</td>");
+			            			
+	            					currentColumn++;
+	            					
+			            			if(currentColumn  == columnsCount){
+										htmlCodeBuilder.append("</tr>");
+										currentColumn = 0;
+			            			}
+			            		}
+			            	}
+	            		htmlCodeBuilder.append("</tbody>");
+	            	htmlCodeBuilder.append("</table><br><br>");
             	}
             	
-            	Scene mainScene = new Scene(vbox);
+            	htmlCodeBuilder.append(Utils.HTML_BOTTOM_PART);
+            	
+				String htmlCode = htmlCodeBuilder.toString();
+				setupHtmlView(htmlCode);
+            }
+            
+            private void setupHtmlView(String generatedHtmlCode){   
+                final WebView webView = new WebView();
+                final WebEngine webEngine = webView.getEngine();
+                webEngine.loadContent(generatedHtmlCode);
+                
+                ScrollPane scrollPane = new ScrollPane();
+                scrollPane.setContent(webView);
+
+                StackPane root = new StackPane();
+            	root.getChildren().add(webView);
+            	
+            	Scene mainScene = new Scene(root);
         		mainPanel.setScene(mainScene);
             }
 
 
-
-			private void createColumns(List<String> columnsNames, TableView<NewFilter> tableViewForChecker) {
-				for(String columnName : columnsNames){
-					TableColumn<NewFilter, String> column = new TableColumn<>(columnName);
-					tableViewForChecker.getColumns().add(column);
-				}
-			}
-
-
-
-			private void prepareTablePresentationLayer(FilterChecker checker, TableView<NewFilter> tableViewForChecker) {
-				final Label checkerNameLabel = createAndPrepareCheckerNameLabel(checker);
-                
-                vbox.getChildren().addAll(checkerNameLabel, tableViewForChecker);	
-			}
-			
-
-			private Label createAndPrepareCheckerNameLabel(FilterChecker checker) {
-				final Label checkerNameLabel = new Label(checker.getCheckerName());
-                checkerNameLabel.setFont(new Font("Arial", 20));
-                
-                return checkerNameLabel;
-			}
-
-
-			private TableView<NewFilter> createAndSetupTable() {
-				TableView<NewFilter> tableView = new TableView<>();
-            	tableView.setEditable(true);
-            	tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        	
-				return tableView;
-			}
-			
-			
-			private ObservableList<NewFilter> getFilterEquivalents() {
-				return FXCollections.observableArrayList(filter.getEquivalents());
+			private boolean isPropertyConcernsThisChecker(FilterProperty filterProperty, FilterChecker checker) {
+				return filterProperty.getPropertyName().contains(checker.getCheckerName());
 			}
 		});
 
