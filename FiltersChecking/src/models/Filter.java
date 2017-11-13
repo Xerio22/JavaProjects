@@ -164,6 +164,27 @@ public class Filter {
 	public String getOemNumber() {
 		return this.getPropertyValueByName(oemNumberTagName);//Utils.OEM_NUMBER_TAG_NAME);
 	}
+
+	public void addEquivalentQQ(Filter filterWithoutLeadingZeros, String substring) {
+		System.out.println(substring);
+		int i = 0;
+		try{
+			i = Integer.parseInt(substring);
+		}
+		catch(Exception e){
+			i = Integer.parseInt(substring.substring(0, 1)) + 1;
+		}
+		System.out.println(i);
+		List<FilterProperty> props = new ArrayList<>();
+		for(FilterProperty fp : filterWithoutLeadingZeros.getProperties()){
+			if(fp.getPropertyName().contains(substring)){
+				FilterProperty ff = new FilterProperty(fp.getPropertyName().replaceAll(substring, i + ""), fp.getPropertyValue());
+				props.add(ff);
+			}
+		}
+		Filter newFilter = Filter.createFilterFromProperties(props);
+		addEquivalent(newFilter);
+	}
 }
 
 
