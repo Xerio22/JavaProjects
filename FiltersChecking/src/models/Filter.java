@@ -166,7 +166,6 @@ public class Filter {
 	}
 
 	public void addEquivalentQQ(Filter filterWithoutLeadingZeros, String substring) {
-		System.out.println(substring);
 		int i = 0;
 		try{
 			i = Integer.parseInt(substring);
@@ -174,7 +173,6 @@ public class Filter {
 		catch(Exception e){
 			i = Integer.parseInt(substring.substring(0, 1)) + 1;
 		}
-		System.out.println(i);
 		List<FilterProperty> props = new ArrayList<>();
 		for(FilterProperty fp : filterWithoutLeadingZeros.getProperties()){
 			if(fp.getPropertyName().contains(substring)){
