@@ -2,14 +2,10 @@ package models;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import utils.Utils;
 
 public class Filter {
 	private List<FilterProperty> filterProperties = new ArrayList<>();
