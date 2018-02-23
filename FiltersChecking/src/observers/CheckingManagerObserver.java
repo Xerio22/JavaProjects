@@ -11,22 +11,22 @@ import javax.swing.JTabbedPane;
 import controllers.FiltersCheckingManager;
 import models.Filter;
 import views.CheckedFilterTab;
-import views.CheckedFilterTabJTable;
 import views.FiltersListManagementView;
 import views.TabTitle;
 
 public class CheckingManagerObserver implements Observer {
-
 	private JTabbedPane tabsPanel;
 	private JList<Filter> filtersList;
 	private FiltersListManagementView filtersListManagementPanel;
 
+	
 	public CheckingManagerObserver(JList<Filter> filtersList, JTabbedPane tabsPanel, FiltersListManagementView filtersListManagementPanel) {
 		this.filtersList = filtersList;
 		this.tabsPanel = tabsPanel;
 		this.filtersListManagementPanel = filtersListManagementPanel;
 	}
 
+	
 	@Override
 	public void update(Observable observable, Object filter) {
 		FiltersCheckingManager manager = (FiltersCheckingManager) observable;
@@ -55,6 +55,7 @@ public class CheckingManagerObserver implements Observer {
 		tabsPanel.setTabComponentAt(tabsPanel.getTabCount()-1, tabTitle);
 	}
 
+	
 	private void removeCheckedFilterFromList() {
 		DefaultListModel<Filter> listModel = (DefaultListModel<Filter>) filtersList.getModel();
 		listModel.removeElementAt(0);
