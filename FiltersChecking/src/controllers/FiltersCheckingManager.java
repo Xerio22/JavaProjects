@@ -69,7 +69,6 @@ public class FiltersCheckingManager extends Observable {
 
 	private void findFilterEquivalentsFromEveryServer(Filter filter) {
 		for(FilterChecker checker : selectedCheckers) {
-			
 			removePreviousObserversFromChecker(checker);
 			putObserversToChecker(checker);
 			
@@ -79,21 +78,23 @@ public class FiltersCheckingManager extends Observable {
 				String oemNumber = filter.getOemNumber();
 				
 				if(oemNumber.startsWith("0")){
+					// nie zadziala w przypadku wczytania z pliku xml bo daje nowa nazwe dla oem tagu niezgodna z ta z xml
 					Filter filterWithoutLeadingZeros = Filter.createFilterUsingOEMnumber(Utils.getRidOfLeadingZeros(oemNumber));
 					addEquivalentsToFilterUsingSuppliedChecker(filterWithoutLeadingZeros, checker);
-					filter.addEquivalentQQ(filterWithoutLeadingZeros, filter.getProperties().get(filter.getProperties().size()-1).getPropertyName().substring(11, 13));
-					//filter.addEquivalents(filterWithoutLeadingZeros.getEquivalents()); do dzialania newfilter implementation
+					
+					filterWithoutLeadingZeros.adjustEquivalentsNumerationToFitThoseFromFilter(filter);
+					filter.addEquivalent(filterWithoutLeadingZeros);
 				}
 			}
 		}		
 	}
-	
-	
+
+
 	private void addEquivalentsToFilterUsingSuppliedChecker(Filter filter, FilterChecker checker) {
 		// TODO this try catch is only for testing purposes
 		try{	
-			FilterEquivalents newEquivalents = checker.getEquivalentsFor(filter);
-			filter.addEquivalents(newEquivalents);
+			FilterEquivalents equivalents = checker.getEquivalentsFor(filter);
+			filter.addEquivalents(equivalents);
 		}
 		catch(Exception e){
 			e.printStackTrace();
