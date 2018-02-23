@@ -14,19 +14,19 @@ public class FilterEquivalents {
 		return equivalents;
 	}
 
-	public void createAndAddEquivalent(String checkerName, String equivalentOEM, String equvalentBrand, String equivalentNumber, int propIdx, String[]... additionalPropertiesWithNames) {
+	public void findAndAddEquivalent(String checkerName, String equivalentOEM, String equvalentBrand, String equivalentNumber, int propIdx, String[]... additionalPropertiesWithNames) {
 		Filter newEquivalent = createEquivalent(checkerName, equivalentOEM, equvalentBrand, equivalentNumber, propIdx, additionalPropertiesWithNames);
 		this.addEquivalent(newEquivalent);
 	}
 	
 	private Filter createEquivalent(String checkerName, String equivalentOEM, String equvalentBrand, String equivalentNumber, int propIdx, String[]... additionalPropertiesWithNames){
 		// Create new properties with brand and number values and add them to list of replacement's properties
-		FilterProperty searchResultOEMnameProperty = new FilterProperty(prepareFullPropertyNameForEquivalent(checkerName, "OEM", propIdx), equivalentOEM);
+		FilterProperty equivalentOEMnameProperty = new FilterProperty(prepareFullPropertyNameForEquivalent(checkerName, "OEM", propIdx), equivalentOEM);
 		FilterProperty equivalentBrandProperty = new FilterProperty(prepareFullPropertyNameForEquivalent(checkerName, "brand", propIdx), equvalentBrand);
 		FilterProperty equivalentNumberProperty = new FilterProperty(prepareFullPropertyNameForEquivalent(checkerName, "replacement", propIdx), equivalentNumber);
 		
 		List<FilterProperty> properties = new ArrayList<>();
-		properties.add(searchResultOEMnameProperty);
+		properties.add(equivalentOEMnameProperty);
 		properties.add(equivalentBrandProperty);
 		properties.add(equivalentNumberProperty);
 		

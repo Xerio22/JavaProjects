@@ -49,7 +49,7 @@ public class DonaldsonChecker extends FilterChecker {
 			equivalentProduct = m.group(4);
 			equivalentNotes = m.group(5);
 
-			equivalentsForThisOem.createAndAddEquivalent(
+			equivalentsForThisOem.findAndAddEquivalent(
 					getCheckerName(), 
 					equivalentOEMNumber, 
 					equivalentOEM, 

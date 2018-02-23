@@ -44,7 +44,7 @@ public class HifiChecker extends FilterChecker {
 				equivalentOEM = m.group(2);
 				equivalentNumber = m.group(3);
 
-				equivalentsForThisOem.createAndAddEquivalent(
+				equivalentsForThisOem.findAndAddEquivalent(
 						getCheckerName(), 
 						equivalentOEMNumber, 
 						equivalentOEM, 
