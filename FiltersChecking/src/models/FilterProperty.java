@@ -29,9 +29,8 @@ public class FilterProperty {
 		return propertyName + ": " + propertyValue;
 	}
 
-	public void getRidOfWhiteSpaces() {
+	public void getRidOfWhiteSpacesFromPropertyName() {
 		propertyName = propertyName.replaceAll("\\s", "_");
-		//propertyValue = propertyValue.replaceAll("\\s", "_");
 	}
 
 	public void setPropertyValue(String nameWithoutZeros) {
