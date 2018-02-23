@@ -14,7 +14,7 @@ public class FilterEquivalents {
 		return equivalents;
 	}
 
-	public void findAndAddEquivalent(String checkerName, String equivalentOEM, String equvalentBrand, String equivalentNumber, int propIdx, String[]... additionalPropertiesWithNames) {
+	public void createAndAddEquivalent(String checkerName, String equivalentOEM, String equvalentBrand, String equivalentNumber, int propIdx, String[]... additionalPropertiesWithNames) {
 		Filter newEquivalent = createEquivalent(checkerName, equivalentOEM, equvalentBrand, equivalentNumber, propIdx, additionalPropertiesWithNames);
 		this.addEquivalent(newEquivalent);
 	}
