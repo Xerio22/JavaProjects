@@ -107,13 +107,10 @@ public class FiltersListManagementView extends JPanel {
 
 	private void addActLsnForAddBtn() {
 		addFilterToListButton.addActionListener(buttonClicked -> {
-			String OEMnumber = getOemNumber();
+			String OEMnumber = getOemNumberFromUserInputAndRemoveSpaces();
 			clearInputFields();
 			
-			OEMnumber = OEMnumber.replaceAll("\\s", "");
-			
 			Filter newFilter = Filter.createFilterUsingOEMnumber(OEMnumber);
-			
 			filtersListModel.addElement(newFilter);
 			
 			filterOEMnumberField.requestFocus();
@@ -121,8 +118,8 @@ public class FiltersListManagementView extends JPanel {
 	}
 
 	
-	private String getOemNumber() {
-		return filterOEMnumberField.getText();
+	private String getOemNumberFromUserInputAndRemoveSpaces() {
+		return filterOEMnumberField.getText().replaceAll("\\s", "");
 	}
 
 	
