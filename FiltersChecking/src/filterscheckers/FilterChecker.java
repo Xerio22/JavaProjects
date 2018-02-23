@@ -145,16 +145,6 @@ public abstract class FilterChecker extends Observable {
 		return filter;
 	}
 	
-//	public List<String> getColumnsNames() {
-//	return new ArrayList<>(
-//		Arrays.asList(
-//			"Znaleziony numer OEM",
-//			"OEM",
-//			"Zamiennik"
-//		)
-//	);
-//}
-	
 	protected abstract FilterEquivalents parseServerResponseAndGetEquivalents(String serverResponse);
 	public abstract String getCheckerName();
 }
