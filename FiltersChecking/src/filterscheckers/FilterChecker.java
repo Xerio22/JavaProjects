@@ -22,13 +22,12 @@ public abstract class FilterChecker extends Observable {
 	private String state;
 	private Filter filter;
 	
+	
 	public FilterChecker(ServerConnectionHandler serverConnectionHandler, String successResponse, String blockedByServerResponse){
-		this.serverConnectionHandler = serverConnectionHandler;
-		this.successResponse = successResponse;
-		this.blockedByServerResponse = blockedByServerResponse;
-		this.failureResponse = UNSET_FAILURE_RESPONSE;
+		this(serverConnectionHandler, successResponse, blockedByServerResponse, UNSET_FAILURE_RESPONSE);
 	}
 
+	
 	public FilterChecker(ServerConnectionHandler serverConnectionHandler, String successResponse, String blockedByServerResponse, String failureResponse){
 		this.serverConnectionHandler = serverConnectionHandler;
 		this.successResponse = successResponse;
@@ -58,7 +57,6 @@ public abstract class FilterChecker extends Observable {
 
 
 	private FilterEquivalents findEquivalentsOnServer() {
-		// TODO maybe put serverResponse as a field and access in checkers by using getter?
 		String serverResponse = serverConnectionHandler.getServerResponse();
 
 		if(isAnyReplacementPresentInServerResponse(serverResponse)){
