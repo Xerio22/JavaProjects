@@ -23,7 +23,6 @@ public class FiltersCheckingManager extends Observable {
 	private List<FilterChecker> selectedCheckers;
 	
 	public FiltersCheckingManager(FiltersReader filtersReader, ConnectionInformationView infoView) {
-		/* Create FilterReader */
 		this.filtersReader = filtersReader;	
 		
 		/* Prepare Observer for connections */
