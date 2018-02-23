@@ -15,36 +15,29 @@ public class Filter {
 	private List<FilterProperty> filterProperties = new ArrayList<>();
 	private String oemNumberTagName = "OEM_Number";
 
-	private Filter(String OEMnumber){
-		this.addProperty(oemNumberTagName, OEMnumber);
-	}
 	
 	public static Filter createFilterUsingOEMnumber(String OEMnumber) {
 		return new Filter(OEMnumber);
 	}
 	
-	
-	public static Filter createFilterUsingBrandNameAndOEMnumber(String brandName, String OEMnumber) {
-		return new Filter(brandName, OEMnumber);
+	private Filter(String OEMnumber){
+		this.addProperty(oemNumberTagName, OEMnumber);
 	}
 	
-	private Filter(String brandName, String OEMnumber){
-		this(OEMnumber);
-		this.addProperty("Brand", brandName);
+	private void addProperty(String propertyName, String propertyValue){
+		FilterProperty fp = new FilterProperty(propertyName, propertyValue);
+		this.addPropertyWithoutWhiteSpaces(fp);
+	}
+	
+	private void addPropertyWithoutWhiteSpaces(FilterProperty property){
+		property.getRidOfWhiteSpacesFromPropertyName();
+		this.filterProperties.add(property);
 	}
 	
 	
-	private Filter(Filter filter){
-		for (FilterProperty prop : filter.filterProperties) {
-			FilterProperty filterProperty = new FilterProperty(prop.getPropertyName(), prop.getPropertyValue());
-			this.filterProperties.add(filterProperty);
-		}
+	public static Filter createFilterFromXmlElement(Element zamiennik, String oemNumberTagName) {
+		return new Filter(zamiennik, oemNumberTagName);
 	}
-	
-	public static Filter createFilterUsingExistingOne(Filter filter) {
-		return new Filter(filter);
-	}
-	
 	
 	private Filter(Element zamiennik, String oemNumberTagName) {
 		this.oemNumberTagName = oemNumberTagName;
@@ -63,27 +56,50 @@ public class Filter {
 		}
 	}
 	
-	public static Filter createFilterFromXmlElement(Element zamiennik, String oemNumberTagName) {
-		return new Filter(zamiennik, oemNumberTagName);
-	}
-	
-	
-	private Filter(List<FilterProperty> filterProperties) {
-		this.filterProperties = filterProperties;
-	}
 	
 	public static Filter createFilterFromProperties(List<FilterProperty> filterProperties) {
 		return new Filter(filterProperties);
 	}
+	
+	private Filter(List<FilterProperty> filterProperties) {
+		this.filterProperties = filterProperties;
+	}
 
 	
-	public String getPropertyValueByName(String tagName) {
-		for(FilterProperty fp : filterProperties){
-			if(fp.getPropertyName().equals(tagName)){
-				return fp.getPropertyValue();
+	public void adjustEquivalentsNumerationToFitThoseFromFilter(Filter filter) {
+		int numberOfLastEquivalent = filter.getNumberOfLastEquivalent();
+		int equivalentNewNumber = numberOfLastEquivalent + 1;
+		
+		List<FilterProperty> props = new ArrayList<>();
+		
+		int prev = 1;
+		for(FilterProperty fp : this.getProperties()){
+			if(!fp.getPropertyName().equals("OEM_Number")){
+				
+				if(!fp.getPropertyName().contains(prev+"")){
+					prev++;
+					equivalentNewNumber++;
+				}
+				
+				FilterProperty ff = new FilterProperty(fp.getPropertyName().replaceAll(prev+"", equivalentNewNumber + ""), fp.getPropertyValue());
+				props.add(ff);
 			}
 		}
-		return null;
+		
+		this.replaceProperties(props);
+	}
+	
+	public int getNumberOfLastEquivalent() {
+		if(this.getProperties().size() == 1){
+			return 0;
+		}
+		
+		String equivalentNumberString = this.getProperties()
+										    .get(this.getProperties().size()-1)
+										    .getPropertyName()
+										    .split("_")[2];
+		
+		return Integer.parseInt(equivalentNumberString);
 	}
 	
 	
@@ -97,33 +113,40 @@ public class Filter {
 		this.addProperties(newEquivalent.getProperties());
 	}
 	
-	public void addProperties(List<FilterProperty> properties) {
+	private void addProperties(List<FilterProperty> properties) {
 		for(FilterProperty fp : properties){
 			this.addProperty(fp);
 		}
 	}
 
-	public void addProperty(FilterProperty property){
+	private void addProperty(FilterProperty property){
 		this.filterProperties.add(property);
 	}
 	
-	public void addPropertyWithoutWhiteSpaces(FilterProperty property){
-		property.getRidOfWhiteSpaces();
-		this.filterProperties.add(property);
-	}
 	
-	public void addProperty(String propertyName, String propertyValue){
-		FilterProperty fp = new FilterProperty(propertyName, propertyValue);
-		this.addPropertyWithoutWhiteSpaces(fp);
-	}
-	
-	
-	@SuppressWarnings("unused")
-	private boolean propertyContainsWhiteSpaces(FilterProperty property) {
-		return property.getPropertyName().contains("\\s") || 
-			   property.getPropertyValue().contains("\\s");
+	public List<FilterProperty> getProperties() {
+		return filterProperties;
 	}
 
+
+	public String getOemNumber() {
+		return getPropertyValueByName(oemNumberTagName);
+	}
+	
+	public String getPropertyValueByName(String tagName) {
+		for(FilterProperty fp : filterProperties){
+			if(fp.getPropertyName().equals(tagName)){
+				return fp.getPropertyValue();
+			}
+		}
+		return null;
+	}
+	
+	
+	public void replaceProperties(List<FilterProperty> props) {
+		this.filterProperties = props;
+	}
+	
 	
 	@Override
 	public String toString() {
@@ -135,62 +158,4 @@ public class Filter {
 		
 		return sb.toString().trim();
 	}
-
-
-	public List<FilterProperty> getProperties() {
-		return filterProperties;
-	}
-
-
-	public void getRidOfLeadingZeros() {
-		String name = this.getPropertyValueByName(Utils.obcy_skrot);
-		
-		String nameWithoutZeros = null;
-		Pattern p = Pattern.compile("(0*)(.*)");
-		Matcher m = p.matcher(name);
-		
-		if(m.matches()){
-			nameWithoutZeros = m.group(2);
-		}
-	
-		
-		for(int i = 0; i < filterProperties.size(); i++){
-			if(filterProperties.get(i).getPropertyValue().equals(name)){
-				filterProperties.get(i).setPropertyValue(nameWithoutZeros);
-			}
-		}
-	}
-
-	public String getOemNumber() {
-		return this.getPropertyValueByName(oemNumberTagName);//Utils.OEM_NUMBER_TAG_NAME);
-	}
-
-	public void addEquivalentQQ(Filter filterWithoutLeadingZeros, String substring) {
-		int i = 0;
-		try{
-			i = Integer.parseInt(substring) + 1;
-		}
-		catch(Exception e){
-			i = Integer.parseInt(substring.substring(0, 1)) + 1;
-		}
-		List<FilterProperty> props = new ArrayList<>();
-		for(FilterProperty fp : filterWithoutLeadingZeros.getProperties()){
-			if(fp.getPropertyName().contains(substring)){
-				FilterProperty ff = new FilterProperty(fp.getPropertyName().replaceAll(substring, i + ""), fp.getPropertyValue());
-				props.add(ff);
-			}
-		}
-		Filter newFilter = Filter.createFilterFromProperties(props);
-		addEquivalent(newFilter);
-	}
 }
-
-
-
-
-//public Filter(List<Element> properties) {
-//for (Element prop : properties) {
-//	FilterProperty filterProperty = new FilterProperty(prop);
-//	filterProperties.add(filterProperty);
-//}
-//}
