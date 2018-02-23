@@ -68,7 +68,7 @@ public class MannChecker extends FilterChecker {
 					equivalentAvailabilityInfo = "Not available";
 				}
 				
-				equivalentsForThisOem.findAndAddEquivalent(
+				equivalentsForThisOem.createAndAddEquivalent(
 						getCheckerName(), 
 						equivalentOEMNumber, 
 						equivalentOEM, 
