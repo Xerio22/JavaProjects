@@ -168,7 +168,7 @@ public class Filter {
 	public void addEquivalentQQ(Filter filterWithoutLeadingZeros, String substring) {
 		int i = 0;
 		try{
-			i = Integer.parseInt(substring);
+			i = Integer.parseInt(substring) + 1;
 		}
 		catch(Exception e){
 			i = Integer.parseInt(substring.substring(0, 1)) + 1;
