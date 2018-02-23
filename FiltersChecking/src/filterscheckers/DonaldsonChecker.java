@@ -27,17 +27,17 @@ public class DonaldsonChecker extends FilterChecker {
 				+ "<span class=\"type hidden\">UPC</span>"
 				+ ".*?"
 				+ "<span class=\".*?\">(.*?)</span>\\s*" // donaldson number
-				+ "</td>\\s*"
-				+ "<td class=\"p-name\">(.*?)</td>\\s*" // product
-				+ "<td class=\"p-notes\">(.*?)</td>\\s*"); // notes"
+				+ "</td>\\s*");
+//				+ "<td class=\"p-name\">(.*?)</td>\\s*" // product
+//				+ "<td class=\"p-notes\">(.*?)</td>\\s*"); // notes"
 
 		Matcher m = p.matcher(serverResponse);
 		
 		String equivalentOEMNumber = null;
 		String equivalentOEM = null;
 		String equivalentNumber = null;
-		String equivalentProduct = null;
-		String equivalentNotes = null;
+//		String equivalentProduct = null;
+//		String equivalentNotes = null;
 		
 		FilterEquivalents equivalentsForThisOem = new FilterEquivalents();
 		
@@ -46,17 +46,17 @@ public class DonaldsonChecker extends FilterChecker {
 			equivalentOEM = m.group(1);
 			equivalentOEMNumber = m.group(2);
 			equivalentNumber = m.group(3);
-			equivalentProduct = m.group(4);
-			equivalentNotes = m.group(5);
+//			equivalentProduct = m.group(4);
+//			equivalentNotes = m.group(5);
 
 			equivalentsForThisOem.createAndAddEquivalent(
 					getCheckerName(), 
 					equivalentOEMNumber, 
 					equivalentOEM, 
 					equivalentNumber, 
-					propIdx, 
-					new String[][]{{"Product", equivalentProduct},
-								   {"Notes", equivalentNotes}}
+					propIdx
+//					new String[][]{{"Product", equivalentProduct},
+//								   {"Notes", equivalentNotes}}
 			);
 			
 			propIdx++;

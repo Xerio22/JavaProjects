@@ -53,7 +53,7 @@ public class MannChecker extends FilterChecker {
 			String equivalentOEMNumber = null;
 			String equivalentOEM = null;
 			String equivalentNumber = null;
-			String equivalentAvailabilityInfo = null;
+//			String equivalentAvailabilityInfo = null;
 			
 			FilterEquivalents equivalentsForThisOem = new FilterEquivalents();
 			
@@ -62,19 +62,19 @@ public class MannChecker extends FilterChecker {
 				equivalentOEMNumber = m.group(1);
 				equivalentOEM = m.group(2);
 				equivalentNumber = m.group(3);
-				equivalentAvailabilityInfo = m.group(4);
+//				equivalentAvailabilityInfo = m.group(4);
 				
-				if(equivalentAvailabilityInfo.equals("")){
-					equivalentAvailabilityInfo = "Not available";
-				}
+//				if(equivalentAvailabilityInfo.equals("")){
+//					equivalentAvailabilityInfo = "Not available";
+//				}
 				
 				equivalentsForThisOem.createAndAddEquivalent(
 						getCheckerName(), 
 						equivalentOEMNumber, 
 						equivalentOEM, 
 						equivalentNumber, 
-						propIdx,
-						new String[]{"Availability", equivalentAvailabilityInfo}
+						propIdx
+//						new String[]{"Availability", equivalentAvailabilityInfo}
 				);
 				
 				propIdx++;
