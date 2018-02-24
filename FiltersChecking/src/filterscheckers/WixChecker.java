@@ -45,8 +45,8 @@ public class WixChecker extends FilterChecker {
 		
 		int propIdx = 1;	
 		while(m.find()){
-			equivalentOEM = m.group(1);
-			equivalentOEMNumber = m.group(2);
+			equivalentOEM = m.group(2);
+			equivalentOEMNumber = m.group(1);
 			equivalentNumber = m.group(3);
 
 			equivalentsForThisOem.createAndAddEquivalent(
