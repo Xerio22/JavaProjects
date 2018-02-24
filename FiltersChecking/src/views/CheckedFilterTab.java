@@ -15,7 +15,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import models.Filter;
-import models.FilterProperty;
+import utils.HtmlCheckedFilterViewBuilder;
+import utils.HtmlCodeBuilder;
 import utils.Utils;
 
 public class CheckedFilterTab extends JPanel {
@@ -23,11 +24,9 @@ public class CheckedFilterTab extends JPanel {
 	
 	private JFXPanel mainPanel = new JFXPanel();
 	private final VBox vbox = new VBox();
-	private Filter filter;
 	
 	public CheckedFilterTab(Filter filter) {
 		this.setLayout(new BorderLayout());
-		this.filter = filter;
 		
 		vbox.setSpacing(5);
         vbox.setPadding(new Insets(10, 0, 0, 10));
@@ -35,59 +34,21 @@ public class CheckedFilterTab extends JPanel {
 		Platform.runLater(new Runnable() { 
             @Override
             public void run() {
-            	StringBuilder htmlCodeBuilder = new StringBuilder();
+            	HtmlCodeBuilder htmlCodeBuilder = new HtmlCheckedFilterViewBuilder();
+            	htmlCodeBuilder.insertStylesheet("https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css");
+            	htmlCodeBuilder.insertScript("https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js");
             	
-            	htmlCodeBuilder.append(Utils.HTML_TOP_PART);
+            	htmlCodeBuilder.provideRequiredObject(filter);
+            	
             	for(FilterChecker checker : Utils.getFiltersCheckers()){
-            		int columnsCount = 0;
-            		
-            		htmlCodeBuilder.append("<h4 style=\"text-align: center;\">" + checker.getCheckerName() + "</h4>");
-            		htmlCodeBuilder.append("<table class=\"striped highlight centered\">");
-            			htmlCodeBuilder.append("<thead>");
-		            		htmlCodeBuilder.append("<tr>");
-			            		for(FilterProperty fp : filter.getProperties()){
-				            		if(isPropertyConcernsThisChecker(fp, checker)){
-				            			if(fp.getPropertyName().contains("1")){
-				            				htmlCodeBuilder.append("<th>");
-				            					htmlCodeBuilder.append(fp.getPropertyName().replaceAll(checker.getCheckerName() + "_equiv_\\d+_", ""));
-						            		htmlCodeBuilder.append("</th>");
-						            		
-											columnsCount++;
-				            			}
-				            		}
-				            	}
-		            		htmlCodeBuilder.append("</tr>");
-	            		htmlCodeBuilder.append("</thead>");
-	            		htmlCodeBuilder.append("<tbody>");
-	            			int currentColumn = 0;
-	            		
-		            		for(FilterProperty fp : filter.getProperties()){
-			            		if(isPropertyConcernsThisChecker(fp, checker)){
-			            			if(currentColumn == 0){
-										htmlCodeBuilder.append("<tr>");
-			            			}
-			            			
-			            			htmlCodeBuilder.append("<td>");
-	            					htmlCodeBuilder.append(fp.getPropertyValue());
-	            					htmlCodeBuilder.append("</td>");
-			            			
-	            					currentColumn++;
-	            					
-			            			if(currentColumn  == columnsCount){
-										htmlCodeBuilder.append("</tr>");
-										currentColumn = 0;
-			            			}
-			            		}
-			            	}
-	            		htmlCodeBuilder.append("</tbody>");
-	            	htmlCodeBuilder.append("</table><br><br><br><br>");
+            		htmlCodeBuilder.provideRequiredObject(checker);
+            		htmlCodeBuilder.createTable();
             	}
             	
-            	htmlCodeBuilder.append(Utils.HTML_BOTTOM_PART);
-            	
-				String htmlCode = htmlCodeBuilder.toString();
+				String htmlCode = htmlCodeBuilder.getFullHtmlCode();
 				setupHtmlView(htmlCode);
             }
+            
             
             private void setupHtmlView(String generatedHtmlCode){   
                 final WebView webView = new WebView();
@@ -103,11 +64,6 @@ public class CheckedFilterTab extends JPanel {
             	Scene mainScene = new Scene(root);
         		mainPanel.setScene(mainScene);
             }
-
-
-			private boolean isPropertyConcernsThisChecker(FilterProperty filterProperty, FilterChecker checker) {
-				return filterProperty.getPropertyName().contains(checker.getCheckerName());
-			}
 		});
 
 		this.add(mainPanel);
