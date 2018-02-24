@@ -57,17 +57,6 @@ public class Utils {
 //			new CumminsChecker()
 		};
 
-	public static final String HTML_TOP_PART = 
-			"<!DOCTYPE html>"
-			+ "<html>"
-			+ "<head>"
-			+ "<title>Wyniki wyszukiwania</title>"
-			+ "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css\">"
-			+ "<script src=\"https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js\"></script>"
-			+ "</head>"
-			+ "<body>";
-
-	public static final String HTML_BOTTOM_PART = "</body></html>";
     
 	public static final List<FilterChecker> getFiltersCheckers(){ 
 		return new ArrayList<>(Arrays.asList(checkers));
