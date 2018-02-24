@@ -19,19 +19,19 @@ import utils.HtmlCheckedFilterViewBuilder;
 import utils.HtmlCodeBuilder;
 import utils.Utils;
 
-public class CheckedFilterTab extends JPanel {
-	private static final long serialVersionUID = 6214439754839595927L;
-	
-	private JFXPanel mainPanel = new JFXPanel();
+public class CheckedFilterTab implements Tabbed {
+	private JPanel panel = new JPanel();
 	private final VBox vbox = new VBox();
 	
 	public CheckedFilterTab(Filter filter) {
-		this.setLayout(new BorderLayout());
+		panel.setLayout(new BorderLayout());
 		
 		vbox.setSpacing(5);
         vbox.setPadding(new Insets(10, 0, 0, 10));
 		
-		Platform.runLater(new Runnable() { 
+		Platform.runLater(new Runnable() {
+			private JFXPanel mainPanel = new JFXPanel();
+			
             @Override
             public void run() {
             	HtmlCodeBuilder htmlCodeBuilder = new HtmlCheckedFilterViewBuilder();
@@ -47,6 +47,8 @@ public class CheckedFilterTab extends JPanel {
             	
 				String htmlCode = htmlCodeBuilder.getFullHtmlCode();
 				setupHtmlView(htmlCode);
+				
+				panel.add(mainPanel);
             }
             
             
@@ -65,7 +67,10 @@ public class CheckedFilterTab extends JPanel {
         		mainPanel.setScene(mainScene);
             }
 		});
+	}
 
-		this.add(mainPanel);
+	@Override
+	public JPanel getPanel() {
+		return panel;
 	}
 }
