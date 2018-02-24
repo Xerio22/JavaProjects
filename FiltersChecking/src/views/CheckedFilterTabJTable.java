@@ -10,8 +10,8 @@ import javax.swing.table.DefaultTableModel;
 import models.Filter;
 import models.FilterProperty;
 
-public class CheckedFilterTabJTable extends JPanel {
-	private static final long serialVersionUID = 7159948324475908470L;
+public class CheckedFilterTabJTable implements Tabbed {
+	private JPanel panel = new JPanel();
 	private Filter checkedFilter;
 	
 	public CheckedFilterTabJTable(Filter checkedFilter) {
@@ -40,8 +40,13 @@ public class CheckedFilterTabJTable extends JPanel {
 		
 		
 		
-		this.setLayout(new BorderLayout());
-		this.add(new JScrollPane(table));
+		panel.setLayout(new BorderLayout());
+		panel.add(new JScrollPane(table));
+	}
+
+	@Override
+	public JPanel getPanel() {
+		return panel;
 	}
 
 }
