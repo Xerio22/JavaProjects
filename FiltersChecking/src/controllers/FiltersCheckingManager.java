@@ -71,33 +71,9 @@ public class FiltersCheckingManager extends Observable {
 			removePreviousObserversFromChecker(checker);
 			putObserversToChecker(checker);
 			
-			addEquivalentsToFilterUsingSuppliedChecker(filter, checker);
-			
-			if(checker.getCheckerName().equals("HIFI")){
-				String oemNumber = filter.getOemNumber();
-				
-				if(oemNumber.startsWith("0")){
-					// nie zadziala w przypadku wczytania z pliku xml bo daje nowa nazwe dla oem tagu niezgodna z ta z xml
-					Filter filterWithoutLeadingZeros = Filter.createFilterUsingOEMnumber(Utils.getRidOfLeadingZeros(oemNumber));
-					addEquivalentsToFilterUsingSuppliedChecker(filterWithoutLeadingZeros, checker);
-					
-					filterWithoutLeadingZeros.adjustEquivalentsNumerationToFitThoseFromFilter(filter);
-					filter.addEquivalent(filterWithoutLeadingZeros);
-				}
-			}
-		}		
-	}
-
-
-	private void addEquivalentsToFilterUsingSuppliedChecker(Filter filter, FilterChecker checker) {
-		// TODO this try catch is only for testing purposes
-		try{	
 			FilterEquivalents equivalents = checker.getEquivalentsFor(filter);
 			filter.addEquivalents(equivalents);
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
+		}		
 	}
 
 

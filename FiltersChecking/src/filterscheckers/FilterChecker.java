@@ -6,6 +6,7 @@ import java.util.Observer;
 import connectionhandlers.ServerConnectionHandler;
 import models.Filter;
 import models.FilterEquivalents;
+import utils.Utils;
 
 public abstract class FilterChecker extends Observable {
 	public static final String STATE_EQUIVALENT_FOUND = "Equiv_found";
@@ -141,9 +142,22 @@ public abstract class FilterChecker extends Observable {
 		return state;
 	}
 	
+	
 	public Filter getFilter() {
 		return filter;
 	}
+	
+	
+	protected Filter getFilterEquivalentForSuppliedFilterUsingOemNumberWithoutLeadingZeros(Filter filter) {
+		Filter filterWithoutLeadingZeros = Filter.createFilterUsingOEMnumber(Utils.getRidOfLeadingZeros(filter.getOemNumber()));
+		
+		FilterEquivalents fwlzEquivalents = this.getEquivalentsFor(filterWithoutLeadingZeros);
+		filterWithoutLeadingZeros.addEquivalents(fwlzEquivalents);
+		filterWithoutLeadingZeros.adjustEquivalentsNumerationToFitThoseFromFilter(filter);
+		
+		return filterWithoutLeadingZeros;
+	}
+	
 	
 	protected abstract FilterEquivalents parseServerResponseAndGetEquivalents(String serverResponse);
 	public abstract String getCheckerName();
