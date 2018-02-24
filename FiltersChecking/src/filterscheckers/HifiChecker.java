@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import connectionhandlers.ServerConnectionHandler;
 import connectionhandlers.URLBasedConnectionHandler;
+import models.Filter;
 import models.FilterEquivalents;
 
 public class HifiChecker extends FilterChecker {
@@ -61,5 +62,17 @@ public class HifiChecker extends FilterChecker {
 	@Override
 	public String getCheckerName() {
 		return CHECKER_NAME;
+	}
+	
+	@Override
+	public FilterEquivalents getEquivalentsFor(Filter filter) {
+		FilterEquivalents equivalents = super.getEquivalentsFor(filter);
+		
+		if(filter.getOemNumber().startsWith("0")){
+			Filter filterWithoutLeadingZeros = getFilterEquivalentForSuppliedFilterUsingOemNumberWithoutLeadingZeros(filter);
+			equivalents.addEquivalent(filterWithoutLeadingZeros);
+		}
+		
+		return equivalents;
 	}
 }
