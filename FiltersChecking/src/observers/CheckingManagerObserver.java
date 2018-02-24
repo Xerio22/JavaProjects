@@ -5,7 +5,6 @@ import java.util.Observer;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import controllers.FiltersCheckingManager;
@@ -13,6 +12,7 @@ import models.Filter;
 import views.CheckedFilterTab;
 import views.FiltersListManagementView;
 import views.TabTitle;
+import views.Tabbed;
 
 public class CheckingManagerObserver implements Observer {
 	private JTabbedPane tabsPanel;
@@ -49,8 +49,8 @@ public class CheckingManagerObserver implements Observer {
 	}
 
 	
-	private void addCloseableTabToTabsPanel(String title, JPanel checkedFilterTab) {
-		tabsPanel.addTab(title, checkedFilterTab);
+	private void addCloseableTabToTabsPanel(String title, Tabbed checkedFilterTab) {
+		tabsPanel.addTab(title, checkedFilterTab.getPanel());
 		TabTitle tabTitle = new TabTitle(title, tabsPanel);
 		tabsPanel.setTabComponentAt(tabsPanel.getTabCount()-1, tabTitle);
 	}
