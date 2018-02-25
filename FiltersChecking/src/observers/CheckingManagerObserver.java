@@ -11,7 +11,7 @@ import controllers.FiltersCheckingManager;
 import models.Filter;
 import views.CheckedFilterTab;
 import views.FiltersListManagementView;
-import views.TabTitle;
+import views.TabTitlePanel;
 import views.Tabbed;
 
 public class CheckingManagerObserver implements Observer {
@@ -51,7 +51,7 @@ public class CheckingManagerObserver implements Observer {
 	
 	private void addCloseableTabToTabsPanel(String title, Tabbed checkedFilterTab) {
 		tabsPanel.addTab(title, checkedFilterTab.getPanel());
-		TabTitle tabTitle = new TabTitle(title, tabsPanel);
+		TabTitlePanel tabTitle = new TabTitlePanel(title, tabsPanel);
 		tabsPanel.setTabComponentAt(tabsPanel.getTabCount()-1, tabTitle);
 	}
 
