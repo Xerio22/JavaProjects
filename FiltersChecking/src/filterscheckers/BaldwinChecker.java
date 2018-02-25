@@ -23,8 +23,6 @@ public class BaldwinChecker extends FilterChecker {
 
 	@Override
 	protected FilterEquivalents parseServerResponseAndGetEquivalents(String serverResponse) {
-		System.out.println(serverResponse);
-		
 		Pattern p = Pattern.compile(
 			"<tr id=\".*?\">\\s*"
 			+ "<td class=\"comp_no\">\\s*"
