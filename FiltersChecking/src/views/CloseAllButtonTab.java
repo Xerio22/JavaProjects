@@ -39,7 +39,7 @@ public class CloseAllButtonTab extends JPanel {
 		closeButton.addActionListener(buttonClicked -> {
 			int answer = JOptionPane.showConfirmDialog(
 					tabbedPane, 
-					"Czy na pewno chcesz zamknąć wszystkie karty?", "Zamknięcie wszystkich kart", 
+					"Czy na pewno chcesz zamknąć wszystkie karty?", "", 
 					JOptionPane.OK_CANCEL_OPTION, 
 					JOptionPane.WARNING_MESSAGE);
 			if(answer == JOptionPane.OK_OPTION){
