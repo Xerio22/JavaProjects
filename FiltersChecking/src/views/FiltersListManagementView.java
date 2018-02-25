@@ -14,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
@@ -107,7 +108,13 @@ public class FiltersListManagementView extends JPanel {
 
 	private void addActLsnForAddBtn() {
 		addFilterToListButton.addActionListener(buttonClicked -> {
+			if(!isInputValid()) {
+				filterOEMnumberField.requestFocus();
+				return;
+			}
+			
 			String OEMnumber = getOemNumberFromUserInputAndRemoveSpaces();
+			
 			clearInputFields();
 			
 			Filter newFilter = Filter.createFilterUsingOEMnumber(OEMnumber);
@@ -117,6 +124,76 @@ public class FiltersListManagementView extends JPanel {
 		});
 	}
 
+
+	private boolean isInputValid() {
+		String OEMnumber = getOemNumberFromUserInputAndRemoveSpaces();
+		
+		if(hasFilterBeenAlreadySearched(OEMnumber)) {
+			int answer = showRepetitiveFilterSearchConfirmDialog(OEMnumber); 
+			if(answer != JOptionPane.OK_OPTION){
+				return false;
+			}
+		}
+		
+		if(isFilterAlreadyOnList(OEMnumber)) {
+			showRepetitiveFilterOnListMessageDialog(OEMnumber); 
+			clearInputFields();
+			return false;
+		}
+		
+		return true;
+	}
+
+
+	private boolean isFilterAlreadyOnList(String newlyEnteredOemNumber) {
+		for (int i = 0; i < filtersListModel.getSize(); i++) {
+			Filter filterOnList = filtersListModel.getElementAt(i);
+			String filterOnListOemNumber = filterOnList.getOemNumber();
+			if(filterOnListOemNumber.equals(newlyEnteredOemNumber)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	
+	private void showRepetitiveFilterOnListMessageDialog(String oemNumber) {
+		JOptionPane.showMessageDialog(
+			this, 
+			"Filtr o numerze " + oemNumber + " znajduje się już na liście!"
+		);
+	}
+	
+
+	private boolean hasFilterBeenAlreadySearched(String filterOemNumber) {
+		// from 2 because of first two reserved tabs (close all and start)
+		for (int i = 2; i < tabsPanel.getTabCount(); i++) {
+			TabTitlePanel tabTitlePanel = ((TabTitlePanel) tabsPanel.getTabComponentAt(i));
+			String tabTitle = tabTitlePanel.getTitle();
+			if(filterOemNumber.equals(tabTitle)){
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+
+	private int showRepetitiveFilterSearchConfirmDialog(String filterOemNumber) {
+		String[] options = {"Tak", "Nie"};
+		return JOptionPane.showOptionDialog(
+				this,
+				"Zamienniki dla filtra o numerze " + filterOemNumber + " są już znalezione. \n\nCzy chcesz je wyszukać ponownie?", 
+				"", 
+				0,
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				options,
+				null
+		);
+	}
+	
 	
 	private String getOemNumberFromUserInputAndRemoveSpaces() {
 		return filterOEMnumberField.getText().replaceAll("\\s", "");
