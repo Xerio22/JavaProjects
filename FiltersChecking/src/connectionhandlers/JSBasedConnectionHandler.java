@@ -54,7 +54,7 @@ public class JSBasedConnectionHandler extends ServerConnectionHandler {
 	
 	
 	private void configureWebClient(WebClient webClient) {
-		webClient.getOptions().setJavaScriptEnabled(true); //TODO false will be faster but might not work
+		webClient.getOptions().setJavaScriptEnabled(true);
 		webClient.getOptions().setUseInsecureSSL(true);
 		webClient.getOptions().setRedirectEnabled(true);
         webClient.getOptions().setCssEnabled(true);
