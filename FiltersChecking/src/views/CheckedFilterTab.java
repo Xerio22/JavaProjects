@@ -1,6 +1,8 @@
 package views;
 
 import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JPanel;
 
@@ -15,7 +17,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import models.Filter;
-import utils.Utils;
 
 public class CheckedFilterTab implements Tabbed {
 	private JPanel panel = new JPanel();
@@ -37,11 +38,18 @@ public class CheckedFilterTab implements Tabbed {
             	htmlCodeBuilder.insertScript("https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js");
             	
             	htmlCodeBuilder.provideRequiredObject(filter);
-            	
-            	for(FilterChecker checker : Utils.getFiltersCheckers()){
-            		htmlCodeBuilder.provideRequiredObject(checker);
-            		htmlCodeBuilder.createTable();
+            	List<FilterChecker> checkersWithNoResults = new ArrayList<>();
+            	for(FilterChecker checker : FiltersListManagementView.getSelectedCheckers()){
+            		if(filter.hasEquivalentsFromChecker(checker)) {
+            			htmlCodeBuilder.provideRequiredObject(checker);
+                		htmlCodeBuilder.createTable();
+            		}
+            		else {
+						checkersWithNoResults.add(checker);
+            		}
             	}
+            	
+            	appendInfoAboutNoResultForCheckers(htmlCodeBuilder, checkersWithNoResults);
             	
 				String htmlCode = htmlCodeBuilder.getFullHtmlCode();
 				setupHtmlView(htmlCode);
@@ -50,7 +58,19 @@ public class CheckedFilterTab implements Tabbed {
             }
             
             
-            private void setupHtmlView(String generatedHtmlCode){   
+            private void appendInfoAboutNoResultForCheckers(HtmlCodeBuilder htmlCodeBuilder, List<FilterChecker> checkersWithNoResults) {
+            	if(checkersWithNoResults.size() > 0){
+            		for(FilterChecker checker : checkersWithNoResults) {
+	            		htmlCodeBuilder.insertHtmlCodeToBody(
+	        				"<div style=\"font-size:1em; font-weight:bold; margin-left: 1em;\">" + checker.getCheckerName() + " - brak wyników</div>"
+	            		);
+            		}
+            		htmlCodeBuilder.insertHtmlCodeToBody("<br><br>");
+            	}
+			}
+
+
+			private void setupHtmlView(String generatedHtmlCode){   
                 final WebView webView = new WebView();
                 final WebEngine webEngine = webView.getEngine();
                 webEngine.loadContent(generatedHtmlCode);

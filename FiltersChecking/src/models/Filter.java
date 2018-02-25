@@ -7,6 +7,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import filterscheckers.FilterChecker;
+
 public class Filter {
 	private List<FilterProperty> filterProperties = new ArrayList<>();
 	private String oemNumberTagName = "OEM_Number";
@@ -141,6 +143,15 @@ public class Filter {
 	
 	public void replaceProperties(List<FilterProperty> props) {
 		this.filterProperties = props;
+	}
+	
+	
+	public boolean hasEquivalentsFromChecker(FilterChecker checker) {
+		return this.getProperties().stream()
+								   .anyMatch(prop -> 
+								   		prop.getPropertyName()
+								   			.contains(checker.getCheckerName())
+								   	);
 	}
 	
 	

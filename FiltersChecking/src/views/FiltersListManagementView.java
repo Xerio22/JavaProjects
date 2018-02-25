@@ -48,7 +48,7 @@ public class FiltersListManagementView extends JPanel {
 	private JLabel filterOEMnumberLabel = new JLabel("Numer OEM: "); 
 	private JTextField filterOEMnumberField = new JTextField(15);
 	private JButton startProcessingButton = new JButton("Szukaj");
-	private List<JCheckBox> checkBoxes = new ArrayList<>();
+	private static List<JCheckBox> checkBoxes = new ArrayList<>();
 	private FiltersReader filtersReaderFromFile;
 
 	private JPanel checkBoxesPanel = new JPanel(new GridLayout(1, 3));;
@@ -260,7 +260,7 @@ public class FiltersListManagementView extends JPanel {
 	}
 	
 	
-	private List<FilterChecker> getSelectedCheckers() {
+	public static List<FilterChecker> getSelectedCheckers() {
 		List<FilterChecker> selectedCheckers = new ArrayList<>();
 		for(int i = 0; i < checkBoxes.size(); i++){
 			if(checkBoxes.get(i).isSelected()){
