@@ -25,6 +25,9 @@ public class FilterCheckerObserver implements Observer {
 		printSummary(checker, filter);
 		
 		switch(state){
+		case FilterChecker.STATE_SERVER_NOT_RESPONDING:
+			printServerNotResponding(filter.getOemNumber());
+			break;
 		case FilterChecker.STATE_BLOCKED_BY_SERVER:
 			printBlockedInfo();
 			break;
@@ -46,16 +49,20 @@ public class FilterCheckerObserver implements Observer {
 		infoView.printInfo("Wynik wyszukiwania: ");
 	}
 	
-	private void printEquivNotFound() {
-		infoView.printInfoLine("Equivalent not found", Color.RED);
+	private void printServerNotResponding(String oemNumber) {
+		infoView.printInfoLine("Serwer nie odpowiada. Nie mozna pobrac danych dla filtra " + oemNumber, Color.RED);
 	}
-
+	
+	private void printBlockedInfo() {
+		infoView.printInfoLine("Serwer zablokowal polaczenie. Nie mozna pobrac danych.", Color.RED);
+	}
+	
 	private void printEquivFound() {
 		infoView.printInfoLine("Equivalent found", Color.GREEN);
 	}
 
-	private void printBlockedInfo() {
-		infoView.printInfoLine("Serwer zablokowal polaczenie. Nie mozna pobrac danych.", Color.RED);
+	private void printEquivNotFound() {
+		infoView.printInfoLine("Equivalent not found", Color.RED);
 	}
 	
 	private void printBadOemTag() {

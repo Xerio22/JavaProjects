@@ -11,6 +11,7 @@ import views.ConnectionInformationView;
 public class ConnectionObserver implements Observer {
 
 	private ConnectionInformationView infoView;
+	private int triesCount = 1;
 
 	public ConnectionObserver(ConnectionInformationView infoView) {
 		this.infoView = infoView;
@@ -41,6 +42,7 @@ public class ConnectionObserver implements Observer {
 	}
 
 	private void printConnectedInfo() {
+		triesCount = 0;
 		infoView.printInfoLine("Connected");
 	}
 
@@ -49,8 +51,9 @@ public class ConnectionObserver implements Observer {
 	}
 
 	private void printReconnectInfo() {
-		infoView.printInfoLine("(" + LocalTime.now() + ") Przekroczono limit czasu polaczenia z serwerem!", Color.ORANGE);
-		infoView.printInfo("Proba ponownego nawiazania polaczenia nastapi za 10 sekund...", Color.ORANGE);
+		infoView.printInfoLine("(" + LocalTime.now() + ") Przekroczono limit czasu połączenia z serwerem!", Color.ORANGE);
+		infoView.printInfo("Próba ponownego nawiązania połączenia nastąpi za 10 sekund..." + 
+						   "(" + triesCount++ + "/" + ServerConnectionHandler.RECONNECT_TRIES + ")\n\n", Color.ORANGE);
 	}
 
 	private String getMessage(Object arg) {

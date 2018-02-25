@@ -13,6 +13,7 @@ public abstract class FilterChecker extends Observable {
 	public static final String STATE_EQUIVALENT_NOT_FOUND = "Equiv_not_found";
 	public static final String STATE_BLOCKED_BY_SERVER = "Blocked";
 	public static final String STATE_BAD_OEM_TAG = "Bad_oem_tag";
+	public static final String STATE_SERVER_NOT_RESPONDING = "Server_is_not_responding";
 	private static final String UNSET_FAILURE_RESPONSE = "_ufr_";
 	
 	private boolean isServerBlocked = false;
@@ -70,7 +71,12 @@ public abstract class FilterChecker extends Observable {
 
 	
 	public boolean isAnyReplacementPresentInServerResponse(String serverResponse) {
-		if(isEquivalentFound(serverResponse)) {
+		if(isServerNotResponding(serverResponse)) {
+			setState(STATE_SERVER_NOT_RESPONDING);
+			setServerBlocked(false);
+			return false;
+		}
+		else if(isEquivalentFound(serverResponse)) {
 			setState(STATE_EQUIVALENT_FOUND);
 			setServerBlocked(false);
 			return true;
@@ -87,7 +93,12 @@ public abstract class FilterChecker extends Observable {
 		return false;
 	}
 
+	
+	private boolean isServerNotResponding(String serverResponse) {
+		return serverResponse.equals("");
+	}
 
+	
 	private void setState(String state) {
 		this.state = state;
 	}

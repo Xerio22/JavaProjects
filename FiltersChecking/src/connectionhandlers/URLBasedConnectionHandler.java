@@ -29,6 +29,10 @@ public class URLBasedConnectionHandler extends ServerConnectionHandler {
 		
 		BufferedReader br = createConnectionAndOpenStream();
 		
+		if(br == null) {
+			return ""; // return blank response
+		}
+		
 		String serverResponse = getResponseFromServerAndGetRidOfTabs(br);
 		
 		closeBufferedReader(br);
@@ -52,12 +56,14 @@ public class URLBasedConnectionHandler extends ServerConnectionHandler {
 		
 		try{
 			notifyObserverAboutChange(ServerConnectionHandler.CONNECTING_MESSAGE);
+			
 			br = new BufferedReader(new InputStreamReader(uc.getInputStream(), "UTF-8"));
-
+			
 			notifyObserverAboutChange(ServerConnectionHandler.CONNECTED_MESSAGE);
 		}
 		catch(Exception e){
-			while(br == null){
+			int tries = 0;
+			while(br == null && tries++ < ServerConnectionHandler.RECONNECT_TRIES){
 				notifyObserverAboutChange(ServerConnectionHandler.RECONNECT_MESSAGE);
 				
 				br = reconnect(br, uc);

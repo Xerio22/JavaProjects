@@ -7,6 +7,7 @@ public abstract class ServerConnectionHandler extends Observable {
 	public static final String CONNECTING_MESSAGE = "Connecting";
 	public static final String CONNECTED_MESSAGE = "Connected";
 	public static final String URL_ERROR = "URL_error";
+	public static int RECONNECT_TRIES = 5;
 	private String serverUrlString;
 	
 	public ServerConnectionHandler(String serverUrlString) {
