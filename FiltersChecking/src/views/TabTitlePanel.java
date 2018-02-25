@@ -10,13 +10,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-public class TabTitle extends JPanel {
+public class TabTitlePanel extends JPanel {
 	private static final long serialVersionUID = 8100956171144306740L;
 	private JButton closeButton;
 	private String title;
 	private JTabbedPane tabbedPane;
 
-	public TabTitle(String title, JTabbedPane tabbedPane) {
+	public TabTitlePanel(String title, JTabbedPane tabbedPane) {
 		this.title = title;
 		this.tabbedPane = tabbedPane;
 		
@@ -75,5 +75,9 @@ public class TabTitle extends JPanel {
 		this.setOpaque(false);
 		this.add(titleLabel, BorderLayout.CENTER);
 		this.add(closeButton, BorderLayout.EAST);
+	}
+	
+	public String getTitle(){
+		return title;
 	}
 }
