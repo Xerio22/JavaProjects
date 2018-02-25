@@ -10,7 +10,6 @@ import models.Filter;
 import models.FilterEquivalents;
 import observers.ConnectionObserver;
 import observers.FilterCheckerObserver;
-import utils.Utils;
 import views.ConnectionInformationView;
 
 public class FiltersCheckingManager extends Observable {
