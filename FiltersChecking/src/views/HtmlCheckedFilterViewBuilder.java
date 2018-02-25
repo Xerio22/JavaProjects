@@ -1,4 +1,4 @@
-package utils;
+package views;
 
 import filterscheckers.FilterChecker;
 import models.Filter;

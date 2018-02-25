@@ -15,8 +15,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import models.Filter;
-import utils.HtmlCheckedFilterViewBuilder;
-import utils.HtmlCodeBuilder;
 import utils.Utils;
 
 public class CheckedFilterTab implements Tabbed {

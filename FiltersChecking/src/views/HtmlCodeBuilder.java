@@ -1,4 +1,4 @@
-package utils;
+package views;
 
 public abstract class HtmlCodeBuilder {
 	private static final StringBuilder HTML_TOP_PART = new StringBuilder( 
