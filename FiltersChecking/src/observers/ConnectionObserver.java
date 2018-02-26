@@ -2,6 +2,7 @@ package observers;
 
 import java.awt.Color;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -42,7 +43,7 @@ public class ConnectionObserver implements Observer {
 	}
 
 	private void printConnectedInfo() {
-		triesCount = 0;
+		triesCount = 1;
 		infoView.printInfoLine("Connected");
 	}
 
@@ -51,7 +52,8 @@ public class ConnectionObserver implements Observer {
 	}
 
 	private void printReconnectInfo() {
-		infoView.printInfoLine("(" + LocalTime.now() + ") Przekroczono limit czasu połączenia z serwerem!", Color.ORANGE);
+		infoView.printInfoLine("(" + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + ") " +
+							   "Przekroczono limit czasu połączenia z serwerem!", Color.ORANGE);
 		infoView.printInfo("Próba ponownego nawiązania połączenia nastąpi za 10 sekund..." + 
 						   "(" + triesCount++ + "/" + ServerConnectionHandler.RECONNECT_TRIES + ")\n\n", Color.ORANGE);
 	}
