@@ -35,21 +35,31 @@ public class JSBasedConnectionHandler extends ServerConnectionHandler {
 
 	
 	private String prepareWebClientAndRunJSToGetResponse() {
-		try (WebClient webClient = new WebClient(BrowserVersion.CHROME)) {
+		String serverResponse = "";
+		WebClient webClient = new WebClient(BrowserVersion.CHROME);
+		try {
 			// get rid of HTMLUnit logging messages
 			java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(java.util.logging.Level.OFF);
 			
 			configureWebClient(webClient);
-			String serverResponse = execJS(webClient);
+			serverResponse = execJS(webClient);
 			
 	        return serverResponse;
 		}
 		catch(Exception e) {
 			e.printStackTrace();
-			notifyObserverAboutChange(ServerConnectionHandler.RECONNECT_MESSAGE);
+			int tries = 0;
+			while(serverResponse.equals("") && tries++ < ServerConnectionHandler.RECONNECT_TRIES){
+				notifyObserverAboutChange(ServerConnectionHandler.RECONNECT_MESSAGE);
+				
+				serverResponse = reconnect(webClient);
+			}
+		}
+		finally {
+			webClient.close();
 		}
 		
-		return "";
+		return serverResponse;
 	}
 	
 	
@@ -64,6 +74,23 @@ public class JSBasedConnectionHandler extends ServerConnectionHandler {
         webClient.setAjaxController(new NicelyResynchronizingAjaxController());
         webClient.getOptions().setThrowExceptionOnScriptError(false);
 	}
+	
+	
+	private String reconnect(WebClient webClient) {
+		String serverResponse = "";
+		try {
+			Thread.sleep(10000);
+			serverResponse = execJS(webClient);
+			
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		return serverResponse;
+	}
+	
 
 	public String getFilterName() {
 		return filterName;
