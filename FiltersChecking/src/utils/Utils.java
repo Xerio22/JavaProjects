@@ -53,7 +53,8 @@ public class Utils {
 			new WixChecker(),
 			// js
 			new BaldwinChecker(),
-			new MannChecker()
+			new MannChecker(),
+			new SfFilterChecker()
 //			new CumminsChecker()
 		};
 
