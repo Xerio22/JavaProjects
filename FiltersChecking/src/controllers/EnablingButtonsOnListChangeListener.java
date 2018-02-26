@@ -7,6 +7,8 @@ import javax.swing.JList;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import observers.CheckingManagerObserver;
+
 public class EnablingButtonsOnListChangeListener implements ListDataListener {
 	private JList<?> jlist;
 	private List<JButton> buttons;
@@ -40,10 +42,19 @@ public class EnablingButtonsOnListChangeListener implements ListDataListener {
 	@Override
 	public void intervalAdded(ListDataEvent e) {
 		jlist.setSelectedIndex(jlist.getModel().getSize() - 1);
-		setButtonsEnabled(true);
+		if(searchingNotFinished()) {
+			setButtonsEnabled(false);
+		}
+		else {
+			setButtonsEnabled(true);
+		}
 	}
 	
 	
+	private boolean searchingNotFinished() {
+		return !CheckingManagerObserver.SEARCH_FINISHED;
+	}
+
 	@Override
 	public void contentsChanged(ListDataEvent e) {}
 	

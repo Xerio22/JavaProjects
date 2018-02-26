@@ -247,6 +247,7 @@ public class FiltersListManagementView extends JPanel {
 		
 		startProcessingButton.addActionListener(buttonClicked -> {
 			setButtonsEnabled(false);
+			CheckingManagerObserver.SEARCH_FINISHED = false; // set "search started mode" to indicate EnablingButtonsOnListChangeListener that searching was started
 			
 			try{
 				List<FilterChecker> selectedCheckers = getSelectedCheckers();

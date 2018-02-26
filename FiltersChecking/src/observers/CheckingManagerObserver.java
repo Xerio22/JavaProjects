@@ -15,6 +15,7 @@ import views.TabTitlePanel;
 import views.Tabbed;
 
 public class CheckingManagerObserver implements Observer {
+	public static boolean SEARCH_FINISHED = true; // needed to indicate the EnablignButtonsOnListChangeListener that search is finished
 	private JTabbedPane tabsPanel;
 	private JList<Filter> filtersList;
 	private FiltersListManagementView filtersListManagementPanel;
@@ -39,10 +40,12 @@ public class CheckingManagerObserver implements Observer {
 			
 			case FiltersCheckingManager.STATE_FINISHED_CHECKING:
 				filtersListManagementPanel.setButtonsToInitState();
+				
+				setProperSettingsToEnableHandlingSituationWhenFiltersWereAddedDuringChecking();
 			break;
 		}
 	}
-	
+
 	
 	private void addNewTabWithCheckedFilterData(Filter checkedFilter) {
 		addCloseableTabToTabsPanel(checkedFilter.getOemNumber(), new CheckedFilterTab(checkedFilter));
@@ -59,5 +62,18 @@ public class CheckingManagerObserver implements Observer {
 	private void removeCheckedFilterFromList() {
 		DefaultListModel<Filter> listModel = (DefaultListModel<Filter>) filtersList.getModel();
 		listModel.removeElementAt(0);
+	}
+	
+	
+	private void setProperSettingsToEnableHandlingSituationWhenFiltersWereAddedDuringChecking() {
+		SEARCH_FINISHED = true;
+		if(wereFiltersAddedDuringChecking()) {
+			filtersListManagementPanel.getStartProcessingButton().setEnabled(true);
+		}
+	}
+
+
+	private boolean wereFiltersAddedDuringChecking() {
+		return filtersList.getModel().getSize() > 0;
 	}
 }
