@@ -72,7 +72,7 @@ public class JSBasedConnectionHandler extends ServerConnectionHandler {
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(true);
         webClient.getCookieManager().setCookiesEnabled(true);
         webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-        webClient.getOptions().setThrowExceptionOnScriptError(false);
+        webClient.getOptions().setThrowExceptionOnScriptError(true); // TODO zmienic spowrotem na false do wersji produkcyjnej
 	}
 	
 	
@@ -103,16 +103,29 @@ public class JSBasedConnectionHandler extends ServerConnectionHandler {
 		notifyObserverAboutChange(ServerConnectionHandler.CONNECTED_MESSAGE);
         
         final HtmlTextInput filterNameInput = (HtmlTextInput) pageToRequest.getElementById(this.inputFieldId);
-        DomElement findCrosses = pageToRequest.getElementById(this.searchButtonId);
+        DomElement findCrossesButton = pageToRequest.getElementById(this.searchButtonId);
+        
+        if(notFoundById(findCrossesButton)) {
+        	findCrossesButton = getElementByClassName(pageToRequest); // as class	
+        }
         
         filterNameInput.setValueAttribute(this.filterName);
        
-        final HtmlPage page = findCrosses.click();
+        final HtmlPage page = findCrossesButton.click();
+        webClient.waitForBackgroundJavaScriptStartingBefore(0);
         
         return page != null ? page.asXml() : "";
 	}
 	
 	
+	private DomElement getElementByClassName(HtmlPage pageToRequest) {
+		return (DomElement) pageToRequest.querySelectorAll("." + this.searchButtonId).get(0);
+	}
+
+	private boolean notFoundById(DomElement findCrosses) {
+		return findCrosses == null;
+	}
+
 	private void notifyObserverAboutChange(String reconnectMessage) {
 		setChanged();
 		notifyObservers(reconnectMessage);
