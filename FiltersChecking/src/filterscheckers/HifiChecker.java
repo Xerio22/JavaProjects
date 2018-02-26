@@ -22,14 +22,12 @@ public class HifiChecker extends FilterChecker {
 	@Override
 	protected FilterEquivalents parseServerResponseAndGetEquivalents(String serverResponse) {
 		Pattern p = Pattern.compile(
-				  "<tbody>"
-				+ "<tr class=\".*?\">"
+				  "<tr class=\".*?\".*?>"
 				+ "<td>(.*?)</td>" // OEM number
 				+ "<td>(.*?)</td>" // OEM
 				+ "<td>(.*?)</td>" // HIFI number
 				+ "<td>.*?</td>"
-				+ "</tr>"
-				+ "</tbody>");
+				+ "</tr>");
 
 			Matcher m = p.matcher(serverResponse);
 			
