@@ -55,7 +55,8 @@ public class Utils {
 			new BaldwinChecker(),
 			new MannChecker(),
 			new SfFilterChecker(),
-			new SogefiChecker()
+			new SogefiChecker(),
+			new FiltronChecker(),
 //			new CumminsChecker()
 		};
 
