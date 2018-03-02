@@ -25,7 +25,7 @@ public class SogefiChecker extends FilterChecker {
 				+ "<tr>\\s*"
 			    + "<td width=\"\\d+\" align=\"center\" valign=\"middle\" class=\"tabtxtgras\">(.*?)</td>\\s*" // OEM
 			    + "<td width=\"\\d+\" align=\"center\" valign=\"middle\" class=\"tabtxt\">(.*?)</td>\\s*" // OEM Number
-			    + "<td width=\"\\d+\" align=\"center\" valign=\"middle\" class=\"tablien\">\\s*<a href=\"fichetechnique.html\"><a href=.*? class=\'tablien\'>(.*?)</a></a></td>\\s*" // Sogefi Number 
+			    + "<td width=\"\\d+\" align=\"center\" valign=\"middle\" class=\"tablien\">\\s*<a href=\"fichetechnique.html\"><a href=.*? class='tablien'>(.*?)</a></a></td>\\s*" // Sogefi Number 
 			    + "<td width=\"\\d+\" align=\"center\" valign=\"middle\" class=\"tabtxt\"></td>\\s*"
 			    + "</tr>\\s*"
 				+ "</table>");
