@@ -54,7 +54,8 @@ public class Utils {
 			// js
 			new BaldwinChecker(),
 			new MannChecker(),
-			new SfFilterChecker()
+			new SfFilterChecker(),
+			new SogefiChecker()
 //			new CumminsChecker()
 		};
 
