@@ -15,10 +15,10 @@ public class CumminsChecker extends FilterChecker {
 	private static final String FAILURE_RESPONSE = "This product is not currently  <br>in our product line,<br>click";
 	private static final String INPUT_FIELD_ID = "GSAText";
 	private static final String SEARCH_BUTTON_ID = "googleSearchText";
-	private static final ServerConnectionHandler connectionHandler = new JSBasedConnectionHandler(SERVER_URL_STRING, INPUT_FIELD_ID, SEARCH_BUTTON_ID);
+	private static final ServerConnectionHandler SERVER_CONNECTION_HANDLER = new JSBasedConnectionHandler(SERVER_URL_STRING, INPUT_FIELD_ID, SEARCH_BUTTON_ID);
 	
 	public CumminsChecker() {
-		super(CHECKER_NAME, connectionHandler, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE, FAILURE_RESPONSE);
+		super(CHECKER_NAME, SERVER_CONNECTION_HANDLER, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE, FAILURE_RESPONSE);
 	}
 
 	@Override

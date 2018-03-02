@@ -15,10 +15,10 @@ public class MahleChecker extends FilterChecker {
 	private static final String BLOCKED_BY_SERVER_RESPONSE = "some_blocked_by_server_response";
 	private static final String INPUT_FIELD_ID = "j_id_1d_9:quick";
 	private static final String SEARCH_BUTTON_ID = "j_id_1d_9:searchLuci";
-	private static final ServerConnectionHandler connectionHandler = new JSBasedConnectionHandler(SERVER_URL_STRING, INPUT_FIELD_ID, SEARCH_BUTTON_ID);
+	private static final ServerConnectionHandler SERVER_CONNECTION_HANDLER = new JSBasedConnectionHandler(SERVER_URL_STRING, INPUT_FIELD_ID, SEARCH_BUTTON_ID);
 	
 	public MahleChecker() {
-		super(CHECKER_NAME, connectionHandler, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE, FAILURE_RESPONSE);
+		super(CHECKER_NAME, SERVER_CONNECTION_HANDLER, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE, FAILURE_RESPONSE);
 	}
 
 	@Override

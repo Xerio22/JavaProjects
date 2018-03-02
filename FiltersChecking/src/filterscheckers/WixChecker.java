@@ -12,10 +12,10 @@ public class WixChecker extends FilterChecker {
 	private static final String SERVER_URL_STRING = "http://www.wixfilters.com/Lookup/InterchangeMultiSearch.aspx?q=_FILTERNAME_&o=me";
 	private static final String SUCCESS_RESPONSE = "table class=";
 	private static final String BLOCKED_BY_SERVER_RESPONSE = "some_blocked_by_server_response";
-	private static final ServerConnectionHandler connectionHandler = new URLBasedConnectionHandler(SERVER_URL_STRING);
+	private static final ServerConnectionHandler SERVER_CONNECTION_HANDLER = new URLBasedConnectionHandler(SERVER_URL_STRING);
 	
 	public WixChecker() {
-		super(CHECKER_NAME, connectionHandler, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
+		super(CHECKER_NAME, SERVER_CONNECTION_HANDLER, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
 	}
 
 	@Override

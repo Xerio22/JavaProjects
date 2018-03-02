@@ -14,11 +14,11 @@ public class SfFilterChecker extends FilterChecker {
 	private static final String BLOCKED_BY_SERVER_RESPONSE = "some_blocked_by_server_response";
 	private static final String INPUT_FIELD_ID = "txt_ArtSearch";
 	private static final String SEARCH_BUTTON_CLASS = "form-icon";
-	private static final ServerConnectionHandler connectionHandler = new JSBasedConnectionHandler(SERVER_URL_STRING, INPUT_FIELD_ID, SEARCH_BUTTON_CLASS);
+	private static final ServerConnectionHandler SERVER_CONNECTION_HANDLER = new JSBasedConnectionHandler(SERVER_URL_STRING, INPUT_FIELD_ID, SEARCH_BUTTON_CLASS);
 	
 	
 	public SfFilterChecker() {
-		super(CHECKER_NAME, connectionHandler, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
+		super(CHECKER_NAME, SERVER_CONNECTION_HANDLER, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
 	}
 
 	@Override

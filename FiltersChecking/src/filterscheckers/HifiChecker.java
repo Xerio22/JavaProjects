@@ -13,10 +13,10 @@ public class HifiChecker extends FilterChecker {
 	private static final String SERVER_URL_STRING = "https://hifi-filter.com/en/catalog/_FILTERNAME_-recherche-equivalence.html";
 	private static final String SUCCESS_RESPONSE = "<h2>The result of your request for filter";
 	private static final String BLOCKED_BY_SERVER_RESPONSE = "<h2>Merci de patienter ...</h2>";
-	private static final ServerConnectionHandler connectionHandler = new URLBasedConnectionHandler(SERVER_URL_STRING);
+	private static final ServerConnectionHandler SERVER_CONNECTION_HANDLER = new URLBasedConnectionHandler(SERVER_URL_STRING);
 	
 	public HifiChecker() {
-		super(CHECKER_NAME, connectionHandler, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
+		super(CHECKER_NAME, SERVER_CONNECTION_HANDLER, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
 	}
 
 	@Override

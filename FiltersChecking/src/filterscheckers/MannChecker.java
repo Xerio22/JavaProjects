@@ -14,10 +14,10 @@ public class MannChecker extends FilterChecker {
 	private static final String BLOCKED_BY_SERVER_RESPONSE = "Sorry, an error occurred. Please reload this page.";
 	private static final String INPUT_FIELD_ID = "autocompleteOEsearch:autocompleteOEsearch:searchQueryInput";
 	private static final String SEARCH_BUTTON_ID = "autocompleteOEsearch:autocompleteOEsearch:searchButton";
-	private static final ServerConnectionHandler connectionHandler = new JSBasedConnectionHandler(SERVER_URL_STRING, INPUT_FIELD_ID, SEARCH_BUTTON_ID);
+	private static final ServerConnectionHandler SERVER_CONNECTION_HANDLER = new JSBasedConnectionHandler(SERVER_URL_STRING, INPUT_FIELD_ID, SEARCH_BUTTON_ID);
 	
 	public MannChecker() {
-		super(CHECKER_NAME, connectionHandler, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
+		super(CHECKER_NAME, SERVER_CONNECTION_HANDLER, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
 	}
 
 	@Override
