@@ -15,7 +15,7 @@ public class WixChecker extends FilterChecker {
 	private static final ServerConnectionHandler connectionHandler = new URLBasedConnectionHandler(SERVER_URL_STRING);
 	
 	public WixChecker() {
-		super(connectionHandler, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
+		super(CHECKER_NAME, connectionHandler, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
 	}
 
 	@Override
@@ -61,10 +61,5 @@ public class WixChecker extends FilterChecker {
 		}
 		
 		return equivalentsForThisOem;
-	}
-
-	@Override
-	public String getCheckerName() {
-		return CHECKER_NAME;
 	}
 }

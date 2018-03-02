@@ -15,7 +15,7 @@ public class HengstChecker extends FilterChecker {
 	private static final ServerConnectionHandler connectionHandler = new URLBasedConnectionHandler(SERVER_URL_STRING);
 	
 	public HengstChecker() {
-		super(connectionHandler, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
+		super(CHECKER_NAME, connectionHandler, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
 	}
 	
 	@Override
@@ -50,10 +50,4 @@ public class HengstChecker extends FilterChecker {
 		
 		return equivalentsForThisOem;
 	}
-
-	@Override
-	public String getCheckerName() {
-		return CHECKER_NAME;
-	}
-
 }

@@ -18,7 +18,7 @@ public class BaldwinChecker extends FilterChecker {
 	private static final ServerConnectionHandler connectionHandler = new JSBasedConnectionHandler(SERVER_URL_STRING, INPUT_FIELD_ID, SEARCH_BUTTON_ID);
 
 	public BaldwinChecker() {
-		super(connectionHandler, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
+		super(CHECKER_NAME, connectionHandler, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
 	}
 
 	@Override
@@ -26,14 +26,14 @@ public class BaldwinChecker extends FilterChecker {
 		Pattern p = Pattern.compile(
 			"<tr id=\".*?\">\\s*"
 			+ "<td class=\"comp_no\">\\s*"
-			+ "(.*)?\\s*" // oem number
+			+ "(.*?)\\s*" // oem number
 			+ "</td>\\s*"
 			+ "<td class=\"mfg\">\\s*"
-			+ "(.*)?\\s*" // oem
+			+ "(.*?)\\s*" // oem
 			+ "</td>\\s*"
 			+ "<td class=\"partLink partLeft\">\\s*"
 			+ "<a class=\"btnViewProductDetail\" href=\"#\">\\s*"
-			+ "(.*)?\\s*" // baldwin number
+			+ "(.*?)\\s*" // baldwin number
 			+ "</a>\\s*"
 			+ "</td>\\s*"
 			+ "<td class=\"partComment\"/>\\s*"
@@ -68,10 +68,6 @@ public class BaldwinChecker extends FilterChecker {
 		return equivalentsForThisOem;
 	}
 
-	@Override
-	public String getCheckerName() {
-		return CHECKER_NAME;
-	}
 	
 	@Override
 	public FilterEquivalents getEquivalentsFor(Filter filter) {

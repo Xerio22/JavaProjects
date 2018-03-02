@@ -17,7 +17,7 @@ public class MannChecker extends FilterChecker {
 	private static final ServerConnectionHandler connectionHandler = new JSBasedConnectionHandler(SERVER_URL_STRING, INPUT_FIELD_ID, SEARCH_BUTTON_ID);
 	
 	public MannChecker() {
-		super(connectionHandler, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
+		super(CHECKER_NAME, connectionHandler, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
 	}
 
 	@Override
@@ -80,11 +80,6 @@ public class MannChecker extends FilterChecker {
 			}
 			
 			return equivalentsForThisOem;
-	}
-
-	@Override
-	public String getCheckerName() {
-		return CHECKER_NAME;
 	}
 	
 //	@Override

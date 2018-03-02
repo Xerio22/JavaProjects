@@ -16,7 +16,7 @@ public class HifiChecker extends FilterChecker {
 	private static final ServerConnectionHandler connectionHandler = new URLBasedConnectionHandler(SERVER_URL_STRING);
 	
 	public HifiChecker() {
-		super(connectionHandler, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
+		super(CHECKER_NAME, connectionHandler, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
 	}
 
 	@Override
@@ -57,10 +57,6 @@ public class HifiChecker extends FilterChecker {
 			return equivalentsForThisOem;
 	}
 
-	@Override
-	public String getCheckerName() {
-		return CHECKER_NAME;
-	}
 	
 	@Override
 	public FilterEquivalents getEquivalentsFor(Filter filter) {

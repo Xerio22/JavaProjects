@@ -18,7 +18,7 @@ public class SfFilterChecker extends FilterChecker {
 	
 	
 	public SfFilterChecker() {
-		super(connectionHandler, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
+		super(CHECKER_NAME, connectionHandler, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
 	}
 
 	@Override
@@ -77,10 +77,4 @@ public class SfFilterChecker extends FilterChecker {
 	
 			return equivalentsForThisOem;
 	}
-
-	@Override
-	public String getCheckerName() {
-		return CHECKER_NAME;
-	}
-
 }

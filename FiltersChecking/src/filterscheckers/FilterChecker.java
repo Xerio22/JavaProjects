@@ -9,6 +9,7 @@ import models.FilterEquivalents;
 import utils.Utils;
 
 public abstract class FilterChecker extends Observable {
+	private String checkerName;
 	public static final String STATE_EQUIVALENT_FOUND = "Equiv_found";
 	public static final String STATE_EQUIVALENT_NOT_FOUND = "Equiv_not_found";
 	public static final String STATE_BLOCKED_BY_SERVER = "Blocked";
@@ -25,12 +26,13 @@ public abstract class FilterChecker extends Observable {
 	private Filter filter;
 	
 	
-	public FilterChecker(ServerConnectionHandler serverConnectionHandler, String successResponse, String blockedByServerResponse){
-		this(serverConnectionHandler, successResponse, blockedByServerResponse, UNSET_FAILURE_RESPONSE);
+	public FilterChecker(String checkerName, ServerConnectionHandler serverConnectionHandler, String successResponse, String blockedByServerResponse){
+		this(checkerName, serverConnectionHandler, successResponse, blockedByServerResponse, UNSET_FAILURE_RESPONSE);
 	}
 
 	
-	public FilterChecker(ServerConnectionHandler serverConnectionHandler, String successResponse, String blockedByServerResponse, String failureResponse){
+	public FilterChecker(String checkerName, ServerConnectionHandler serverConnectionHandler, String successResponse, String blockedByServerResponse, String failureResponse){
+		this.checkerName = checkerName;
 		this.serverConnectionHandler = serverConnectionHandler;
 		this.successResponse = successResponse;
 		this.blockedByServerResponse = blockedByServerResponse;
@@ -60,7 +62,7 @@ public abstract class FilterChecker extends Observable {
 
 	private FilterEquivalents findEquivalentsOnServer() {
 		String serverResponse = serverConnectionHandler.getServerResponse();
-
+System.out.println(serverResponse);
 		if(isAnyReplacementPresentInServerResponse(serverResponse)){
 			return this.parseServerResponseAndGetEquivalents(serverResponse);
 		}
@@ -170,6 +172,10 @@ public abstract class FilterChecker extends Observable {
 	}
 	
 	
+	public String getCheckerName() {
+		return this.checkerName;
+	}
+	
+	
 	protected abstract FilterEquivalents parseServerResponseAndGetEquivalents(String serverResponse);
-	public abstract String getCheckerName();
 }
