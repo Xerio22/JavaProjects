@@ -8,7 +8,7 @@ import connectionhandlers.URLBasedConnectionHandler;
 import models.FilterEquivalents;
 
 public class HengstChecker extends FilterChecker {
-	private static final String CHECKER_NAME = "Donaldson";
+	private static final String CHECKER_NAME = "Hengst";
 	private static final String SERVER_URL_STRING = "https://www.hengst.com/en/online-catalog/search-results/?searchType=freetext&catalog=eu&freetext=_FILTERNAME_";
 	private static final String SUCCESS_RESPONSE = "Limit search results";
 	private static final String BLOCKED_BY_SERVER_RESPONSE = "some_blocked_by_server_response";
