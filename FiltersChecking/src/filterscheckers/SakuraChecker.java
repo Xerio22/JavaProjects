@@ -20,31 +20,27 @@ public class SakuraChecker extends FilterChecker {
 		super(CHECKER_NAME, SERVER_CONNECTION_HANDLER, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
 	}
 
-	// TODO nie chce dzialac regex
 	@Override
 	protected FilterEquivalents parseServerResponseAndGetEquivalents(String serverResponse) {
 		Pattern p = Pattern.compile(
-					"<tr class=\"even\">\\s*"
-                     + "<td>\\s*"
-                     +   "(.*?)" // OEM Number
-                     + "</td>\\s*"
-                     + "<td>\\s*"
-                     +   "(.*?)" // OEM
-                     + "</td>\\s*"
-                     + "<td>\\s*"
-                     +   "<a href=\"/index\\.php/productdetail/index\\?snum=.*?&title=Sakura Number \\- .*?&id=2\">\\s*"
-                     +     "(.*?)" // Sakura Number
-                     +   "</a>\\s*"
-                     + "</td>\\s*"
-                     + "<td>\\s*"
-                     +   ".*?"
-                     + "</td>\\s*"
-                     + "<td>\\s*"
-                     +   "RELEASE\\s*PRODUCT\\s*" 
-                     +   "<a href=\"/index\\.php/index\\.php/productdetail/index\\?snum=&id=6&title=Product Detail \\- \">\\s*"
-                     +   "</a>\\s*"
-                     + "</td>\\s*"
-                   + "</tr>");
+					"<tr class=\"\\w+\">\\s*"
+					+ "<td>\\s*"
+					+ "(.*?)" // OEM
+					+ "\\s*</td>\\s*"
+					+ "<td>\\s*"
+					+ "(.*?)" // OEM Number
+					+ "\\s*</td>\\s*"
+					+ "<td>\\s*"
+					+ "<a href=\".*?\">\\s*"
+					+ "(.*?)" // Sakura Number
+					+ "\\s*</a>\\s*"
+					+ "</td>\\s*"
+					+ "((<td>\\s*.*?\\s*</td>)|<td/>)\\s*"
+					+ "<td>\\s*RELEASE\\s*PRODUCT\\s*"
+					+ "<a href=\".*?\">\\s*"
+					+ "</a>\\s*"
+					+ "</td>\\s*"
+					+ "</tr>");
 		
 		
 		Matcher m = p.matcher(serverResponse);

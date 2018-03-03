@@ -57,6 +57,7 @@ public class Utils {
 			new SfFilterChecker(),
 			new SogefiChecker(),
 			new FiltronChecker(),
+			new SakuraChecker()
 //			new CumminsChecker()
 		};
 
