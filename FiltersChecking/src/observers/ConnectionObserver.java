@@ -54,7 +54,7 @@ public class ConnectionObserver implements Observer {
 	private void printReconnectInfo() {
 		infoView.printInfoLine("(" + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + ") " +
 							   "Przekroczono limit czasu połączenia z serwerem!", Color.ORANGE);
-		infoView.printInfo("Próba ponownego nawiązania połączenia nastąpi za 10 sekund..." + 
+		infoView.printInfo("Próba ponownego nawiązania połączenia nastąpi za " + ServerConnectionHandler.getReconnectTimeInSeconds() + " sekund..." + 
 						   "(" + triesCount++ + "/" + ServerConnectionHandler.RECONNECT_TRIES + ")\n\n", Color.ORANGE);
 	}
 

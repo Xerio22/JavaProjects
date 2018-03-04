@@ -75,7 +75,7 @@ public class URLBasedConnectionHandler extends ServerConnectionHandler {
 
 	private BufferedReader reconnect(BufferedReader br, URLConnection uc) {
 		try {
-			Thread.sleep(10000);
+			Thread.sleep(ServerConnectionHandler.RECONNECT_TIME);
 			
 			uc = createURLConnectionFromString(currentUrlString);
 			br = new BufferedReader(new InputStreamReader(uc.getInputStream(), "UTF-8"));
