@@ -13,8 +13,8 @@ public class SakuraChecker extends FilterChecker {
 	private static final String SUCCESS_RESPONSE = "Ref Number";
 	private static final String BLOCKED_BY_SERVER_RESPONSE = "some_blocked_by_server_response";
 	private static final String INPUT_FIELD_ID = "nomor_0";
-	private static final String SEARCH_BUTTON_ID = "yt0";
-	private static final ServerConnectionHandler SERVER_CONNECTION_HANDLER = new JSBasedConnectionHandler(SERVER_URL_STRING, INPUT_FIELD_ID, SEARCH_BUTTON_ID);
+	private static final String SEARCH_BUTTON_NAME = "yt0";
+	private static final ServerConnectionHandler SERVER_CONNECTION_HANDLER = new JSBasedConnectionHandler(SERVER_URL_STRING, INPUT_FIELD_ID, SEARCH_BUTTON_NAME);
 	
 	public SakuraChecker() {
 		super(CHECKER_NAME, SERVER_CONNECTION_HANDLER, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
