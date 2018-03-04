@@ -58,7 +58,8 @@ public class Utils {
 			new SogefiChecker(),
 			new FiltronChecker(),
 			new SakuraChecker(),
-			new FiltrecChecker()
+			new FiltrecChecker(),
+			new StauffChecker()
 //			new CumminsChecker()
 		};
 
