@@ -323,16 +323,16 @@ public class FiltersListManagementView extends JPanel {
 
 	
 	private void addComponentsToCheckBoxesPanel() {
-		JPanel leftCheckBoxesPanel = new JPanel(new GridLayout(4, 1));
-		JPanel middleCheckBoxesPanel = new JPanel(new GridLayout(4, 1));
-		JPanel rightCheckBoxesPanel = new JPanel(new GridLayout(4, 1));
+		JPanel leftCheckBoxesPanel = new JPanel(new GridLayout(5, 1));
+		JPanel middleCheckBoxesPanel = new JPanel(new GridLayout(5, 1));
+		JPanel rightCheckBoxesPanel = new JPanel(new GridLayout(5, 1));
 		
 		for(int i = 0; i < checkBoxes.size(); i++){
 			JCheckBox checkBox = checkBoxes.get(i);
 			//checkBox.setSelected(true);
-			if(i < 4)
+			if(i < 5)
 				leftCheckBoxesPanel.add(checkBox);
-			else if(i < 8)
+			else if(i < 10)
 				middleCheckBoxesPanel.add(checkBox);
 			else
 				rightCheckBoxesPanel.add(checkBox);
