@@ -9,18 +9,21 @@ import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+
+import filterscheckers.JSBased.SedziszowChecker;
 
 public class JSBasedConnectionHandler extends ServerConnectionHandler {
 
 	private String filterName;
 	private String inputFieldId;
-	private String searchButtonId;
+	private String searchButtonIdentificator; // may be ID, NAME or css selector
 	
 	public JSBasedConnectionHandler(String serverUrlString, String inputFieldId, String searchButtonId) {
 		super(serverUrlString);
 		this.inputFieldId = inputFieldId;
-		this.searchButtonId = searchButtonId;
+		this.searchButtonIdentificator = searchButtonId;
 	}
 
 	@Override
@@ -72,14 +75,14 @@ public class JSBasedConnectionHandler extends ServerConnectionHandler {
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(true);
         webClient.getCookieManager().setCookiesEnabled(true);
         webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-        webClient.getOptions().setThrowExceptionOnScriptError(false); // TODO zmienic spowrotem na false do wersji produkcyjnej
+        webClient.getOptions().setThrowExceptionOnScriptError(false);
 	}
 	
 	
 	private String reconnect(WebClient webClient) {
 		String serverResponse = "";
 		try {
-			Thread.sleep(10000);
+			Thread.sleep(ServerConnectionHandler.RECONNECT_TIME);
 			serverResponse = execJS(webClient);
 			
 		} catch (InterruptedException e1) {
@@ -101,47 +104,56 @@ public class JSBasedConnectionHandler extends ServerConnectionHandler {
 		notifyObserverAboutChange(ServerConnectionHandler.CONNECTING_MESSAGE);
 		final HtmlPage pageToRequest = webClient.getPage(super.getServerUrlString());
         
-        final HtmlTextInput filterNameInput = (HtmlTextInput) pageToRequest.getElementById(this.inputFieldId);
-        DomElement findCrossesButton = pageToRequest.getElementById(this.searchButtonId);
-        
-        if(notFoundInDom(findCrossesButton)) {
-        	findCrossesButton = getElementByClassName(pageToRequest); // find by class name	(first used in Mahle)
+        DomElement filterNameInput = null;
+        if(pageDoesNotRequireExecutingJS()) {
+        	filterNameInput = (HtmlTextInput) findElementOnPageUsingIdentificator(pageToRequest, this.inputFieldId);
+	        ((HtmlTextInput)filterNameInput).setValueAttribute(this.filterName);
         }
-        if(notFoundInDom(findCrossesButton)) {
-        	findCrossesButton = getElementByName(pageToRequest); // find by name (first user in Sakura)
+        else {
+        	handleSedziszow(pageToRequest, filterNameInput);
         }
         
-        filterNameInput.setValueAttribute(this.filterName);
-         
-        webClient.waitForBackgroundJavaScriptStartingBefore(0);
+        DomElement findCrossesButton = findElementOnPageUsingIdentificator(pageToRequest, this.searchButtonIdentificator);
         final HtmlPage page = findCrossesButton.click();
-//        webClient.waitForBackgroundJavaScriptStartingBefore(0);
+        webClient.waitForBackgroundJavaScriptStartingBefore(0);
         
         notifyObserverAboutChange(ServerConnectionHandler.CONNECTED_MESSAGE);
         
         return page != null ? page.asXml() : "";
 	}
 
+	private boolean pageDoesNotRequireExecutingJS() {
+		 return !hasName("pzlsedziszow");
+	}
+
+	private boolean hasName(String name) {
+		return super.getServerUrlString().contains(name);
+	}
+
+	private DomElement findElementOnPageUsingIdentificator(HtmlPage pageToRequest, String identificator) {
+		DomElement element = pageToRequest.getElementById(identificator);
+        
+        if(notFoundInDom(element)) {
+        	element = getElementByName(pageToRequest, identificator); // find by name (first user in Sakura)
+        	
+        	if(notFoundInDom(element)) {
+        		element = getElementUsingCssSelector(pageToRequest, identificator); // find using css selector (first used in Mahle)
+            }
+        }
+        
+        return element;
+	}
+
+	
 	private boolean notFoundInDom(DomElement findCrosses) {
 		return findCrosses == null;
 	}
 	
-	private DomElement getElementByClassName(HtmlPage pageToRequest) {
+	
+	private DomElement getElementByName(HtmlPage pageToRequest, String name) {
 		DomElement elem = null;
 		try {
-			elem = (DomElement) pageToRequest.querySelectorAll("." + this.searchButtonId).get(0); // get might throw exception when didn't find by class
-		}
-		catch(Exception e){
-			System.err.println("Not found by class name");
-		}
-		
-		return elem;
-	}
-
-	private DomElement getElementByName(HtmlPage pageToRequest) {
-		DomElement elem = null;
-		try {
-			elem = (DomElement) pageToRequest.getElementByName(this.searchButtonId); // might throw exception when didn't find by name
+			elem = (DomElement) pageToRequest.getElementByName(name); // might throw exception when didn't find by name
 		}
 		catch(Exception e){
 			System.err.println("Not found by name");
@@ -149,7 +161,33 @@ public class JSBasedConnectionHandler extends ServerConnectionHandler {
 		
 		return elem;
 	}
+	
+	
+	private DomElement getElementUsingCssSelector(HtmlPage pageToRequest, String selector) {
+		DomElement elem = null;
+		try {
+			elem = (DomElement) pageToRequest.querySelectorAll(selector).get(0); // get might throw exception when didn't find by class
+		}
+		catch(Exception e){
+			System.err.println("Not found by css selector");
+		}
+		
+		return elem;
+	}
 
+	
+	private void handleSedziszow(HtmlPage pageToRequest, DomElement filterNameInput) {
+		pageToRequest.executeJavaScript(
+  			  "var form = document.querySelector(\"" + SedziszowChecker.formToSubmit() + "\");"
+  			+ "var select = document.querySelector(\"" + SedziszowChecker.selectList() + "\");"
+  			+ "select.selectedIndex = " + SedziszowChecker.optionToSelectIndex() + ";"
+  			+ "form.submit();");
+  	
+	  	filterNameInput = (HtmlTextArea) findElementOnPageUsingIdentificator(pageToRequest, this.inputFieldId);
+	    ((HtmlTextArea)filterNameInput).setText(this.filterName);
+	}
+	
+	
 	private void notifyObserverAboutChange(String reconnectMessage) {
 		setChanged();
 		notifyObservers(reconnectMessage);
