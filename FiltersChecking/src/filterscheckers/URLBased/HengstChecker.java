@@ -1,39 +1,28 @@
-package filterscheckers;
+package filterscheckers.URLBased;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import connectionhandlers.ServerConnectionHandler;
 import connectionhandlers.URLBasedConnectionHandler;
+import filterscheckers.FilterChecker;
 import models.FilterEquivalents;
 
-public class WixChecker extends FilterChecker {
-	private static final String CHECKER_NAME = "Wix";
-	private static final String SERVER_URL_STRING = "http://www.wixfilters.com/Lookup/InterchangeMultiSearch.aspx?q=_FILTERNAME_&o=me";
-	private static final String SUCCESS_RESPONSE = "table class=";
+public class HengstChecker extends FilterChecker {
+	private static final String CHECKER_NAME = "Hengst";
+	private static final String SERVER_URL_STRING = "https://www.hengst.com/en/online-catalog/search-results/?searchType=freetext&catalog=eu&freetext=_FILTERNAME_";
+	private static final String SUCCESS_RESPONSE = "Limit search results";
 	private static final String BLOCKED_BY_SERVER_RESPONSE = "some_blocked_by_server_response";
 	private static final ServerConnectionHandler SERVER_CONNECTION_HANDLER = new URLBasedConnectionHandler(SERVER_URL_STRING);
 	
-	public WixChecker() {
+	public HengstChecker() {
 		super(CHECKER_NAME, SERVER_CONNECTION_HANDLER, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
 	}
-
+	
 	@Override
 	protected FilterEquivalents parseServerResponseAndGetEquivalents(String serverResponse) {
 		Pattern p = Pattern.compile(
-				"<span id=\"lblCompetitor\">(.*?)</span>\\s*" // oem number
-				+ "<span id=\"lblOE\">\\s*</span>\\s*"
-				+ "</font>\\s*"
-				+ "</td>\\s*"
-				+ "<td>\\s*"
-				+ "<font face=\"Verdana\" color=\"#333333\">"
-				+ "\\s*(.*?)\\s*" // oem
-				+ "</font>\\s*"
-				+ "</td>\\s*"
-				+ "<td>\\s*"
-				+ "<font face=\"Verdana\" color=\"#333333\">\\s*"
-				+ "<a id=\"hlPartNumber\" href=\"javascript:var .*?;w\\.focus\\(\\);\">(.*?)</a>" // wix number
-		);
+				  "");
 
 		Matcher m = p.matcher(serverResponse);
 		
@@ -43,10 +32,10 @@ public class WixChecker extends FilterChecker {
 		
 		FilterEquivalents equivalentsForThisOem = new FilterEquivalents();
 		
-		int propIdx = 1;	
+		int propIdx = 1;
 		while(m.find()){
-			equivalentOEM = m.group(2);
-			equivalentOEMNumber = m.group(1);
+			equivalentOEM = m.group(1);
+			equivalentOEMNumber = m.group(2);
 			equivalentNumber = m.group(3);
 
 			equivalentsForThisOem.createAndAddEquivalent(

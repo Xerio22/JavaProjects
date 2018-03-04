@@ -8,6 +8,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import filterscheckers.*;
+import filterscheckers.JSBased.BaldwinChecker;
+import filterscheckers.JSBased.FiltrecChecker;
+import filterscheckers.JSBased.MannChecker;
+import filterscheckers.JSBased.SakuraChecker;
+import filterscheckers.JSBased.SfFilterChecker;
+import filterscheckers.URLBased.DonaldsonChecker;
+import filterscheckers.URLBased.FiltronChecker;
+import filterscheckers.URLBased.HifiChecker;
+import filterscheckers.URLBased.SogefiChecker;
+import filterscheckers.URLBased.StauffChecker;
+import filterscheckers.URLBased.WixChecker;
 
 public class Utils {
 

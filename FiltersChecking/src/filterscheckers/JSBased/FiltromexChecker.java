@@ -1,26 +1,27 @@
-package filterscheckers;
+package filterscheckers.JSBased;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import connectionhandlers.JSBasedConnectionHandler;
 import connectionhandlers.ServerConnectionHandler;
+import filterscheckers.FilterChecker;
 import models.FilterEquivalents;
 
-// TODO Problems with input field id - no input field id data in page's source code
-public class SofimaChecker extends FilterChecker {
-	private static final String CHECKER_NAME = "Sofima";
-	private static final String SERVER_URL_STRING = "http://catalogue.sofima.it/menu/menu.php?lingua=en";
+// TODO Zapytac co tu w ogole jest czym + sprawdzic jak wyslac zapytanie bez search buttona
+public class FiltromexChecker extends FilterChecker {
+	private static final String CHECKER_NAME = "Filtromex";
+	private static final String SERVER_URL_STRING = "http://www.filtry.pl/wyszukiwarka/";
 	private static final String SUCCESS_RESPONSE = "some_success_response";
 	private static final String BLOCKED_BY_SERVER_RESPONSE = "some_blocked_by_server_response";
-	private static final String INPUT_FIELD_ID = "SC_crossreferences_codicefiltrocostruttore2";
-	private static final String SEARCH_BUTTON_ID = "sc_b_pesq_bot";
+	private static final String INPUT_FIELD_ID = "inputZamiennik";
+	private static final String SEARCH_BUTTON_ID = "";
 	private static final ServerConnectionHandler SERVER_CONNECTION_HANDLER = new JSBasedConnectionHandler(SERVER_URL_STRING, INPUT_FIELD_ID, SEARCH_BUTTON_ID);
 	
-	public SofimaChecker() {
+	public FiltromexChecker() {
 		super(CHECKER_NAME, SERVER_CONNECTION_HANDLER, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
 	}
-
+	
 	@Override
 	protected FilterEquivalents parseServerResponseAndGetEquivalents(String serverResponse) {
 		Pattern p = Pattern.compile(
@@ -53,4 +54,5 @@ public class SofimaChecker extends FilterChecker {
 		
 		return equivalentsForThisOem;
 	}
+
 }

@@ -1,40 +1,44 @@
-package filterscheckers;
+package filterscheckers.URLBased;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import connectionhandlers.ServerConnectionHandler;
 import connectionhandlers.URLBasedConnectionHandler;
+import filterscheckers.FilterChecker;
 import models.FilterEquivalents;
 
-public class SogefiChecker extends FilterChecker {
-	private static final String CHECKER_NAME = "Sogefi";
-	private static final String SERVER_URL_STRING = "http://www.sogefifilterdivision.com/catalogues/FO/scripts/cat_rech_correspondance.php?zone=FR&catalogue=PRO&lang=PL&marque=XXX&search_ref=_FILTERNAME_&Submit.x=0&Submit.y=0";
-	private static final String SUCCESS_RESPONSE = "<table width=\"950\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"tab\">";
+public class DonaldsonChecker extends FilterChecker {
+	private static final String CHECKER_NAME = "Donaldson";
+	private static final String SERVER_URL_STRING = "https://catalog.donaldson.com/searchResults/en/C/_/N-2v?Ntk=cro&Ntt=_FILTERNAME_";
+	private static final String SUCCESS_RESPONSE = "table class=";
 	private static final String BLOCKED_BY_SERVER_RESPONSE = "some_blocked_by_server_response";
 	private static final ServerConnectionHandler SERVER_CONNECTION_HANDLER = new URLBasedConnectionHandler(SERVER_URL_STRING);
 	
-	public SogefiChecker() {
+	public DonaldsonChecker() {
 		super(CHECKER_NAME, SERVER_CONNECTION_HANDLER, SUCCESS_RESPONSE, BLOCKED_BY_SERVER_RESPONSE);
 	}
-	
+
 	@Override
 	protected FilterEquivalents parseServerResponseAndGetEquivalents(String serverResponse) {
 		Pattern p = Pattern.compile(
-				  "<table width=\"950\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"tab\">\\s*"
-				+ "<tr>\\s*"
-			    + "<td width=\"\\d+\" align=\"center\" valign=\"middle\" class=\"tabtxtgras\">(.*?)</td>\\s*" // OEM
-			    + "<td width=\"\\d+\" align=\"center\" valign=\"middle\" class=\"tabtxt\">(.*?)</td>\\s*" // OEM Number
-			    + "<td width=\"\\d+\" align=\"center\" valign=\"middle\" class=\"tablien\">\\s*<a href=\"fichetechnique.html\"><a href=.*? class='tablien'>(.*?)</a></a></td>\\s*" // Sogefi Number 
-			    + "<td width=\"\\d+\" align=\"center\" valign=\"middle\" class=\"tabtxt\"></td>\\s*"
-			    + "</tr>\\s*"
-				+ "</table>");
+				  "<td class=\"p-brand\">(.*?)</td>\\s*" // oem
+				+ "<td class=\"u-identifier\"><span class=\"type hidden\">OEM</span><span class=\"value\">(.*?)</span></td>\\s*" // oem number
+				+ "<td class=\"u-identifier\">\\s*"
+				+ "<span class=\"type hidden\">UPC</span>"
+				+ ".*?"
+				+ "<span class=\".*?\">(.*?)</span>\\s*" // donaldson number
+				+ "</td>\\s*");
+//				+ "<td class=\"p-name\">(.*?)</td>\\s*" // product
+//				+ "<td class=\"p-notes\">(.*?)</td>\\s*"); // notes"
 
 		Matcher m = p.matcher(serverResponse);
 		
 		String equivalentOEMNumber = null;
 		String equivalentOEM = null;
 		String equivalentNumber = null;
+//		String equivalentProduct = null;
+//		String equivalentNotes = null;
 		
 		FilterEquivalents equivalentsForThisOem = new FilterEquivalents();
 		
@@ -43,6 +47,8 @@ public class SogefiChecker extends FilterChecker {
 			equivalentOEM = m.group(1);
 			equivalentOEMNumber = m.group(2);
 			equivalentNumber = m.group(3);
+//			equivalentProduct = m.group(4);
+//			equivalentNotes = m.group(5);
 
 			equivalentsForThisOem.createAndAddEquivalent(
 					getCheckerName(), 
@@ -50,11 +56,16 @@ public class SogefiChecker extends FilterChecker {
 					equivalentOEM, 
 					equivalentNumber, 
 					propIdx
+//					new String[][]{{"Product", equivalentProduct},
+//								   {"Notes", equivalentNotes}}
 			);
 			
 			propIdx++;
 		}
 		
+		
 		return equivalentsForThisOem;
 	}
 }
+
+ 

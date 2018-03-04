@@ -1,10 +1,11 @@
-package filterscheckers;
+package filterscheckers.JSBased;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import connectionhandlers.JSBasedConnectionHandler;
 import connectionhandlers.ServerConnectionHandler;
+import filterscheckers.FilterChecker;
 import models.Filter;
 import models.FilterEquivalents;
 
