@@ -16,8 +16,8 @@ public class EatonChecker extends FilterChecker {
 	private static final String FAILURE_RESPONSE = "408626 - 296418 of 296418 Results";
 	private static final String BLOCKED_BY_SERVER_RESPONSE = "some_blocked_by_server_response";
 	private static final String INPUT_FIELD_ID = "Criteria_CompetitorPartNumber";
-	private static final String SEARCH_BUTTON_CLASS = "btn.btn-primary.js-part-search";
-	private static final ServerConnectionHandler SERVER_CONNECTION_HANDLER = new JSBasedConnectionHandler(SERVER_URL_STRING, INPUT_FIELD_ID, SEARCH_BUTTON_CLASS);
+	private static final String SEARCH_BUTTON_CSS_SELECTOR = ".btn.btn-primary.js-part-search";
+	private static final ServerConnectionHandler SERVER_CONNECTION_HANDLER = new JSBasedConnectionHandler(SERVER_URL_STRING, INPUT_FIELD_ID, SEARCH_BUTTON_CSS_SELECTOR);
 	
 	
 	public EatonChecker() {
