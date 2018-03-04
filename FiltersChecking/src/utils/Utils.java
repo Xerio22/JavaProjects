@@ -13,6 +13,7 @@ import filterscheckers.JSBased.FiltrecChecker;
 import filterscheckers.JSBased.HydacChecker;
 import filterscheckers.JSBased.MannChecker;
 import filterscheckers.JSBased.SakuraChecker;
+import filterscheckers.JSBased.SedziszowChecker;
 import filterscheckers.JSBased.SfFilterChecker;
 import filterscheckers.URLBased.DonaldsonChecker;
 import filterscheckers.URLBased.FiltronChecker;
@@ -72,7 +73,8 @@ public class Utils {
 			new SakuraChecker(),
 			new FiltrecChecker(),
 			new StauffChecker(),
-			new HydacChecker()
+			new HydacChecker(),
+			new SedziszowChecker()
 //			new CumminsChecker()
 		};
 
