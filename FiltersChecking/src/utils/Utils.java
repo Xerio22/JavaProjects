@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import filterscheckers.*;
 import filterscheckers.JSBased.BaldwinChecker;
 import filterscheckers.JSBased.FiltrecChecker;
+import filterscheckers.JSBased.HydacChecker;
 import filterscheckers.JSBased.MannChecker;
 import filterscheckers.JSBased.SakuraChecker;
 import filterscheckers.JSBased.SfFilterChecker;
@@ -70,7 +71,8 @@ public class Utils {
 			new FiltronChecker(),
 			new SakuraChecker(),
 			new FiltrecChecker(),
-			new StauffChecker()
+			new StauffChecker(),
+			new HydacChecker()
 //			new CumminsChecker()
 		};
 
