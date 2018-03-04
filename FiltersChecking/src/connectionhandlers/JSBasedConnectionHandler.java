@@ -131,7 +131,9 @@ public class JSBasedConnectionHandler extends ServerConnectionHandler {
 		try {
 			elem = (DomElement) pageToRequest.querySelectorAll("." + this.searchButtonId).get(0); // get might throw exception when didn't find by class
 		}
-		catch(Exception e){e.printStackTrace();}
+		catch(Exception e){
+			System.err.println("Not found by class name");
+		}
 		
 		return elem;
 	}
@@ -141,7 +143,9 @@ public class JSBasedConnectionHandler extends ServerConnectionHandler {
 		try {
 			elem = (DomElement) pageToRequest.getElementByName(this.searchButtonId); // might throw exception when didn't find by name
 		}
-		catch(Exception e){}
+		catch(Exception e){
+			System.err.println("Not found by name");
+		}
 		
 		return elem;
 	}
